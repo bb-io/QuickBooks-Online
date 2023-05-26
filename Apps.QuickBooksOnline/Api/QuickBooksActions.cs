@@ -18,7 +18,7 @@ namespace Apps.QuickBooksOnline.Api
            [ActionParameter] CreateCustomerParameters input)
         {
             var client = new QuickBooksClient();
-            var request = new QuickBooksRequest($"/v3/company/4620816365305536530/customer?minorversion=1", Method.Post, authenticationCredentialsProviders);
+            var request = new QuickBooksRequest($"customer?minorversion=65", Method.Post, authenticationCredentialsProviders);
             request.AddJsonBody(new CreateCustomerRequest
             {
                 DisplayName = input.DisplayName,
@@ -38,7 +38,7 @@ namespace Apps.QuickBooksOnline.Api
            [ActionParameter] CreateInvoiceParameters input)
         {
             var client = new QuickBooksClient();
-            var request = new QuickBooksRequest($"/v3/company/4620816365305536530/customer?minorversion=1", Method.Post, authenticationCredentialsProviders);
+            var request = new QuickBooksRequest($"/invoice?minorversion=65", Method.Post, authenticationCredentialsProviders);
             request.AddJsonBody(CreateRequestBody(input));
 
             return client.Post<CreateCustomerResponse>(request);
