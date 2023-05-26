@@ -1,7 +1,7 @@
 ﻿using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Connections;
 
-namespace Apps.Intuit.Connections
+namespace Apps.QuickBooksOnline.Connections
 {
     public class ConnectionDefinition : IConnectionDefinition
     {

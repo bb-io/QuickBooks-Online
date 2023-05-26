@@ -1,7 +1,7 @@
 ﻿using Blackbird.Applications.Sdk.Common.Authentication.OAuth2;
 using Microsoft.AspNetCore.WebUtilities;
 
-namespace Apps.Intuit.Auth
+namespace Apps.QuickBooksOnline.Auth
 {
     public class OAuth2AuthorizeService : IOAuth2AuthorizeService
     {

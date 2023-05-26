@@ -1,7 +1,7 @@
 ﻿using Blackbird.Applications.Sdk.Common.Authentication;
 using RestSharp;
 
-namespace Apps.Intuit
+namespace Apps.QuickBooksOnline.Clients
 {
     public class QuickBooksRequest : RestRequest
     {

@@ -1,6 +1,6 @@
 ﻿using RestSharp;
 
-namespace Apps.Intuit
+namespace Apps.QuickBooksOnline.Clients
 {
     public class QuickBooksClient : RestClient
     {
