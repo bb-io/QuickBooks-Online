@@ -13,7 +13,7 @@ namespace Apps.QuickBooksOnline.Api
     public class QuickBooksActions
     {
         [Action("Create a customer", Description = "Create a customer")]
-        public void CreateCustomer(
+        public CreateCustomerResponse? CreateCustomer(
            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
            [ActionParameter] CreateCustomerParameters input)
         {
@@ -24,11 +24,11 @@ namespace Apps.QuickBooksOnline.Api
                 DisplayName = input.DisplayName,
             });
 
-            client.Execute(request);
+            return client.Post<CreateCustomerResponse>(request);
         }
 
         [Action("Create an invoice", Description = "Create an invoice")]
-        public CreateCustomerResponse? CreateInvoice(
+        public void CreateInvoice(
            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
            [ActionParameter] CreateInvoiceParameters input)
         {
@@ -36,7 +36,7 @@ namespace Apps.QuickBooksOnline.Api
             var request = new QuickBooksRequest($"/invoice?minorversion=65", Method.Post, authenticationCredentialsProviders);
             request.AddJsonBody(CreateRequestBody(input));
 
-            return client.Post<CreateCustomerResponse>(request);
+            client.Post(request);
         }
 
         private CreateInvoiceRequest CreateRequestBody(CreateInvoiceParameters input)
