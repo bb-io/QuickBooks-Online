@@ -22,11 +22,6 @@ namespace Apps.QuickBooksOnline.Api
             request.AddJsonBody(new CreateCustomerRequest
             {
                 DisplayName = input.DisplayName,
-                FamilyName = input.FamilyName,
-                GivenName = input.GivenName,
-                MiddleName = input.MiddleName,
-                Suffix = input.Suffix,
-                Title = input.Title
             });
 
             client.Execute(request);
