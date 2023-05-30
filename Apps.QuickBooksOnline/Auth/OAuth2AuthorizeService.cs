@@ -11,9 +11,9 @@ namespace Apps.QuickBooksOnline.Auth
             var parameters = new Dictionary<string, string>
             {
                 { "client_id", values["client_id"] },
-                { "redirect_uri", values["redirect_uri"] },
                 { "response_type", values["response_type"] },
                 { "scope", values["scope"] },
+                { "redirect_uri", values["redirect_uri"] },
                 { "state", values["state"] }
             };
             return QueryHelpers.AddQueryString(oauthUrl, parameters);
