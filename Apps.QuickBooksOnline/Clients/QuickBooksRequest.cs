@@ -8,7 +8,7 @@ namespace Apps.QuickBooksOnline.Clients
         public QuickBooksRequest(string endpoint, Method method, IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders) : base(endpoint, method)
         {
             var authenticationCredentialsProvider = authenticationCredentialsProviders.First(p => p.KeyName == "Authorization");
-            this.AddHeader("Authorization", $"bearer {authenticationCredentialsProvider.Value}");
+            this.AddHeader("Authorization", authenticationCredentialsProvider.Value);
         }
     }
 }
