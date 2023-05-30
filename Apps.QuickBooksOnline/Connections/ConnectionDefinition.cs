@@ -19,8 +19,7 @@ namespace Apps.QuickBooksOnline.Connections
                     new ConnectionProperty("client_secret"),
                     new ConnectionProperty("redirect_uri"),
                     new ConnectionProperty("scope"),
-                    new ConnectionProperty("response_type"),
-                    new ConnectionProperty("state")
+                    new ConnectionProperty("response_type")
                 }
             }
         };
