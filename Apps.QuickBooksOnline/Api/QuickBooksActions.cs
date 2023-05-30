@@ -13,7 +13,7 @@ namespace Apps.QuickBooksOnline.Api
     public class QuickBooksActions
     {
         [Action("Create a customer", Description = "Create a customer")]
-        public CreateCustomerResponse? CreateCustomer(
+        public Clients.Models.Responses.Customer? CreateCustomer(
            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
            [ActionParameter] CreateCustomerParameters input)
         {
@@ -24,7 +24,7 @@ namespace Apps.QuickBooksOnline.Api
                 DisplayName = input.DisplayName,
             });
 
-            return client.Post<CreateCustomerResponse>(request);
+            return client.Post<CreateCustomerResponse>(request).Customer;
         }
 
         [Action("Create an invoice", Description = "Create an invoice")]
@@ -43,7 +43,7 @@ namespace Apps.QuickBooksOnline.Api
         {
             return new CreateInvoiceRequest
             {
-                Customer = new Customer
+                Customer = new Clients.Models.Requests.Customer
                 {
                     Id = input.CustomerId
                 },
