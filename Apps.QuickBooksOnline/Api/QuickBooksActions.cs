@@ -58,7 +58,7 @@ namespace Apps.QuickBooksOnline.Api
                               Item = new Item
                               {
                                    Name = input.ItemName,
-                                   Value = input.ItemId
+                                   Id = input.ItemId
                               }
                          }
                      }

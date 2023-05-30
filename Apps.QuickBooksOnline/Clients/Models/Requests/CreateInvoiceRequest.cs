@@ -7,6 +7,7 @@ namespace Apps.QuickBooksOnline.Clients.Models.Requests
         [JsonPropertyName("CustomerRef")]
         public Customer Customer { get; set; }
 
+        [JsonPropertyName("Line")]
         public Line[] Line { get; set; }
     }
 
@@ -18,8 +19,13 @@ namespace Apps.QuickBooksOnline.Clients.Models.Requests
 
     public class Line
     {
+        [JsonPropertyName("Amount")]
         public double Amount { get; set; }
+
+        [JsonPropertyName("DetailType")]
         public string DetailType { get; set; }
+
+        [JsonPropertyName("SalesItemLineDetail")]
         public SalesItemLineDetail SalesItemLineDetail { get; set; }
     }
 
@@ -32,6 +38,8 @@ namespace Apps.QuickBooksOnline.Clients.Models.Requests
     public class Item
     {
         public string Name { get; set; }
-        public string Value { get; set; }
+
+        [JsonPropertyName("value")]
+        public string Id { get; set; }
     }
 }
