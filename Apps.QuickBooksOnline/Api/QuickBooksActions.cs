@@ -24,7 +24,7 @@ namespace Apps.QuickBooksOnline.Api
                 DisplayName = input.DisplayName,
             });
 
-            return client.Post<CreateCustomerResponse>(request).Customer;
+            return client.Post<CreateCustomerResponse>(request)?.Customer;
         }
 
         [Action("Create an invoice", Description = "Create an invoice")]
