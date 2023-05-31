@@ -17,8 +17,9 @@ namespace Apps.QuickBooksOnline.Api
            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
            [ActionParameter] CreateCustomerParameters input)
         {
-            var client = new QuickBooksClient();
-            var request = new QuickBooksRequest($"customer?minorversion=65", Method.Post, authenticationCredentialsProviders);
+            var client = new QuickBooksClient(authenticationCredentialsProviders);
+            var request = new QuickBooksRequest("/customer", Method.Post, authenticationCredentialsProviders);
+            request.AddQueryParameter("minorversion", authenticationCredentialsProviders.First(x => x.KeyName == "minor_version").Value);
             request.AddJsonBody(new CreateCustomerRequest
             {
                 DisplayName = input.DisplayName,
@@ -32,8 +33,9 @@ namespace Apps.QuickBooksOnline.Api
            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
            [ActionParameter] CreateInvoiceParameters input)
         {
-            var client = new QuickBooksClient();
-            var request = new QuickBooksRequest($"/invoice?minorversion=65", Method.Post, authenticationCredentialsProviders);
+            var client = new QuickBooksClient(authenticationCredentialsProviders);
+            var request = new QuickBooksRequest("/invoice", Method.Post, authenticationCredentialsProviders);
+            request.AddQueryParameter("minorversion", authenticationCredentialsProviders.First(x => x.KeyName == "minor_version").Value);
             request.AddJsonBody(CreateRequestBody(input));
 
             client.Post(request);

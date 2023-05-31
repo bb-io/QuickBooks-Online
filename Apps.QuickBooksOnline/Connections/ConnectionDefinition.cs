@@ -15,6 +15,9 @@ namespace Apps.QuickBooksOnline.Connections
                 ConnectionUsage = ConnectionUsage.Actions,
                 ConnectionProperties = new List<ConnectionProperty>()
                 {
+                    new ConnectionProperty("api_url"),
+                    new ConnectionProperty("company_id"),
+                    new ConnectionProperty("minor_version"),
                     new ConnectionProperty("client_id"),
                     new ConnectionProperty("client_secret"),
                     new ConnectionProperty("redirect_uri"),
