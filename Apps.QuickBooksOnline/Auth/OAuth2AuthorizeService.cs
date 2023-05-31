@@ -1,7 +1,7 @@
 ﻿using Blackbird.Applications.Sdk.Common.Authentication.OAuth2;
 using Microsoft.AspNetCore.WebUtilities;
 
-namespace Apps.Intuit.Auth
+namespace Apps.QuickBooksOnline.Auth
 {
     public class OAuth2AuthorizeService : IOAuth2AuthorizeService
     {
@@ -11,9 +11,9 @@ namespace Apps.Intuit.Auth
             var parameters = new Dictionary<string, string>
             {
                 { "client_id", values["client_id"] },
-                { "redirect_uri", values["redirect_uri"] },
                 { "response_type", values["response_type"] },
                 { "scope", values["scope"] },
+                { "redirect_uri", values["redirect_uri"] },
                 { "state", values["state"] }
             };
             return QueryHelpers.AddQueryString(oauthUrl, parameters);

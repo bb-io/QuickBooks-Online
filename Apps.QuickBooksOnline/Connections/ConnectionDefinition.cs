@@ -1,7 +1,8 @@
-﻿using Blackbird.Applications.Sdk.Common.Authentication;
+﻿using Apps.QuickBooksOnline.Constants;
+using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Connections;
 
-namespace Apps.Intuit.Connections
+namespace Apps.QuickBooksOnline.Connections
 {
     public class ConnectionDefinition : IConnectionDefinition
     {
@@ -15,11 +16,14 @@ namespace Apps.Intuit.Connections
                 ConnectionUsage = ConnectionUsage.Actions,
                 ConnectionProperties = new List<ConnectionProperty>()
                 {
+                    new ConnectionProperty(AppConstants.ApiUrlName),
+                    new ConnectionProperty(AppConstants.CompanyIdName),
+                    new ConnectionProperty(AppConstants.MinorVersionName),
                     new ConnectionProperty("client_id"),
                     new ConnectionProperty("client_secret"),
                     new ConnectionProperty("redirect_uri"),
                     new ConnectionProperty("scope"),
-                    new ConnectionProperty("response_type"),
+                    new ConnectionProperty("response_type")
                 }
             }
         };
@@ -32,6 +36,21 @@ namespace Apps.Intuit.Connections
                 "Authorization",
                 $"bearer {token.Value}"
             );
+
+            yield return new AuthenticationCredentialsProvider(
+                AuthenticationCredentialsRequestLocation.None,
+                AppConstants.ApiUrlName,
+                values[AppConstants.ApiUrlName]);
+
+            yield return new AuthenticationCredentialsProvider(
+                AuthenticationCredentialsRequestLocation.None,
+                AppConstants.CompanyIdName,
+                values[AppConstants.CompanyIdName]);
+
+            yield return new AuthenticationCredentialsProvider(
+                AuthenticationCredentialsRequestLocation.None,
+                AppConstants.MinorVersionName,
+                values[AppConstants.MinorVersionName]);
         }
     }
 }

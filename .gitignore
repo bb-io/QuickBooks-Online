@@ -6,3 +6,6 @@
 /Apps.QuickBooksOnline/.vs
 /Apps.QuickBooksOnline/bin/Debug/net6.0
 /Apps.QuickBooksOnline/obj
+/Apps.QuickBooksOnline/bin/Release/net6.0
+/Apps.QuickBooksOnline/Properties/PublishProfiles
+*.user

@@ -3,7 +3,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 
-namespace Apps.Intuit.Auth
+namespace Apps.QuickBooksOnline.Auth
 {
     public class OAuth2TokenService : IOAuth2TokenService
     {

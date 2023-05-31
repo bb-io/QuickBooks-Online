@@ -1,8 +1,8 @@
-﻿using Apps.Intuit.Auth;
+﻿using Apps.QuickBooksOnline.Auth;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication.OAuth2;
 
-namespace Apps.Intuit
+namespace Apps.QuickBooksOnline.Applications
 {
     public class QuickBooksApplication : IApplication
     {
