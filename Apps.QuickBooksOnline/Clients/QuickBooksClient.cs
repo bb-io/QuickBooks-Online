@@ -1,4 +1,6 @@
-﻿using Blackbird.Applications.Sdk.Common.Authentication;
+﻿using Apps.QuickBooksOnline.Constants;
+using Apps.QuickBooksOnline.Exntensions;
+using Blackbird.Applications.Sdk.Common.Authentication;
 using RestSharp;
 
 namespace Apps.QuickBooksOnline.Clients
@@ -10,8 +12,8 @@ namespace Apps.QuickBooksOnline.Clients
             {
                 ThrowOnAnyError = true,
                 BaseUrl = new Uri(
-                    new Uri(authenticationCredentialsProviders.First(x => x.KeyName == "api_url").Value),
-                    $"company/{authenticationCredentialsProviders.First(x => x.KeyName == "company_id").Value}")
+                    new Uri(authenticationCredentialsProviders.GetValueByName(AppConstants.ApiUrlName)),
+                    authenticationCredentialsProviders.GetValueByName(AppConstants.CompanyIdName))
             }) { }
     }
 }

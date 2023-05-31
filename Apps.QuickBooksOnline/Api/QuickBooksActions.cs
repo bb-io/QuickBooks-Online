@@ -6,6 +6,8 @@ using Apps.QuickBooksOnline.Contracts;
 using Apps.QuickBooksOnline.Clients;
 using Apps.QuickBooksOnline.Clients.Models.Requests;
 using Apps.QuickBooksOnline.Clients.Models.Responses;
+using Apps.QuickBooksOnline.Constants;
+using Apps.QuickBooksOnline.Exntensions;
 
 namespace Apps.QuickBooksOnline.Api
 {
@@ -19,7 +21,7 @@ namespace Apps.QuickBooksOnline.Api
         {
             var client = new QuickBooksClient(authenticationCredentialsProviders);
             var request = new QuickBooksRequest("/customer", Method.Post, authenticationCredentialsProviders);
-            request.AddQueryParameter("minorversion", authenticationCredentialsProviders.First(x => x.KeyName == "minor_version").Value);
+            request.AddQueryParameter("minorversion", authenticationCredentialsProviders.GetValueByName(AppConstants.MinorVersionName));
             request.AddJsonBody(new CreateCustomerRequest
             {
                 DisplayName = input.DisplayName,
@@ -35,7 +37,7 @@ namespace Apps.QuickBooksOnline.Api
         {
             var client = new QuickBooksClient(authenticationCredentialsProviders);
             var request = new QuickBooksRequest("/invoice", Method.Post, authenticationCredentialsProviders);
-            request.AddQueryParameter("minorversion", authenticationCredentialsProviders.First(x => x.KeyName == "minor_version").Value);
+            request.AddQueryParameter("minorversion", authenticationCredentialsProviders.GetValueByName(AppConstants.MinorVersionName));
             request.AddJsonBody(CreateRequestBody(input));
 
             client.Post(request);

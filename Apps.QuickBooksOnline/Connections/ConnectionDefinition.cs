@@ -1,4 +1,5 @@
-﻿using Blackbird.Applications.Sdk.Common.Authentication;
+﻿using Apps.QuickBooksOnline.Constants;
+using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Connections;
 
 namespace Apps.QuickBooksOnline.Connections
@@ -15,9 +16,9 @@ namespace Apps.QuickBooksOnline.Connections
                 ConnectionUsage = ConnectionUsage.Actions,
                 ConnectionProperties = new List<ConnectionProperty>()
                 {
-                    new ConnectionProperty("api_url"),
-                    new ConnectionProperty("company_id"),
-                    new ConnectionProperty("minor_version"),
+                    new ConnectionProperty(AppConstants.ApiUrlName),
+                    new ConnectionProperty(AppConstants.CompanyIdName),
+                    new ConnectionProperty(AppConstants.MinorVersionName),
                     new ConnectionProperty("client_id"),
                     new ConnectionProperty("client_secret"),
                     new ConnectionProperty("redirect_uri"),
@@ -35,6 +36,21 @@ namespace Apps.QuickBooksOnline.Connections
                 "Authorization",
                 $"bearer {token.Value}"
             );
+
+            yield return new AuthenticationCredentialsProvider(
+                AuthenticationCredentialsRequestLocation.None,
+                AppConstants.ApiUrlName,
+                values[AppConstants.ApiUrlName]);
+
+            yield return new AuthenticationCredentialsProvider(
+                AuthenticationCredentialsRequestLocation.None,
+                AppConstants.CompanyIdName,
+                values[AppConstants.CompanyIdName]);
+
+            yield return new AuthenticationCredentialsProvider(
+                AuthenticationCredentialsRequestLocation.None,
+                AppConstants.MinorVersionName,
+                values[AppConstants.MinorVersionName]);
         }
     }
 }
