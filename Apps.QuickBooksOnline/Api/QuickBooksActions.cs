@@ -30,6 +30,35 @@ namespace Apps.QuickBooksOnline.Api
             return client.Post<CreateCustomerResponse>(request)?.Customer;
         }
 
+        [Action("Update a customer", Description = "Update a customer")]
+        public void UpdateCustomer(
+           IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+           [ActionParameter] UpdateCustomerParameters input)
+        {
+            var client = new QuickBooksClient(authenticationCredentialsProviders);
+            var request = new QuickBooksRequest("/customer", Method.Post, authenticationCredentialsProviders);
+            request.AddQueryParameter("minorversion", authenticationCredentialsProviders.GetValueByName(AppConstants.MinorVersionName));
+            request.AddJsonBody(new UpdateCustomerRequest
+            {
+                DisplayName = input.DisplayName,
+                CustomerId = input.CustomerId
+            });
+
+            client.Post(request);
+        }
+
+        [Action("Get a customer", Description = "Get a customer")]
+        public Clients.Models.Responses.Customer? GetCustomer(
+          IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+          [ActionParameter] GetCustomerParameters input)
+        {
+            var client = new QuickBooksClient(authenticationCredentialsProviders);
+            var request = new QuickBooksRequest($"/customer/{input.CustomerId}", Method.Get, authenticationCredentialsProviders);
+            request.AddQueryParameter("minorversion", authenticationCredentialsProviders.GetValueByName(AppConstants.MinorVersionName));
+
+            return client.Post<GetCustomerResponse>(request)?.Customer;
+        }
+
         [Action("Create an invoice", Description = "Create an invoice")]
         public void CreateInvoice(
            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
@@ -42,6 +71,8 @@ namespace Apps.QuickBooksOnline.Api
 
             client.Post(request);
         }
+
+
 
         private CreateInvoiceRequest CreateRequestBody(CreateInvoiceParameters input)
         {
