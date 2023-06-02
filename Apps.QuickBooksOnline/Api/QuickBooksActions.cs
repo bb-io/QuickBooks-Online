@@ -8,6 +8,9 @@ using Apps.QuickBooksOnline.Clients.Models.Requests;
 using Apps.QuickBooksOnline.Clients.Models.Responses;
 using Apps.QuickBooksOnline.Constants;
 using Apps.QuickBooksOnline.Exntensions;
+using Line = Apps.QuickBooksOnline.Clients.Models.Requests.Line;
+using SalesItemLineDetail = Apps.QuickBooksOnline.Clients.Models.Requests.SalesItemLineDetail;
+using Item = Apps.QuickBooksOnline.Clients.Models.Requests.Item;
 
 namespace Apps.QuickBooksOnline.Api
 {
@@ -60,23 +63,68 @@ namespace Apps.QuickBooksOnline.Api
         }
 
         [Action("Create an invoice", Description = "Create an invoice")]
-        public void CreateInvoice(
+        public Invoice? CreateInvoice(
            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
            [ActionParameter] CreateInvoiceParameters input)
         {
             var client = new QuickBooksClient(authenticationCredentialsProviders);
             var request = new QuickBooksRequest("/invoice", Method.Post, authenticationCredentialsProviders);
             request.AddQueryParameter("minorversion", authenticationCredentialsProviders.GetValueByName(AppConstants.MinorVersionName));
-            request.AddJsonBody(CreateRequestBody(input));
+            request.AddJsonBody(CreateRequestBody<CreateInvoiceRequest, CreateInvoiceParameters>(input));
+
+            return client.Post<CreateInvoiceResponse>(request)?.Invoice;
+        }
+
+        [Action("Update an invoice", Description = "Update an invoice")]
+        public void UpdateInvoice(
+           IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+           [ActionParameter] UpdateInvoiceParameters input)
+        {
+            var client = new QuickBooksClient(authenticationCredentialsProviders);
+            var request = new QuickBooksRequest("/invoice", Method.Post, authenticationCredentialsProviders);
+            request.AddQueryParameter("minorversion", authenticationCredentialsProviders.GetValueByName(AppConstants.MinorVersionName));
+            var requestBody = CreateRequestBody<UpdateInvoiceRequest, UpdateInvoiceParameters>(input);
+            requestBody.InvoiceId = input.InvoiceId;
+            request.AddJsonBody(requestBody);
 
             client.Post(request);
         }
 
-
-
-        private CreateInvoiceRequest CreateRequestBody(CreateInvoiceParameters input)
+        [Action("Delete an invoice", Description = "Delete an invoice")]
+        public void DeleteInvoice(
+           IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+           [ActionParameter] DeleteInvoiceParameters input)
         {
-            return new CreateInvoiceRequest
+            var client = new QuickBooksClient(authenticationCredentialsProviders);
+            var request = new QuickBooksRequest("/invoice", Method.Post, authenticationCredentialsProviders);
+            request.AddQueryParameter("operation", "delete");
+            request.AddQueryParameter("minorversion", authenticationCredentialsProviders.GetValueByName(AppConstants.MinorVersionName));
+            request.AddJsonBody(new DeleteInvoiceRequest
+            {
+                InvoiceId = input.InvoiceId,
+                SyncToken = input.SyncToken
+            });
+
+            client.Post(request);
+        }
+
+        [Action("Get an invoice", Description = "Get an invoice")]
+        public Invoice? GetInvoice(
+            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+            [ActionParameter] GetInvoiceParameters input)
+        {
+            var client = new QuickBooksClient(authenticationCredentialsProviders);
+            var request = new QuickBooksRequest($"/invoice/{input.InvoiceId}", Method.Get, authenticationCredentialsProviders);
+            request.AddQueryParameter("minorversion", authenticationCredentialsProviders.GetValueByName(AppConstants.MinorVersionName));
+
+            return client.Post<GetInvoiceResponse>(request)?.Invoice;
+        }
+
+        private TRequest CreateRequestBody<TRequest, TInput>(TInput input)
+            where TRequest : CreateInvoiceRequest, new()
+            where TInput : CreateInvoiceParameters
+        {
+            return new TRequest
             {
                 Customer = new Clients.Models.Requests.Customer
                 {
