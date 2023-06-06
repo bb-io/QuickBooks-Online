@@ -9,5 +9,8 @@ namespace Apps.QuickBooksOnline.Clients.Models.Responses
 
         [JsonPropertyName("DisplayName")]
         public string DisplayName { get; set; }
+
+        [JsonPropertyName("SyncToken")]
+        public string SyncToken { get; set; }
     }
 }

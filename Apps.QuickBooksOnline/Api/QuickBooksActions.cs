@@ -44,7 +44,8 @@ namespace Apps.QuickBooksOnline.Api
             request.AddJsonBody(new UpdateCustomerRequest
             {
                 DisplayName = input.DisplayName,
-                CustomerId = input.CustomerId
+                CustomerId = input.CustomerId,
+                SyncToken = input.SyncToken
             });
 
             client.Post(request);
@@ -84,6 +85,7 @@ namespace Apps.QuickBooksOnline.Api
             var request = new QuickBooksRequest("/invoice", Method.Post, authenticationCredentialsProviders);
             request.AddQueryParameter("minorversion", authenticationCredentialsProviders.GetValueByName(AppConstants.MinorVersionName));
             var requestBody = CreateRequestBody<UpdateInvoiceRequest, UpdateInvoiceParameters>(input);
+            
             requestBody.InvoiceId = input.InvoiceId;
             request.AddJsonBody(requestBody);
 
@@ -148,5 +150,7 @@ namespace Apps.QuickBooksOnline.Api
                  }
             };
         }
+
+
     }
 }
