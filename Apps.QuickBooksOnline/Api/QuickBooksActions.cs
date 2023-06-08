@@ -60,7 +60,7 @@ namespace Apps.QuickBooksOnline.Api
             var request = new QuickBooksRequest($"/customer/{input.CustomerId}", Method.Get, authenticationCredentialsProviders);
             request.AddQueryParameter("minorversion", authenticationCredentialsProviders.GetValueByName(AppConstants.MinorVersionName));
 
-            return client.Post<GetCustomerResponse>(request)?.Customer;
+            return client.Get<GetCustomerResponse>(request)?.Customer;
         }
 
         [Action("Create an invoice", Description = "Create an invoice")]
@@ -119,7 +119,7 @@ namespace Apps.QuickBooksOnline.Api
             var request = new QuickBooksRequest($"/invoice/{input.InvoiceId}", Method.Get, authenticationCredentialsProviders);
             request.AddQueryParameter("minorversion", authenticationCredentialsProviders.GetValueByName(AppConstants.MinorVersionName));
 
-            return client.Post<GetInvoiceResponse>(request)?.Invoice;
+            return client.Get<GetInvoiceResponse>(request)?.Invoice;
         }
 
         private TRequest CreateRequestBody<TRequest, TInput>(TInput input)
