@@ -87,6 +87,7 @@ namespace Apps.QuickBooksOnline.Api
             var requestBody = CreateRequestBody<UpdateInvoiceRequest, UpdateInvoiceParameters>(input);
             
             requestBody.InvoiceId = input.InvoiceId;
+            requestBody.SyncToken = input.SyncToken;
             request.AddJsonBody(requestBody);
 
             client.Post(request);
