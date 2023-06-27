@@ -11,7 +11,7 @@ namespace Apps.QuickBooksOnline.Auth
             var parameters = new Dictionary<string, string>
             {
                 { "client_id", values["client_id"] },
-                { "response_type", values["response_type"] },
+                { "response_type", "code" },
                 { "scope", values["scope"] },
                 { "redirect_uri", values["redirect_uri"] },
                 { "state", values["state"] }
