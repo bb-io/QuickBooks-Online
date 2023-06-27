@@ -11,6 +11,7 @@ using Apps.QuickBooksOnline.Exntensions;
 using Line = Apps.QuickBooksOnline.Clients.Models.Requests.Line;
 using SalesItemLineDetail = Apps.QuickBooksOnline.Clients.Models.Requests.SalesItemLineDetail;
 using Item = Apps.QuickBooksOnline.Clients.Models.Requests.Item;
+using Apps.QuickBooksOnline.Dtos;
 
 namespace Apps.QuickBooksOnline.Api
 {
@@ -18,7 +19,7 @@ namespace Apps.QuickBooksOnline.Api
     public class QuickBooksActions
     {
         [Action("Create a customer", Description = "Create a customer")]
-        public Clients.Models.Responses.Customer? CreateCustomer(
+        public GetCustomerResponse CreateCustomer(
            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
            [ActionParameter] CreateCustomerParameters input)
         {
@@ -30,7 +31,7 @@ namespace Apps.QuickBooksOnline.Api
                 DisplayName = input.DisplayName,
             });
 
-            return client.Post<CreateCustomerResponse>(request)?.Customer;
+            return new GetCustomerResponse(client.Post<CustomerWrapper>(request)?.Customer);
         }
 
         [Action("Update a customer", Description = "Update a customer")]
@@ -52,7 +53,7 @@ namespace Apps.QuickBooksOnline.Api
         }
 
         [Action("Get a customer", Description = "Get a customer")]
-        public Clients.Models.Responses.Customer? GetCustomer(
+        public GetCustomerResponse? GetCustomer(
           IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
           [ActionParameter] GetCustomerParameters input)
         {
@@ -60,11 +61,11 @@ namespace Apps.QuickBooksOnline.Api
             var request = new QuickBooksRequest($"/customer/{input.CustomerId}", Method.Get, authenticationCredentialsProviders);
             request.AddQueryParameter("minorversion", authenticationCredentialsProviders.GetValueByName(AppConstants.MinorVersionName));
 
-            return client.Get<GetCustomerResponse>(request)?.Customer;
+            return new GetCustomerResponse(client.Get<CustomerWrapper>(request)?.Customer);
         }
 
         [Action("Create an invoice", Description = "Create an invoice")]
-        public Invoice? CreateInvoice(
+        public GetInvoiceResponse CreateInvoice(
            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
            [ActionParameter] CreateInvoiceParameters input)
         {
@@ -73,7 +74,7 @@ namespace Apps.QuickBooksOnline.Api
             request.AddQueryParameter("minorversion", authenticationCredentialsProviders.GetValueByName(AppConstants.MinorVersionName));
             request.AddJsonBody(CreateRequestBody<CreateInvoiceRequest, CreateInvoiceParameters>(input));
 
-            return client.Post<CreateInvoiceResponse>(request)?.Invoice;
+            return new GetInvoiceResponse(client.Post<InvoiceWrapper>(request)?.Invoice);
         }
 
         [Action("Update an invoice", Description = "Update an invoice")]
@@ -90,6 +91,38 @@ namespace Apps.QuickBooksOnline.Api
             requestBody.SyncToken = input.SyncToken;
             request.AddJsonBody(requestBody);
 
+            client.Post(request);
+        }
+
+        [Action("Add line to invoice", Description = "Add line to invoice")]
+        public void AddInvoiceLine(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+           [ActionParameter] AddInvoiceLineParameters input)
+        {
+            var client = new QuickBooksClient(authenticationCredentialsProviders);
+            var request = new QuickBooksRequest("/invoice", Method.Post, authenticationCredentialsProviders);
+            request.AddQueryParameter("minorversion", authenticationCredentialsProviders.GetValueByName(AppConstants.MinorVersionName));
+            var invoice = GetInvoiceOriginal(authenticationCredentialsProviders, new GetInvoiceParameters() { InvoiceId = input.InvoiceId });
+            List<Dtos.Line> lines = invoice.Invoice.Line.ToList();
+            lines.Add(new Dtos.Line
+            {
+                Amount = input.LineAmount,
+                DetailType = "SalesItemLineDetail",
+                SalesItemLineDetail = new Dtos.SalesItemLineDetail
+                {
+                    Item = new Dtos.Item
+                    {
+                        Name = input.ItemName,
+                        Id = input.ItemId
+                    }
+                }
+            });
+            request.AddJsonBody(new AddInvoiceLineDto()
+            {
+                Id = input.InvoiceId,
+                SyncToken = input.SyncToken,
+                sparse = true,
+                Line = lines
+            });
             client.Post(request);
         }
 
@@ -112,15 +145,20 @@ namespace Apps.QuickBooksOnline.Api
         }
 
         [Action("Get an invoice", Description = "Get an invoice")]
-        public Invoice? GetInvoice(
+        public GetInvoiceResponse GetInvoice(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] GetInvoiceParameters input)
+        {
+            return new GetInvoiceResponse(GetInvoiceOriginal(authenticationCredentialsProviders, input).Invoice);
+        }
+
+        private InvoiceWrapper GetInvoiceOriginal(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders, 
+            GetInvoiceParameters input)
         {
             var client = new QuickBooksClient(authenticationCredentialsProviders);
             var request = new QuickBooksRequest($"/invoice/{input.InvoiceId}", Method.Get, authenticationCredentialsProviders);
             request.AddQueryParameter("minorversion", authenticationCredentialsProviders.GetValueByName(AppConstants.MinorVersionName));
-
-            return client.Get<GetInvoiceResponse>(request)?.Invoice;
+            return client.Get<InvoiceWrapper>(request);
         }
 
         private TRequest CreateRequestBody<TRequest, TInput>(TInput input)

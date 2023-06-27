@@ -1,14 +1,20 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Apps.QuickBooksOnline.Clients.Models.Responses
+namespace Apps.QuickBooksOnline.Dtos
 {
-    public class Invoice
+    public class InvoiceWrapper
+    {
+        [JsonPropertyName("Invoice")]
+        public InvoiceDto Invoice { get; set; }
+    }
+
+    public class InvoiceDto
     {
         [JsonPropertyName("CustomerRef")]
         public InvoiceCustomer Customer { get; set; }
 
         [JsonPropertyName("Line")]
-        public Line[] Line { get; set; }
+        public List<Line> Line { get; set; }
 
         [JsonPropertyName("ShipFromAddr")]
         public ShipFromAddress ShipFromAddress { get; set; }
@@ -80,4 +86,5 @@ namespace Apps.QuickBooksOnline.Clients.Models.Responses
         [JsonPropertyName("Line2")]
         public string Line2 { get; set; }
     }
+
 }
