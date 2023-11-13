@@ -16,13 +16,12 @@ namespace Apps.QuickBooksOnline.Connections
                 ConnectionUsage = ConnectionUsage.Actions,
                 ConnectionProperties = new List<ConnectionProperty>()
                 {
-                    new ConnectionProperty(AppConstants.ApiUrlName),
-                    new ConnectionProperty(AppConstants.CompanyIdName),
-                    new ConnectionProperty(AppConstants.MinorVersionName),
-                    new ConnectionProperty("client_id"),
-                    new ConnectionProperty("client_secret"),
-                    new ConnectionProperty("redirect_uri"),
-                    new ConnectionProperty("scope")
+                    new ConnectionProperty(AppConstants.ApiUrlName){ DisplayName = "API url" },
+                    new ConnectionProperty(AppConstants.CompanyIdName) { DisplayName = "Company ID" },
+                    new ConnectionProperty(AppConstants.MinorVersionName) { DisplayName = "Minor version" },
+                    new ConnectionProperty("client_id") { DisplayName = "Client ID" },
+                    new ConnectionProperty("client_secret") { DisplayName = "Client secret", Sensitive = true },
+                    new ConnectionProperty("scope") { DisplayName = "Scope" }
                 }
             }
         };

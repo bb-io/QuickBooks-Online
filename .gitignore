@@ -9,3 +9,4 @@
 /Apps.QuickBooksOnline/bin/Release/net6.0
 /Apps.QuickBooksOnline/Properties/PublishProfiles
 *.user
+/Apps.QuickBooksOnline/bin/Debug/net7.0

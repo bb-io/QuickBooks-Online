@@ -1,14 +1,20 @@
-﻿using Blackbird.Applications.Sdk.Common.Authentication.OAuth2;
+﻿using Blackbird.Applications.Sdk.Common;
+using Blackbird.Applications.Sdk.Common.Authentication.OAuth2;
+using Blackbird.Applications.Sdk.Common.Invocation;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 
 namespace Apps.QuickBooksOnline.Auth
 {
-    public class OAuth2TokenService : IOAuth2TokenService
+    public class OAuth2TokenService : BaseInvocable, IOAuth2TokenService
     {
         private const string ExpiresAtKeyName = "expires_at";
         private const string TokenUrl = "https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer";
+
+        public OAuth2TokenService(InvocationContext invocationContext) : base(invocationContext)
+        {
+        }
 
         public bool IsRefreshToken(Dictionary<string, string> values)
         {
@@ -40,7 +46,7 @@ namespace Apps.QuickBooksOnline.Auth
             var bodyParameters = new Dictionary<string, string>
             {
                 { "grant_type", grant_type },
-                { "redirect_uri", values["redirect_uri"] },
+                { "redirect_uri", InvocationContext.UriInfo.AuthorizationCodeRedirectUri.ToString() },
                 { "code", code }
             };
             return await RequestToken(bodyParameters, values["client_id"], values["client_secret"], cancellationToken);
