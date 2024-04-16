@@ -1,17 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<Product>QuickBooks Online</Product>
 		<Description>QuickBooks Online accounting software helps you manage your cash flow, track expenses, send invoices and more all in one place.</Description>
-		<Version>1.0.2</Version>
+		<Version>1.0.3</Version>
 		<AssemblyName>Apps.QuickBooksOnline</AssemblyName>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Blackbird.Applications.Sdk.Common" Version="2.3.1" />
+		<PackageReference Include="Blackbird.Applications.Sdk.Common" Version="2.6.0" />
 		<PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
 		<PackageReference Include="RestSharp" Version="110.2.0" />
 	</ItemGroup>
