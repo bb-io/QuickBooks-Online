@@ -1,7 +1,9 @@
-﻿namespace Apps.QuickBooksOnline.Contracts
+﻿using Blackbird.Applications.Sdk.Common;
+
+namespace Apps.QuickBooksOnline.Contracts;
+
+public class GetInvoiceParameters
 {
-    public class GetInvoiceParameters
-    {
-        public string InvoiceId { get; set; }
-    }
+    [Display("Invoice ID")]
+    public string InvoiceId { get; set; }
 }

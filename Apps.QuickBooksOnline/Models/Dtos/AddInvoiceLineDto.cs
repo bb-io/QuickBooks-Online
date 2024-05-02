@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Apps.QuickBooksOnline.Models.Dtos;
 
 namespace Apps.QuickBooksOnline.Dtos
 {
@@ -18,6 +19,6 @@ namespace Apps.QuickBooksOnline.Dtos
         public bool sparse { get; set; }
 
         [JsonPropertyName("Line")]
-        public List<Dtos.Line> Line { get; set; }
+        public List<Line> Line { get; set; }
     }
 }

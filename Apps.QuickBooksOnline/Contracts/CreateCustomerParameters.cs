@@ -1,7 +1,10 @@
-﻿namespace Apps.QuickBooksOnline.Contracts
+﻿using Blackbird.Applications.Sdk.Common;
+
+namespace Apps.QuickBooksOnline.Contracts
 {
     public class CreateCustomerParameters
     {
-        public string DisplayName { get; set; }
+        [Display("Middle name")]
+        public string MiddleName { get; set; }
     }
 }

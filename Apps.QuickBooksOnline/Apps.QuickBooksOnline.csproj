@@ -12,8 +12,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Blackbird.Applications.Sdk.Common" Version="2.6.0" />
-		<PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
-		<PackageReference Include="RestSharp" Version="110.2.0" />
+		<PackageReference Include="Blackbird.Applications.Sdk.Utils" Version="1.0.25" />
 	</ItemGroup>
 	<ItemGroup>
 		<EmbeddedResource CopyToOutputDirectory="Always" Include="image\icon.png" />

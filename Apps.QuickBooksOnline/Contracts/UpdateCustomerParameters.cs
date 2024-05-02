@@ -1,9 +1,13 @@
-﻿namespace Apps.QuickBooksOnline.Contracts
+﻿using Blackbird.Applications.Sdk.Common;
+
+namespace Apps.QuickBooksOnline.Contracts
 {
-    public class UpdateCustomerParameters
+    public class UpdateCustomerParameters : GetCustomerParameters
     {
-        public string DisplayName { get; set; }
-        public string CustomerId { get; set; }
-        public string SyncToken { get; set; }
+        [Display("Middle name")]
+        public string MiddleName { get; set; }
+        
+        [Display("Sync token", Description = "By default, the sync token is set to 0")]
+        public string? SyncToken { get; set; }
     }
 }
