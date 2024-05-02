@@ -3,29 +3,29 @@ using Blackbird.Applications.Sdk.Common;
 
 namespace Apps.QuickBooksOnline.Models.Responses;
 
-public class PaymentResponse(PaymentCreatedDto dto)
+public class PaymentResponse(PaymentDto dto)
 {
     [Display("Id")]
-    public string Id { get; set; } = dto.Payment.Id;
+    public string Id { get; set; } = dto.Id;
 
     [Display("Customer ID")]
-    public string CustomerId { get; set; } = dto.Payment.CustomerRef.Value;
+    public string CustomerId { get; set; } = dto.CustomerRef.Value;
 
     [Display("Customer name")]
-    public string CustomerName { get; set; } = dto.Payment.CustomerRef.Name;
+    public string CustomerName { get; set; } = dto.CustomerRef.Name;
 
     [Display("Total amount")]
-    public double TotalAmount { get; set; } = (double)dto.Payment.TotalAmt;
+    public double TotalAmount { get; set; } = (double)dto.TotalAmt;
 
     [Display("Unapplied amount")]
-    public double UnappliedAmount { get; set; } = (double)dto.Payment.UnappliedAmt;
+    public double UnappliedAmount { get; set; } = (double)dto.UnappliedAmt;
 
     [Display("Process payment")]
-    public bool ProcessPayment { get; set; } = dto.Payment.ProcessPayment;
+    public bool ProcessPayment { get; set; } = dto.ProcessPayment;
 
     [Display("Currency")]
-    public string Currency { get; set; } = dto.Payment.CurrencyRef.Value;
+    public string Currency { get; set; } = dto.CurrencyRef.Value;
 
     [Display("Currency name")]
-    public string CurrencyName { get; set; } = dto.Payment.CurrencyRef.Name;
+    public string CurrencyName { get; set; } = dto.CurrencyRef.Name;
 }

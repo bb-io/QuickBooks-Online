@@ -22,7 +22,8 @@ public class OAuth2TokenService : BaseInvocable, IOAuth2TokenService
         return DateTime.UtcNow > expiresAt;
     }
 
-    public async Task<Dictionary<string, string>> RefreshToken(Dictionary<string, string> values, CancellationToken cancellationToken)
+    public async Task<Dictionary<string, string>> RefreshToken(Dictionary<string, string> values,
+        CancellationToken cancellationToken)
     {
         const string grant_type = "refresh_token";
 
@@ -32,7 +33,7 @@ public class OAuth2TokenService : BaseInvocable, IOAuth2TokenService
             { "refresh_token", values["refresh_token"] },
         };
 
-        return await RequestToken(bodyParameters, values["client_id"], values["client_secret"],  cancellationToken);
+        return await RequestToken(bodyParameters, values["client_id"], values["client_secret"], cancellationToken);
     }
 
     public async Task<Dictionary<string, string>> RequestToken(
@@ -63,18 +64,22 @@ public class OAuth2TokenService : BaseInvocable, IOAuth2TokenService
         string clientSecret,
         CancellationToken cancellationToken)
     {
-        var utcNow = DateTime.UtcNow;
         using HttpClient httpClient = new();
-        var headerValue = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{clientId}:{clientSecret}"));
-        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", headerValue);
-        using var httpContent = new FormUrlEncodedContent(bodyParameters);
-        using var response = await httpClient.PostAsync(TokenUrl, httpContent, cancellationToken);
-        var responseContent = await response.Content.ReadAsStringAsync();
-        var resultDictionary = JsonSerializer.Deserialize<Dictionary<string, object>>(responseContent)?.ToDictionary(r => r.Key, r => r.Value?.ToString())
-                               ?? throw new InvalidOperationException($"Invalid response content: {responseContent}");
-        var expriresIn = int.Parse(resultDictionary["expires_in"]);
-        var expiresAt = utcNow.AddSeconds(expriresIn);
-        resultDictionary.Add(ExpiresAtKeyName, expiresAt.ToString());
+
+        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",
+            Convert.ToBase64String(Encoding.UTF8.GetBytes($"{clientId}:{clientSecret}")));
+
+        using var response =
+            await httpClient.PostAsync(TokenUrl, new FormUrlEncodedContent(bodyParameters), cancellationToken);
+
+        var resultDictionary = JsonSerializer
+                                   .Deserialize<Dictionary<string, object>>(await response.Content.ReadAsStringAsync())
+                                   ?.ToDictionary(r => r.Key, r => r.Value?.ToString())
+                               ?? throw new InvalidOperationException(
+                                   $"Invalid response content: {await response.Content.ReadAsStringAsync()}");
+
+        resultDictionary.Add(ExpiresAtKeyName,
+            DateTime.UtcNow.AddSeconds(int.Parse(resultDictionary["expires_in"])).ToString());
         return resultDictionary;
     }
 }

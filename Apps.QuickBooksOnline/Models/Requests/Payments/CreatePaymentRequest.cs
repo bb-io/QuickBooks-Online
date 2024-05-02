@@ -2,12 +2,12 @@
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 
-namespace Apps.QuickBooksOnline.Models.Requests;
+namespace Apps.QuickBooksOnline.Models.Requests.Payments;
 
 public class CreatePaymentRequest
 {
     [Display("Total amount")]
-    public string TotalAmount { get; set; }
+    public double TotalAmount { get; set; }
 
     [Display("Customer ID"), DataSource(typeof(CustomerDataSource))]
     public string? CustomerId { get; set; }

@@ -2,7 +2,7 @@
 
 namespace Apps.QuickBooksOnline.Models.Dtos.Payments;
 
-public class PaymentCreatedDto
+public class GetPaymentDto
 {
     [JsonProperty("Payment")]
     public PaymentDto Payment { get; set; }
