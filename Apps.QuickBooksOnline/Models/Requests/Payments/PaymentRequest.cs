@@ -1,12 +1,11 @@
-﻿using Blackbird.Applications.Sdk.Common;
+﻿using Apps.QuickBooksOnline.DataSourceHandlers;
+using Blackbird.Applications.Sdk.Common;
+using Blackbird.Applications.Sdk.Common.Dynamic;
 
-namespace Apps.QuickBooksOnline.Models.Requests;
+namespace Apps.QuickBooksOnline.Models.Requests.Payments;
 
-public class PaymentRequest
+public class PaymentRequest : SyncTokenRequest
 {
-    [Display("Payment ID")]
+    [Display("Payment ID"), DataSource(typeof(PaymentDataSourceHandler))]
     public string PaymentId { get; set; }
-
-    [Display("Sync Token", Description = "By default it set to 0")]
-    public string? SyncToken { get; set; }
 }

@@ -28,4 +28,6 @@ public class PaymentResponse(PaymentDto dto)
 
     [Display("Currency name")]
     public string CurrencyName { get; set; } = dto.CurrencyRef.Name;
+
+    public List<LineResponse> Lines { get; set; } = dto.Line.Select(x => new LineResponse(x)).ToList();
 }

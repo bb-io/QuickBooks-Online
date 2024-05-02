@@ -41,5 +41,5 @@ public class PaymentDto
     public CurrencyRefDto CurrencyRef { get; set; }
     
     [JsonProperty("Line")]
-    public List<object> Line { get; set; }
+    public List<LineDto> Line { get; set; }
 }
