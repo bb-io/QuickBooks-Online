@@ -9,6 +9,8 @@ public class AppInvocable(InvocationContext invocationContext) : BaseInvocable(i
 {
     protected AuthenticationCredentialsProvider[] Creds =>
         InvocationContext.AuthenticationCredentialsProviders.ToArray();
+    
+    protected Logger Logger { get; } = new();
 
     protected QuickBooksClient Client { get; } = new();
 }

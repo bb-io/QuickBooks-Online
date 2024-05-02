@@ -19,7 +19,7 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
         return new GetInvoiceResponse(invoiceWrapper.Invoice);
     }
     
-    [Action("Create an invoice", Description = "Create an invoice")]
+    [Action("Create invoice", Description = "Create an invoice")]
     public async Task<GetInvoiceResponse> CreateInvoice([ActionParameter] CreateInvoiceParameters input)
     {
         var body = new
@@ -50,7 +50,7 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
         return new GetInvoiceResponse(invoiceWrapper.Invoice);
     }
 
-    [Action("Update an invoice", Description = "Sparse update an invoice")]
+    [Action("Update invoice", Description = "Sparse update an invoice")]
     public async Task<GetInvoiceResponse> UpdateInvoice([ActionParameter] UpdateInvoiceParameters input)
     {
         var body = new
@@ -65,7 +65,7 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
         return new GetInvoiceResponse(invoiceWrapper.Invoice);
     }
     
-    [Action("Delete an invoice", Description = "Delete an invoice")]
+    [Action("Delete invoice", Description = "Delete an invoice")]
     public async Task DeleteInvoice(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] DeleteInvoiceParameters input)

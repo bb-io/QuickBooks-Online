@@ -8,7 +8,6 @@ namespace Apps.QuickBooksOnline;
 
 public class QuickBooksApplication : BaseInvocable, IApplication, ICategoryProvider
 {
-    private string _name;
     private readonly Dictionary<Type, object> _typesInstances;
 
     public IEnumerable<ApplicationCategory> Categories
@@ -19,15 +18,11 @@ public class QuickBooksApplication : BaseInvocable, IApplication, ICategoryProvi
         
     public QuickBooksApplication(InvocationContext invocationContext) : base(invocationContext)
     {
-        _name = "QuickBooks Online";
+        Name = "QuickBooks Online";
         _typesInstances = CreateTypesInstances();
     }
 
-    public string Name
-    {
-        get => _name;
-        set => _name = value;
-    }
+    public string Name { get; set; }
 
     public T GetInstance<T>()
     {

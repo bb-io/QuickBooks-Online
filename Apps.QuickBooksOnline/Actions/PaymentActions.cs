@@ -21,8 +21,6 @@ public class PaymentActions(InvocationContext invocationContext) : AppInvocable(
             throw new Exception("One of the following fields must be provided: Customer ID, Job ID");
         }
         
-        var client = new QuickBooksClient();
-
         var body = new
         {
             TotalAmt = decimal.Parse(request.TotalAmount),
