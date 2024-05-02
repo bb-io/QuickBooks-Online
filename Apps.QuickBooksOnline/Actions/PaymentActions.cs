@@ -1,11 +1,11 @@
-﻿using Apps.QuickBooksOnline.Models.Dtos.Payments;
+﻿using RestSharp;
+using Apps.QuickBooksOnline.Models.Dtos.Payments;
 using Apps.QuickBooksOnline.Models.Requests;
 using Apps.QuickBooksOnline.Models.Requests.Payments;
 using Apps.QuickBooksOnline.Models.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Invocation;
-using RestSharp;
 
 namespace Apps.QuickBooksOnline.Actions;
 
@@ -15,13 +15,29 @@ public class PaymentActions(InvocationContext invocationContext) : AppInvocable(
     [Action("Get all payments", Description = "Get all payments")]
     public async Task<PaymentsResponse> GetAllPayments()
     {
-        string sql =
-            "select * from Payment Where Metadata.LastUpdatedTime>'2015-01-16' Order By Metadata.LastUpdatedTime";
-        var response = await Client.ExecuteWithJson<PaymentsWrapper>($"/query?query={sql}", Method.Get, null, Creds);
-        return new PaymentsResponse
+        try
         {
-            Payments = response.QueryResponse.Payment.Select(x => new PaymentResponse(x)).ToList()
-        };
+            string sql =
+                "select * from Payment Where Metadata.LastUpdatedTime>'2015-01-16' Order By Metadata.LastUpdatedTime";
+            var response =
+                await Client.ExecuteWithJson<PaymentsWrapper>($"/query?query={sql}", Method.Get, null, Creds);
+            return new PaymentsResponse
+            {
+                Payments = response.QueryResponse.Payment.Select(x => new PaymentResponse(x)).ToList()
+            };
+        }
+        catch (Exception e)
+        {
+            var logger = new Logger();
+            await logger.LogAsync(new
+            {
+                Message = e.Message,
+                StackTrace = e.StackTrace,
+                Type = e.GetType().ToString()
+            });
+            
+            throw;
+        }
     }
 
     [Action("Get payment", Description = "Get payment by ID")]

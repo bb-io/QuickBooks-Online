@@ -1,5 +1,5 @@
 ﻿using Apps.QuickBooksOnline.Constants;
-using Apps.QuickBooksOnline.Exntensions;
+using Apps.QuickBooksOnline.Extensions;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Newtonsoft.Json;

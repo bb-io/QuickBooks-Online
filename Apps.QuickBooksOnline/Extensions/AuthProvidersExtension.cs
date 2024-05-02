@@ -1,6 +1,6 @@
 ﻿using Blackbird.Applications.Sdk.Common.Authentication;
 
-namespace Apps.QuickBooksOnline.Exntensions
+namespace Apps.QuickBooksOnline.Extensions
 {
     public static class AuthProvidersExtension
     {
