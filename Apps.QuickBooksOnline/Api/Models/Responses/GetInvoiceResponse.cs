@@ -7,25 +7,25 @@ public class GetInvoiceResponse
 {
     public GetInvoiceResponse(InvoiceDto invoice) 
     {
-        InvoiceId = invoice.Id;
-        CustomerId = invoice.CustomerRef.Value;
-        CustomerName = invoice.CustomerRef.Name;
-        Lines = invoice.Line.Select(l => new LineDto
+        InvoiceId = invoice?.Id;
+        CustomerId = invoice?.CustomerRef?.Value;
+        CustomerName = invoice?.CustomerRef?.Name;
+        Lines = invoice?.Line?.Select(l => new LineDto
         {
-            LineId = l.Id,
-            LineNumber = l.LineNum,
-            Amount = l.Amount,
-            DetailType = l.DetailType,
-            ItemName = l.SalesItemLineDetail.ItemRef.Name,
-            ItemId = l.SalesItemLineDetail.ItemRef.Value
-        });
-        ShipFromAddressId = invoice.ShipAddr.Id;
-        ShipFromAddressLine1 = invoice.ShipAddr.Line1;
-        PrintStatus = invoice.PrintStatus;
-        EmailStatus = invoice.EmailStatus;
-        BillEmail = invoice.BillEmail.Address;
-        Balance = invoice.Balance;
-        SyncToken = invoice.SyncToken;
+            LineId = l?.Id,
+            LineNumber = l?.LineNum ?? 0,
+            Amount = l?.Amount ?? 0,
+            DetailType = l?.DetailType,
+            ItemName = l?.SalesItemLineDetail?.ItemRef?.Name,
+            ItemId = l?.SalesItemLineDetail?.ItemRef?.Value
+        }) ?? Enumerable.Empty<LineDto>();
+        ShipFromAddressId = invoice?.ShipAddr?.Id;
+        ShipFromAddressLine1 = invoice?.ShipAddr?.Line1;
+        PrintStatus = invoice?.PrintStatus;
+        EmailStatus = invoice?.EmailStatus;
+        BillEmail = invoice?.BillEmail?.Address;
+        Balance = invoice?.Balance ?? 0;
+        SyncToken = invoice?.SyncToken;
     }
 
     [Display("Customer ID")]
