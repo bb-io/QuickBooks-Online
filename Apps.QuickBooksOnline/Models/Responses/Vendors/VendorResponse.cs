@@ -34,27 +34,27 @@ public class VendorResponse(VendorDto dto)
     public bool Active { get; set; } = dto.Active;
 
     [Display("Primary phone number")]
-    public string PrimaryPhoneNumber { get; set; } = dto.PrimaryPhone.FreeFormNumber;
+    public string PrimaryPhoneNumber { get; set; } = dto.PrimaryPhone?.FreeFormNumber  ?? string.Empty;
 
     [Display("Mobile phone number")]
-    public string Mobile { get; set; } = dto.Mobile.FreeFormNumber;
+    public string Mobile { get; set; } = dto.Mobile?.FreeFormNumber  ?? string.Empty;
 
     [Display("Fax number")]
-    public string Fax { get; set; } = dto.Fax.FreeFormNumber;
+    public string Fax { get; set; } = dto.Fax?.FreeFormNumber  ?? string.Empty;
 
     [Display("Web address")]
-    public string WebAddrUrl { get; set; } = dto.WebAddr.URI;
+    public string WebAddrUrl { get; set; } = dto.WebAddr?.URI  ?? string.Empty;
 
     public BillAddrResponse BillAddr { get; set; } = new()
     {
-        Id = dto.BillAddr.Id,
-        Line1 = dto.BillAddr.Line1,
-        City = dto.BillAddr.City,
-        PostalCode = dto.BillAddr.PostalCode
+        Id = dto.BillAddr?.Id ?? string.Empty,
+        Line1 = dto.BillAddr?.Line1 ?? string.Empty,
+        City = dto.BillAddr?.City ?? string.Empty, 
+        PostalCode = dto.BillAddr?.PostalCode  ?? string.Empty
     };
 
     [Display("Term refence")]
-    public string TermRef { get; set; } = dto.TermRef.value;
+    public string TermRef { get; set; } = dto.TermRef?.value ?? string.Empty;
 
     [Display("Company name")]
     public string CompanyName { get; set; } = dto.CompanyName;
@@ -68,7 +68,7 @@ public class VendorResponse(VendorDto dto)
     public string Country { get; set; } = dto.Country;
 
     [Display("Postal code")]
-    public string PostalCode { get; set; } = dto.BillAddr.PostalCode;
+    public string PostalCode { get; set; } = dto.BillAddr?.PostalCode ?? string.Empty;
 }
 
 public class BillAddrResponse
