@@ -14,14 +14,17 @@ public class OAuth2AuthorizeService : BaseInvocable, IOAuth2AuthorizeService
     public string GetAuthorizationUrl(Dictionary<string, string> values)
     {
         const string oauthUrl = "https://appcenter.intuit.com/connect/oauth2";
+        
+        var credentials = ApplicationConstants.GetCreds(values);
         var parameters = new Dictionary<string, string>
         {
-            { "client_id", ApplicationConstants.ClientId },
+            { "client_id", credentials.ClientId },
             { "response_type", "code" },
-            { "scope", ApplicationConstants.Scope },
+            { "scope", credentials.Scope },
             { "redirect_uri", InvocationContext.UriInfo.AuthorizationCodeRedirectUri.ToString() },
             { "state", values["state"] }
         };
+        
         return QueryHelpers.AddQueryString(oauthUrl, parameters);
     }
 }

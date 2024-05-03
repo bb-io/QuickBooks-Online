@@ -33,7 +33,8 @@ public class OAuth2TokenService : BaseInvocable, IOAuth2TokenService
             { "refresh_token", values["refresh_token"] },
         };
 
-        return await RequestToken(bodyParameters, values["client_id"], values["client_secret"], cancellationToken);
+        var credentials = ApplicationConstants.GetCreds(values);
+        return await RequestToken(bodyParameters, credentials.ClientId, credentials.ClientSecret, cancellationToken);
     }
 
     public async Task<Dictionary<string, string>> RequestToken(
@@ -51,9 +52,8 @@ public class OAuth2TokenService : BaseInvocable, IOAuth2TokenService
             { "code", code }
         };
         
-        string clientId = ApplicationConstants.ClientId;
-        string clientSecret = ApplicationConstants.ClientSecret;
-        return await RequestToken(bodyParameters, clientId, clientSecret, cancellationToken);
+        var credentials = ApplicationConstants.GetCreds(values);
+        return await RequestToken(bodyParameters, credentials.ClientId, credentials.ClientSecret, cancellationToken);
     }
 
     public Task RevokeToken(Dictionary<string, string> values)
