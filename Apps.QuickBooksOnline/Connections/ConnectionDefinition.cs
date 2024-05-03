@@ -19,9 +19,6 @@ public class ConnectionDefinition : IConnectionDefinition
                 new (CredNames.ApiUrl){ DisplayName = "API url" },
                 new (CredNames.CompanyId) { DisplayName = "Company ID" },
                 new (CredNames.MinorVersion) { DisplayName = "Minor version" },
-                new ("client_id") { DisplayName = "Client ID" },
-                new ("client_secret") { DisplayName = "Client secret", Sensitive = true },
-                new ("scope") { DisplayName = "Scope" }
             }
         }
     };

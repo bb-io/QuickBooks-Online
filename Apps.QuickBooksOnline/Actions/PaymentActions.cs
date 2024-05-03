@@ -15,29 +15,14 @@ public class PaymentActions(InvocationContext invocationContext) : AppInvocable(
     [Action("Get all payments", Description = "Get all payments")]
     public async Task<PaymentsResponse> GetAllPayments()
     {
-        try
+        string sql =
+            "select * from Payment Where Metadata.LastUpdatedTime>'2015-01-16' Order By Metadata.LastUpdatedTime";
+        var response =
+            await Client.ExecuteWithJson<PaymentsWrapper>($"/query?query={sql}", Method.Get, null, Creds);
+        return new PaymentsResponse
         {
-            string sql =
-                "select * from Payment Where Metadata.LastUpdatedTime>'2015-01-16' Order By Metadata.LastUpdatedTime";
-            var response =
-                await Client.ExecuteWithJson<PaymentsWrapper>($"/query?query={sql}", Method.Get, null, Creds);
-            return new PaymentsResponse
-            {
-                Payments = response.QueryResponse.Payment.Select(x => new PaymentResponse(x)).ToList()
-            };
-        }
-        catch (Exception e)
-        {
-            var logger = new Logger();
-            await logger.LogAsync(new
-            {
-                Message = e.Message,
-                StackTrace = e.StackTrace,
-                Type = e.GetType().ToString()
-            });
-            
-            throw;
-        }
+            Payments = response.QueryResponse.Payment.Select(x => new PaymentResponse(x)).ToList()
+        };
     }
 
     [Action("Get payment", Description = "Get payment by ID")]

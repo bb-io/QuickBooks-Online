@@ -50,7 +50,10 @@ public class OAuth2TokenService : BaseInvocable, IOAuth2TokenService
             { "redirect_uri", InvocationContext.UriInfo.AuthorizationCodeRedirectUri.ToString() },
             { "code", code }
         };
-        return await RequestToken(bodyParameters, values["client_id"], values["client_secret"], cancellationToken);
+        
+        string clientId = ApplicationConstants.ClientId;
+        string clientSecret = ApplicationConstants.ClientSecret;
+        return await RequestToken(bodyParameters, clientId, clientSecret, cancellationToken);
     }
 
     public Task RevokeToken(Dictionary<string, string> values)
