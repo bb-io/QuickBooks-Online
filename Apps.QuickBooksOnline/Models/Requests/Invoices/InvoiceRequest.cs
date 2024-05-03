@@ -4,7 +4,7 @@ using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.QuickBooksOnline.Models.Requests.Invoices;
 
-public class InvoiceRequest
+public class InvoiceRequest : SyncTokenRequest
 {
     [Display("Invoice ID"), DataSource(typeof(InvoiceDataHandler))]
     public string InvoiceId { get; set; }

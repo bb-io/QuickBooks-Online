@@ -17,25 +17,11 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
     [Action("Get all invoices", Description = "Get all invoices")]
     public async Task<GetAllInvoicesResponse> GetAllInvoices()
     {
-        try
-        {
-            var sql = "select * from Invoice";
-            var invoicesWrapper =
-                await Client.ExecuteWithJson<QueryInvoicesWrapper>($"/query?query={sql}", Method.Get, null, Creds);
-
-            await Logger.LogAsync(new
-            {
-                invoicesWrapper
-            });
+        var sql = "select * from Invoice";
+        var invoicesWrapper =
+            await Client.ExecuteWithJson<QueryInvoicesWrapper>($"/query?query={sql}", Method.Get, null, Creds);
             
-            return new GetAllInvoicesResponse(invoicesWrapper.QueryResponse.Invoice);
-        }
-        catch (Exception e)
-        {
-            await Logger.LogAsync(e);
-            
-            throw;
-        }
+        return new GetAllInvoicesResponse(invoicesWrapper.QueryResponse.Invoice);
     }
 
     [Action("Get invoice", Description = "Get an invoice")]
@@ -114,6 +100,19 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
         }
         
         var wrapper = await Client.ExecuteWithJson<InvoiceWrapper>(endpoint, Method.Post, null, Creds);
+        return new GetInvoiceResponse(wrapper.Invoice);
+    }
+
+    [Action("Void invoice", Description = "Void an invoice")]
+    public async Task<GetInvoiceResponse> VoidInvoice([ActionParameter] InvoiceRequest request)
+    {
+        var body = new
+        {
+            SyncToken = request.SyncToken ?? "0",
+            Id = request.InvoiceId
+        };
+        
+        var wrapper = await Client.ExecuteWithJson<InvoiceWrapper>($"/invoice/{request.InvoiceId}?operation=void", Method.Post, body, Creds);
         return new GetInvoiceResponse(wrapper.Invoice);
     }
 }
