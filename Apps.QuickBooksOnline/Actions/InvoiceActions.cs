@@ -17,9 +17,20 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
     [Action("Get all invoices", Description = "Get all invoices")]
     public async Task<GetAllInvoicesResponse> GetAllInvoices()
     {
-        var sql = "select * from Invoice";
-        var invoicesWrapper = await Client.ExecuteWithJson<InvoicesWrapper>($"/query?query={sql}", Method.Get, null, Creds);
-        return new GetAllInvoicesResponse(invoicesWrapper.Invoice);
+        try
+        {
+            var sql = "select * from Invoice";
+            var invoicesWrapper =
+                await Client.ExecuteWithJson<InvoicesWrapper>($"/query?query={sql}", Method.Get, null, Creds);
+            return new GetAllInvoicesResponse(invoicesWrapper.Invoice);
+        }
+        catch (Exception e)
+        {
+            var logger = Logger;
+            await logger.LogAsync(e);
+            
+            throw;
+        }
     }
 
     [Action("Get invoice", Description = "Get an invoice")]
@@ -88,7 +99,7 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
         await Client.ExecuteWithJson<object>($"/invoice/{input.InvoiceId}?operation=delete", Method.Post, body, Creds);
     }
 
-    [Action("Send invoice", Description = "Send an invoice")]
+    [Action("Send invoice", Description = "Send an invoice to billing email address or email provided in request")]
     public async Task<GetInvoiceResponse> SendInvoice([ActionParameter] SendInvoiceRequest request)
     {
         var endpoint = $"/invoice/{request.InvoiceId}/send";
