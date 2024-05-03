@@ -43,7 +43,7 @@ public class VendorActions(InvocationContext invocationContext) : AppInvocable(i
 
         var body = new
         {
-            request.DisplayName,
+            DisplayName = request.DisplayName,
             request.Title,
             request.GivenName,
             request.MiddleName,
