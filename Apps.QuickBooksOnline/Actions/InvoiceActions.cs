@@ -2,6 +2,9 @@
 using Apps.QuickBooksOnline.Api.Models.Responses;
 using Apps.QuickBooksOnline.Contracts;
 using Apps.QuickBooksOnline.Models.Dtos;
+using Apps.QuickBooksOnline.Models.Dtos.Invoices;
+using Apps.QuickBooksOnline.Models.Requests.Invoices;
+using Apps.QuickBooksOnline.Models.Responses.Invoices;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Authentication;
@@ -12,8 +15,15 @@ namespace Apps.QuickBooksOnline.Actions;
 [ActionList]
 public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(invocationContext)
 {
+    [Action("Get all invoices", Description = "Get all invoices")]
+    public async Task<GetAllInvoicesResponse> GetAllInvoices()
+    {
+        var invoicesWrapper = await Client.ExecuteWithJson<InvoicesWrapper>("/invoice", Method.Get, null, Creds);
+        return new GetAllInvoicesResponse(invoicesWrapper.Invoice);
+    }
+    
     [Action("Get invoice", Description = "Get an invoice")]
-    public async Task<GetInvoiceResponse> GetInvoice([ActionParameter] GetInvoiceParameters input)
+    public async Task<GetInvoiceResponse> GetInvoice([ActionParameter] InvoiceRequest input)
     {
         var invoiceWrapper = await Client.ExecuteWithJson<InvoiceWrapper>($"/invoice/{input.InvoiceId}", Method.Get, null, Creds);
         return new GetInvoiceResponse(invoiceWrapper.Invoice);

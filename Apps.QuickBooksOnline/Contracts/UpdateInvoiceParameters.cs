@@ -1,12 +1,10 @@
-﻿using Blackbird.Applications.Sdk.Common;
+﻿using Apps.QuickBooksOnline.Models.Requests.Invoices;
+using Blackbird.Applications.Sdk.Common;
 
 namespace Apps.QuickBooksOnline.Contracts
 {
-    public class UpdateInvoiceParameters
+    public class UpdateInvoiceParameters : InvoiceRequest
     {
-        [Display("Invoice ID")]
-        public string InvoiceId { get; set; }
-
         [Display("Due date")]
         public DateTime DueDate { get; set; }
         
