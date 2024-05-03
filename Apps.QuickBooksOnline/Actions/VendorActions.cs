@@ -75,7 +75,7 @@ public class VendorActions(InvocationContext invocationContext) : AppInvocable(i
         }
 
         var response =
-            await Client.ExecuteWithJson<GetVendorDto>("/v3/company/{companyId}/vendor", Method.Post, body, Creds);
+            await Client.ExecuteWithJson<GetVendorDto>("/vendor", Method.Post, body, Creds);
         return new VendorResponse(response.Vendor);
     }
 
