@@ -21,14 +21,14 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
         {
             var sql = "select * from Invoice";
             var invoicesWrapper =
-                await Client.ExecuteWithJson<InvoicesWrapper>($"/query?query={sql}", Method.Get, null, Creds);
+                await Client.ExecuteWithJson<QueryInvoicesWrapper>($"/query?query={sql}", Method.Get, null, Creds);
 
             await Logger.LogAsync(new
             {
                 invoicesWrapper
             });
             
-            return new GetAllInvoicesResponse(invoicesWrapper.Invoice);
+            return new GetAllInvoicesResponse(invoicesWrapper.QueryResponse.Invoice);
         }
         catch (Exception e)
         {
