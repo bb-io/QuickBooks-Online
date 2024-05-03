@@ -7,7 +7,6 @@ using Apps.QuickBooksOnline.Models.Requests.Invoices;
 using Apps.QuickBooksOnline.Models.Responses.Invoices;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
-using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Invocation;
 
 namespace Apps.QuickBooksOnline.Actions;
@@ -18,7 +17,8 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
     [Action("Get all invoices", Description = "Get all invoices")]
     public async Task<GetAllInvoicesResponse> GetAllInvoices()
     {
-        var invoicesWrapper = await Client.ExecuteWithJson<InvoicesWrapper>("/invoice", Method.Get, null, Creds);
+        var sql = "select * from Invoice";
+        var invoicesWrapper = await Client.ExecuteWithJson<InvoicesWrapper>($"/query?query={sql}", Method.Get, null, Creds);
         return new GetAllInvoicesResponse(invoicesWrapper.Invoice);
     }
 
@@ -77,9 +77,7 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
     }
 
     [Action("Delete invoice", Description = "Delete an invoice")]
-    public async Task DeleteInvoice(
-        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] DeleteInvoiceParameters input)
+    public async Task DeleteInvoice([ActionParameter] DeleteInvoiceParameters input)
     {
         var body = new
         {
