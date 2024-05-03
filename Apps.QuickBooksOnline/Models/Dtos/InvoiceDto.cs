@@ -63,6 +63,9 @@ public class InvoiceDto
         
     [JsonProperty("EmailStatus")]
     public string EmailStatus { get; set; }
+    
+    [JsonProperty("BillEmail")]
+    public BillEmail BillEmail { get; set; }
         
     [JsonProperty("BillAddr")]
     public Address BillAddr { get; set; }
@@ -186,4 +189,10 @@ public class CustomField
         
     [JsonProperty("Name")]
     public string Name { get; set; }
+}
+
+public class BillEmail
+{
+    [JsonProperty("Address")]
+    public string Address { get; set; }
 }

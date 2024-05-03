@@ -21,14 +21,15 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
         var invoicesWrapper = await Client.ExecuteWithJson<InvoicesWrapper>("/invoice", Method.Get, null, Creds);
         return new GetAllInvoicesResponse(invoicesWrapper.Invoice);
     }
-    
+
     [Action("Get invoice", Description = "Get an invoice")]
     public async Task<GetInvoiceResponse> GetInvoice([ActionParameter] InvoiceRequest input)
     {
-        var invoiceWrapper = await Client.ExecuteWithJson<InvoiceWrapper>($"/invoice/{input.InvoiceId}", Method.Get, null, Creds);
+        var invoiceWrapper =
+            await Client.ExecuteWithJson<InvoiceWrapper>($"/invoice/{input.InvoiceId}", Method.Get, null, Creds);
         return new GetInvoiceResponse(invoiceWrapper.Invoice);
     }
-    
+
     [Action("Create invoice", Description = "Create an invoice")]
     public async Task<GetInvoiceResponse> CreateInvoice([ActionParameter] CreateInvoiceParameters input)
     {
@@ -55,7 +56,7 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
                 value = input.CustomerId
             }
         };
-        
+
         var invoiceWrapper = await Client.ExecuteWithJson<InvoiceWrapper>("/invoice", Method.Post, body, Creds);
         return new GetInvoiceResponse(invoiceWrapper.Invoice);
     }
@@ -70,11 +71,11 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
             sparse = true,
             DueDate = input.DueDate.ToString("yyyy-MM-dd")
         };
-        
+
         var invoiceWrapper = await Client.ExecuteWithJson<InvoiceWrapper>("/invoice", Method.Post, body, Creds);
         return new GetInvoiceResponse(invoiceWrapper.Invoice);
     }
-    
+
     [Action("Delete invoice", Description = "Delete an invoice")]
     public async Task DeleteInvoice(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
@@ -85,7 +86,20 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
             SyncToken = input.SyncToken ?? "0",
             Id = input.InvoiceId
         };
-        
+
         await Client.ExecuteWithJson<object>($"/invoice/{input.InvoiceId}?operation=delete", Method.Post, body, Creds);
+    }
+
+    [Action("Send invoice", Description = "Send an invoice")]
+    public async Task<GetInvoiceResponse> SendInvoice([ActionParameter] SendInvoiceRequest request)
+    {
+        var endpoint = $"/invoice/{request.InvoiceId}/send";
+        if (!string.IsNullOrWhiteSpace(request.Email))
+        {
+            endpoint += $"?sendTo={request.Email}";
+        }
+        
+        var wrapper = await Client.ExecuteWithJson<InvoiceWrapper>(endpoint, Method.Post, null, Creds);
+        return new GetInvoiceResponse(wrapper.Invoice);
     }
 }

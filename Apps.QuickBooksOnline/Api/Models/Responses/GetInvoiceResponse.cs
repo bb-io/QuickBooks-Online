@@ -23,6 +23,7 @@ public class GetInvoiceResponse
         ShipFromAddressLine1 = invoice.ShipAddr.Line1;
         PrintStatus = invoice.PrintStatus;
         EmailStatus = invoice.EmailStatus;
+        BillEmail = invoice.BillEmail.Address;
         Balance = invoice.Balance;
         SyncToken = invoice.SyncToken;
     }
@@ -46,7 +47,10 @@ public class GetInvoiceResponse
 
     [Display("Email status")]
     public string EmailStatus { get; set; }
-
+    
+    [Display("Bill email address")]
+    public string BillEmail { get; set; }
+    
     public double Balance { get; set; }
 
     [Display("Sync token")]
