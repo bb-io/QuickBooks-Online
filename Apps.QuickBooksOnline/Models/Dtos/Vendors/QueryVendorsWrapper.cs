@@ -11,6 +11,6 @@ public class QueryVendorsWrapper
 
 public class VendorsWrapper
 {
-    [JsonProperty("Invoice")]
+    [JsonProperty("Vendor")]
     public List<VendorDto> Vendor { get; set; }
 }
