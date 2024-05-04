@@ -30,6 +30,8 @@ public class VendorDto
     public bool Active { get; set; }
     
     public PhoneDto PrimaryPhone { get; set; }
+
+    public PrimaryEmailAddress PrimaryEmailAddr { get; set; }
     
     public PhoneDto Mobile { get; set; }
     
@@ -102,3 +104,7 @@ public class TermRefDto
     public string value { get; set; }
 }
 
+public class PrimaryEmailAddress
+{
+    public string Address { get; set; }
+}

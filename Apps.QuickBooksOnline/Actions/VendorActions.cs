@@ -28,6 +28,49 @@ public class VendorActions(InvocationContext invocationContext) : AppInvocable(i
         return new VendorResponse(dto.Vendor);
     }
 
+    [Action("Update vendor",
+        Description =
+            "Updates an existing vendor with provided details.")]
+    public async Task<VendorResponse> UpdateVendor([ActionParameter] UpdateVendorRequest request)
+    {
+        var dto = await Client.ExecuteWithJson<GetVendorDto>($"/vendor/{request.VendorId}", Method.Get, null, Creds);
+        var body = new Dictionary<string, object>();
+
+        body.Add("DisplayName", request.DisplayName ?? dto.Vendor.DisplayName);
+        body.Add("GivenName", request.GivenName ?? dto.Vendor.GivenName);
+        body.Add("FamilyName", request.FamilyName ?? dto.Vendor.FamilyName);
+        body.Add("Suffix", request.Suffix ?? dto.Vendor.Suffix);
+        body.Add("Title", request.Title ?? dto.Vendor.Title);
+        body.Add("PrimaryEmailAddr", request.PrimaryEmailAddr ?? dto.Vendor.PrimaryEmailAddr.Address);
+        body.Add("WebAddr", request.WebAddr ?? dto.Vendor.WebAddr.URI);
+        body.Add("PrimaryPhone", request.PrimaryPhone ?? dto.Vendor.PrimaryPhone.FreeFormNumber);
+        body.Add("Mobile", request.Mobile ?? dto.Vendor.Mobile.FreeFormNumber);
+        body.Add("TaxIdentifier", request.TaxIdentifier ?? dto.Vendor.TaxIdentifier);
+        body.Add("AcctNum", request.AcctNum ?? dto.Vendor.AcctNum);
+        body.Add("CompanyName", request.CompanyName ?? dto.Vendor.CompanyName);
+        body.Add("PrintOnCheckName", request.PrintOnCheckName ?? dto.Vendor.PrintOnCheckName);
+        
+        if (request.AddressLine1 != null || request.AddressLine2 != null || request.AddressLine3 != null ||
+            request.City != null || request.PostalCode != null || request.Country != null || request.StateCode != null)
+        {
+            var address = new Dictionary<string, object>();
+            AddPropertyIfNotNull(address, "Line1", request.AddressLine1 ?? dto.Vendor.BillAddr.Line1);
+            AddPropertyIfNotNull(address, "Line2", request.AddressLine2 ?? dto.Vendor.BillAddr.Line2);
+            AddPropertyIfNotNull(address, "Line3", request.AddressLine3 ?? dto.Vendor.BillAddr.Line3);
+            AddPropertyIfNotNull(address, "City", request.City ?? dto.Vendor.BillAddr.City);
+            AddPropertyIfNotNull(address, "PostalCode", request.PostalCode ?? dto.Vendor.BillAddr.PostalCode);
+            AddPropertyIfNotNull(address, "Country", request.Country ?? dto.Vendor.Country);
+            AddPropertyIfNotNull(address, "CountrySubDivisionCode", request.StateCode ?? dto.Vendor.CountrySubDivisionCode);
+
+            body.Add("BillAddr", address);
+        }
+        
+        var response =
+            await Client.ExecuteWithJson<GetVendorDto>("/vendor", Method.Post, body, Creds);
+        
+        return new VendorResponse(response.Vendor);
+    }
+
     [Action("Create vendor",
         Description =
             "Registers a new vendor with provided details, excluding any null fields to avoid validation errors.")]
