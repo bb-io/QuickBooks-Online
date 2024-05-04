@@ -34,41 +34,56 @@ public class VendorActions(InvocationContext invocationContext) : AppInvocable(i
     public async Task<VendorResponse> UpdateVendor([ActionParameter] UpdateVendorRequest request)
     {
         var dto = await Client.ExecuteWithJson<GetVendorDto>($"/vendor/{request.VendorId}", Method.Get, null, Creds);
-        var body = new Dictionary<string, object>();
 
-        body.Add("Id", request.VendorId);
-        body.Add("DisplayName", request.DisplayName ?? dto.Vendor.DisplayName);
-        body.Add("GivenName", request.GivenName ?? dto.Vendor.GivenName);
-        body.Add("FamilyName", request.FamilyName ?? dto.Vendor.FamilyName);
-        body.Add("Suffix", request.Suffix ?? dto.Vendor.Suffix);
-        body.Add("Title", request.Title ?? dto.Vendor.Title);
-        body.Add("PrimaryEmailAddr", request.PrimaryEmailAddr ?? dto.Vendor.PrimaryEmailAddr?.Address ?? string.Empty);
-        body.Add("WebAddr", request.WebAddr ?? dto.Vendor.WebAddr?.URI ?? string.Empty);
-        body.Add("PrimaryPhone", request.PrimaryPhone ?? dto.Vendor.PrimaryPhone?.FreeFormNumber ?? string.Empty);
-        body.Add("Mobile", request.Mobile ?? dto.Vendor.Mobile?.FreeFormNumber ?? string.Empty);
-        body.Add("TaxIdentifier", request.TaxIdentifier ?? dto.Vendor.TaxIdentifier);
-        body.Add("AcctNum", request.AcctNum ?? dto.Vendor.AcctNum);
-        body.Add("CompanyName", request.CompanyName ?? dto.Vendor.CompanyName);
-        body.Add("PrintOnCheckName", request.PrintOnCheckName ?? dto.Vendor.PrintOnCheckName);
-        
-        if (request.AddressLine1 != null || request.AddressLine2 != null || request.AddressLine3 != null ||
-            request.City != null || request.PostalCode != null || request.Country != null || request.StateCode != null)
+        var body = new
         {
-            var address = new Dictionary<string, object>();
-            AddPropertyIfNotNull(address, "Line1", request.AddressLine1 ?? dto.Vendor.BillAddr.Line1);
-            AddPropertyIfNotNull(address, "Line2", request.AddressLine2 ?? dto.Vendor.BillAddr.Line2);
-            AddPropertyIfNotNull(address, "Line3", request.AddressLine3 ?? dto.Vendor.BillAddr.Line3);
-            AddPropertyIfNotNull(address, "City", request.City ?? dto.Vendor.BillAddr.City);
-            AddPropertyIfNotNull(address, "PostalCode", request.PostalCode ?? dto.Vendor.BillAddr.PostalCode);
-            AddPropertyIfNotNull(address, "Country", request.Country ?? dto.Vendor.Country);
-            AddPropertyIfNotNull(address, "CountrySubDivisionCode", request.StateCode ?? dto.Vendor.CountrySubDivisionCode);
+            Id = request.VendorId,
+            DisplayName = request.DisplayName ?? dto.Vendor.DisplayName,
+            Title = request.Title ?? dto.Vendor.Title,
+            PrimaryEmailAddress = new
+            {
+                Address = request.PrimaryEmailAddr ?? dto.Vendor.PrimaryEmailAddr.Address
+            },
+            WebAddr = new
+            {
+                URI = request.WebAddr ?? dto.Vendor.WebAddr.URI
+            },
+            PrimaryPhone = new
+            {
+                FreeFormNumber = request.PrimaryPhone ?? dto.Vendor.PrimaryPhone.FreeFormNumber
+            },
+            TaxIdentifier = request.TaxIdentifier ?? dto.Vendor.TaxIdentifier,
+            AcctNum = request.AcctNum ?? dto.Vendor.AcctNum,
+            CompanyName = request.CompanyName ?? dto.Vendor.CompanyName,
+            PrintOnCheckName = request.PrintOnCheckName ?? dto.Vendor.PrintOnCheckName,
+            Country = request.Country ?? dto.Vendor.Country,
+            StateCode = request.StateCode ?? dto.Vendor.BillAddr.CountrySubDivisionCode,
+            SyncToken = dto.Vendor.SyncToken,
+            Active = dto.Vendor.Active,
+            Vendor1099 = dto.Vendor.Vendor1099,
+            Domain = dto.Vendor.Domain,
+            Sparse = dto.Vendor.Sparse,
+            MetaData = new
+            {
+                CreateTime = dto.Vendor.MetaData.CreateTime,
+                LastUpdatedTime = dto.Vendor.MetaData.LastUpdatedTime
+            },
+            GivenName = request.GivenName ?? dto.Vendor.GivenName,
+            BillAddr = new
+            {
+                Id = dto.Vendor.BillAddr.Id,
+                Line1 = request.AddressLine1 ?? dto.Vendor.BillAddr.Line1,
+                Line2 = request.AddressLine2 ?? dto.Vendor.BillAddr.Line2,
+                Line3 = request.AddressLine3 ?? dto.Vendor.BillAddr.Line3,
+                City = request.City ?? dto.Vendor.BillAddr.City,
+                PostalCode = request.PostalCode ?? dto.Vendor.BillAddr.PostalCode,
+                CountrySubDivisionCode = request.StateCode ?? dto.Vendor.BillAddr.CountrySubDivisionCode
+            }
+        };
 
-            body.Add("BillAddr", address);
-        }
-        
         var response =
             await Client.ExecuteWithJson<GetVendorDto>("/vendor", Method.Post, body, Creds);
-        
+
         return new VendorResponse(response.Vendor);
     }
 
@@ -83,7 +98,7 @@ public class VendorActions(InvocationContext invocationContext) : AppInvocable(i
         }
 
         var body = new Dictionary<string, object>
-        { 
+        {
             { "DisplayName", request.DisplayName }
         };
 
