@@ -42,15 +42,15 @@ public class VendorActions(InvocationContext invocationContext) : AppInvocable(i
             Title = request.Title ?? dto.Vendor.Title,
             PrimaryEmailAddress = new
             {
-                Address = request.PrimaryEmailAddr ?? dto.Vendor.PrimaryEmailAddr.Address
+                Address = request.PrimaryEmailAddr ?? dto.Vendor.PrimaryEmailAddr?.Address ?? string.Empty
             },
             WebAddr = new
             {
-                URI = request.WebAddr ?? dto.Vendor.WebAddr.URI
+                URI = request.WebAddr ?? dto.Vendor.WebAddr?.URI ?? string.Empty
             },
             PrimaryPhone = new
             {
-                FreeFormNumber = request.PrimaryPhone ?? dto.Vendor.PrimaryPhone.FreeFormNumber
+                FreeFormNumber = request.PrimaryPhone ?? dto.Vendor.PrimaryPhone?.FreeFormNumber ?? string.Empty
             },
             TaxIdentifier = request.TaxIdentifier ?? dto.Vendor.TaxIdentifier,
             AcctNum = request.AcctNum ?? dto.Vendor.AcctNum,
@@ -72,13 +72,16 @@ public class VendorActions(InvocationContext invocationContext) : AppInvocable(i
             BillAddr = new
             {
                 Id = dto.Vendor.BillAddr.Id,
-                Line1 = request.AddressLine1 ?? dto.Vendor.BillAddr.Line1,
-                Line2 = request.AddressLine2 ?? dto.Vendor.BillAddr.Line2,
-                Line3 = request.AddressLine3 ?? dto.Vendor.BillAddr.Line3,
-                City = request.City ?? dto.Vendor.BillAddr.City,
-                PostalCode = request.PostalCode ?? dto.Vendor.BillAddr.PostalCode,
-                CountrySubDivisionCode = request.StateCode ?? dto.Vendor.BillAddr.CountrySubDivisionCode
-            }
+                Line1 = request.AddressLine1 ?? dto.Vendor.BillAddr?.Line1 ?? string.Empty,
+                City = request.City ?? dto.Vendor.BillAddr?.City ?? string.Empty,
+                PostalCode = request.PostalCode ?? dto.Vendor.BillAddr?.PostalCode ?? string.Empty,
+                CountrySubDivisionCode = request.StateCode ?? dto.Vendor.BillAddr?.CountrySubDivisionCode ?? string.Empty,
+                Lat = dto.Vendor.BillAddr?.Lat ?? "0",
+                Long = dto.Vendor.BillAddr?.Long ?? "0"
+            },
+            Balance = dto.Vendor.Balance,
+            BillRate = dto.Vendor.BillRate,
+            CurrencyRef = dto.Vendor.CurrencyRef,
         };
 
         var response =

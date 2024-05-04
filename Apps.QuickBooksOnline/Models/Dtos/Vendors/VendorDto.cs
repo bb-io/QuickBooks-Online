@@ -6,6 +6,8 @@ namespace Apps.QuickBooksOnline.Models.Dtos.Vendors;
 public class VendorDto
 {
     public double Balance { get; set; }
+
+    public double BillRate { get; set; }
     
     public bool Vendor1099 { get; set; }
     
