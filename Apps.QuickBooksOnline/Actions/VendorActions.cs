@@ -42,10 +42,10 @@ public class VendorActions(InvocationContext invocationContext) : AppInvocable(i
         body.Add("FamilyName", request.FamilyName ?? dto.Vendor.FamilyName);
         body.Add("Suffix", request.Suffix ?? dto.Vendor.Suffix);
         body.Add("Title", request.Title ?? dto.Vendor.Title);
-        body.Add("PrimaryEmailAddr", request.PrimaryEmailAddr ?? dto.Vendor.PrimaryEmailAddr.Address);
-        body.Add("WebAddr", request.WebAddr ?? dto.Vendor.WebAddr.URI);
-        body.Add("PrimaryPhone", request.PrimaryPhone ?? dto.Vendor.PrimaryPhone.FreeFormNumber);
-        body.Add("Mobile", request.Mobile ?? dto.Vendor.Mobile.FreeFormNumber);
+        body.Add("PrimaryEmailAddr", request.PrimaryEmailAddr ?? dto.Vendor.PrimaryEmailAddr?.Address ?? string.Empty);
+        body.Add("WebAddr", request.WebAddr ?? dto.Vendor.WebAddr?.URI ?? string.Empty);
+        body.Add("PrimaryPhone", request.PrimaryPhone ?? dto.Vendor.PrimaryPhone?.FreeFormNumber ?? string.Empty);
+        body.Add("Mobile", request.Mobile ?? dto.Vendor.Mobile?.FreeFormNumber ?? string.Empty);
         body.Add("TaxIdentifier", request.TaxIdentifier ?? dto.Vendor.TaxIdentifier);
         body.Add("AcctNum", request.AcctNum ?? dto.Vendor.AcctNum);
         body.Add("CompanyName", request.CompanyName ?? dto.Vendor.CompanyName);
@@ -83,7 +83,7 @@ public class VendorActions(InvocationContext invocationContext) : AppInvocable(i
         }
 
         var body = new Dictionary<string, object>
-        {
+        { 
             { "DisplayName", request.DisplayName }
         };
 
