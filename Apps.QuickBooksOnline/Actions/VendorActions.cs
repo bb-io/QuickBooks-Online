@@ -36,6 +36,7 @@ public class VendorActions(InvocationContext invocationContext) : AppInvocable(i
         var dto = await Client.ExecuteWithJson<GetVendorDto>($"/vendor/{request.VendorId}", Method.Get, null, Creds);
         var body = new Dictionary<string, object>();
 
+        body.Add("Id", request.VendorId);
         body.Add("DisplayName", request.DisplayName ?? dto.Vendor.DisplayName);
         body.Add("GivenName", request.GivenName ?? dto.Vendor.GivenName);
         body.Add("FamilyName", request.FamilyName ?? dto.Vendor.FamilyName);
