@@ -34,58 +34,104 @@ public class VendorActions(InvocationContext invocationContext) : AppInvocable(i
     public async Task<VendorResponse> UpdateVendor([ActionParameter] UpdateVendorRequest request)
     {
         var dto = await Client.ExecuteWithJson<GetVendorDto>($"/vendor/{request.VendorId}", Method.Get, null, Creds);
-
-        var body = new
+        
+        if(dto.Vendor == null)
         {
-            Id = request.VendorId,
-            DisplayName = request.DisplayName ?? dto.Vendor.DisplayName,
-            Title = request.Title ?? dto.Vendor.Title,
-            PrimaryEmailAddress = new
-            {
-                Address = request.PrimaryEmailAddr ?? dto.Vendor.PrimaryEmailAddr?.Address ?? string.Empty
-            },
-            WebAddr = new
-            {
-                URI = request.WebAddr ?? dto.Vendor.WebAddr?.URI ?? string.Empty
-            },
-            PrimaryPhone = new
-            {
-                FreeFormNumber = request.PrimaryPhone ?? dto.Vendor.PrimaryPhone?.FreeFormNumber ?? string.Empty
-            },
-            TaxIdentifier = request.TaxIdentifier ?? dto.Vendor.TaxIdentifier,
-            AcctNum = request.AcctNum ?? dto.Vendor.AcctNum,
-            CompanyName = request.CompanyName ?? dto.Vendor.CompanyName,
-            PrintOnCheckName = request.PrintOnCheckName ?? dto.Vendor.PrintOnCheckName,
-            Country = request.Country ?? dto.Vendor.Country,
-            StateCode = request.StateCode ?? dto.Vendor.BillAddr.CountrySubDivisionCode,
-            SyncToken = dto.Vendor.SyncToken,
-            Active = dto.Vendor.Active,
-            Vendor1099 = dto.Vendor.Vendor1099,
-            Domain = dto.Vendor.Domain,
-            Sparse = dto.Vendor.Sparse,
-            MetaData = new
-            {
-                CreateTime = dto.Vendor.MetaData.CreateTime,
-                LastUpdatedTime = dto.Vendor.MetaData.LastUpdatedTime
-            },
-            GivenName = request.GivenName ?? dto.Vendor.GivenName,
-            BillAddr = new
-            {
-                Id = dto.Vendor.BillAddr.Id,
-                Line1 = request.AddressLine1 ?? dto.Vendor.BillAddr?.Line1 ?? string.Empty,
-                City = request.City ?? dto.Vendor.BillAddr?.City ?? string.Empty,
-                PostalCode = request.PostalCode ?? dto.Vendor.BillAddr?.PostalCode ?? string.Empty,
-                CountrySubDivisionCode = request.StateCode ?? dto.Vendor.BillAddr?.CountrySubDivisionCode ?? string.Empty,
-                Lat = dto.Vendor.BillAddr?.Lat ?? "0",
-                Long = dto.Vendor.BillAddr?.Long ?? "0"
-            },
-            Balance = dto.Vendor.Balance,
-            BillRate = dto.Vendor.BillRate,
-            CurrencyRef = dto.Vendor.CurrencyRef,
-        };
+            throw new Exception("Vendor not found.");
+        }
+        
+        if(request.DisplayName != null)
+        {
+            dto.Vendor.DisplayName = request.DisplayName;
+        }
+        
+        if(request.Title != null)
+        {
+            dto.Vendor.Title = request.Title;
+        }
+        
+        if(request.GivenName != null)
+        {
+            dto.Vendor.GivenName = request.GivenName;
+        }
+        
+        if(request.FamilyName != null)
+        {
+            dto.Vendor.FamilyName = request.FamilyName;
+        }
+        
+        if(request.Suffix != null)
+        {
+            dto.Vendor.Suffix = request.Suffix;
+        }
+        
+        if(request.PrimaryEmailAddr != null)
+        {
+            dto.Vendor.PrimaryEmailAddr = new PrimaryEmailAddress { Address = request.PrimaryEmailAddr };
+        }
+        
+        if(request.WebAddr != null)
+        {
+            dto.Vendor.WebAddr = new WebAddrDto { URI = request.WebAddr };
+        }
+        
+        if(request.PrimaryPhone != null)
+        {
+            dto.Vendor.PrimaryPhone = new PhoneDto { FreeFormNumber = request.PrimaryPhone };
+        }
+        
+        if(request.Mobile != null)
+        {
+            dto.Vendor.Mobile = new PhoneDto { FreeFormNumber = request.Mobile };
+        }
+        
+        if(request.TaxIdentifier != null)
+        {
+            dto.Vendor.TaxIdentifier = request.TaxIdentifier;
+        }
+        
+        if(request.AcctNum != null)
+        {
+            dto.Vendor.AcctNum = request.AcctNum;
+        }
+        
+        if(request.CompanyName != null)
+        {
+            dto.Vendor.CompanyName = request.CompanyName;
+        }
+        
+        if(request.PrintOnCheckName != null)
+        {
+            dto.Vendor.PrintOnCheckName = request.PrintOnCheckName;
+        }
 
+        if (request.AddressLine1 != null)
+        {
+            dto.Vendor.BillAddr.Line1 = request.AddressLine1;
+        }
+        
+        if(request.City != null)
+        {
+            dto.Vendor.BillAddr.City = request.City;
+        }
+        
+        if(request.PostalCode != null)
+        {
+            dto.Vendor.BillAddr.PostalCode = request.PostalCode;
+        }
+        
+        if(request.Country != null)
+        {
+            dto.Vendor.Country = request.Country;
+        }
+        
+        if(request.StateCode != null)
+        {
+            dto.Vendor.BillAddr.CountrySubDivisionCode = request.StateCode;
+        }
+        
         var response =
-            await Client.ExecuteWithJson<GetVendorDto>("/vendor", Method.Post, body, Creds);
+            await Client.ExecuteWithJson<GetVendorDto>("/vendor", Method.Post, dto, Creds);
 
         return new VendorResponse(response.Vendor);
     }

@@ -51,12 +51,6 @@ public class UpdateVendorRequest
     [Display("Address line 1")]
     public string? AddressLine1 { get; set; }
 
-    [Display("Address line 2")]
-    public string? AddressLine2 { get; set; }
-
-    [Display("Address line 3")]
-    public string? AddressLine3 { get; set; }
-
     [Display("City")]
     public string? City { get; set; }
 
