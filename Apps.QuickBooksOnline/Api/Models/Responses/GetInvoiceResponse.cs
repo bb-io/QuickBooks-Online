@@ -10,7 +10,7 @@ public class GetInvoiceResponse
         InvoiceId = invoice?.Id;
         CustomerId = invoice?.CustomerRef?.Value;
         CustomerName = invoice?.CustomerRef?.Name;
-        Lines = invoice?.Line?.Select(l => new LineDto
+        Lines = invoice?.Line?.Select(l => new LineResponse
         {
             LineId = l?.Id,
             LineNumber = l?.LineNum ?? 0,
@@ -18,7 +18,7 @@ public class GetInvoiceResponse
             DetailType = l?.DetailType,
             ItemName = l?.SalesItemLineDetail?.ItemRef?.Name,
             ItemId = l?.SalesItemLineDetail?.ItemRef?.Value
-        }) ?? Enumerable.Empty<LineDto>();
+        }) ?? Enumerable.Empty<LineResponse>();
         ShipFromAddressId = invoice?.ShipAddr?.Id;
         ShipFromAddressLine1 = invoice?.ShipAddr?.Line1;
         PrintStatus = invoice?.PrintStatus;
@@ -26,6 +26,11 @@ public class GetInvoiceResponse
         BillEmail = invoice?.BillEmail?.Address;
         Balance = invoice?.Balance ?? 0;
         SyncToken = invoice?.SyncToken;
+        ClassReference = new ClassResponse
+        {
+            ClassId = invoice?.ClassRef?.Value,
+            ClassName = invoice?.ClassRef?.Name
+        };
     }
 
     [Display("Customer ID")]
@@ -34,7 +39,7 @@ public class GetInvoiceResponse
     [Display("Customer name")]
     public string CustomerName { get; set; }
 
-    public IEnumerable<LineDto> Lines { get; set; }
+    public IEnumerable<LineResponse> Lines { get; set; }
 
     [Display("Ship from address ID")]
     public string ShipFromAddressId { get; set; }
@@ -58,10 +63,13 @@ public class GetInvoiceResponse
 
     [Display("Invoice ID")]
     public string InvoiceId { get; set; }
+
+    [Display("Class reference")]
+    public ClassResponse ClassReference { get; set; }
 }
 
 
-public class LineDto
+public class LineResponse
 {
     [Display("Line ID")]
     public string LineId { get; set; }
@@ -79,4 +87,13 @@ public class LineDto
 
     [Display("Item ID")]
     public string ItemId { get; set; }
+}
+
+public class ClassResponse
+{
+    [Display("Class ID")]
+    public string? ClassId { get; set; }
+
+    [Display("Class name")]
+    public string? ClassName { get; set; }
 }

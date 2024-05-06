@@ -75,6 +75,9 @@ public class InvoiceDto
         
     [JsonProperty("CustomField")]
     public CustomField[] CustomField { get; set; }
+
+    [JsonProperty("ClassRef")]
+    public ClassRef ClassRef { get; set; }
         
     [JsonProperty("Id")]
     public string Id { get; set; }
@@ -82,7 +85,16 @@ public class InvoiceDto
     [JsonProperty("time")]
     public string Time { get; set; }
 }
-    
+
+public class ClassRef
+{
+    [JsonProperty("value")] 
+    public string Value { get; set; }
+
+    [JsonProperty("name")] 
+    public string Name { get; set; }
+}
+
 public class ProjectRef
 {
     [JsonProperty("value")]
