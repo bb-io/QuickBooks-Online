@@ -5,6 +5,11 @@ namespace Apps.QuickBooksOnline.Models.Responses.Vendors;
 public class GetAllVendorsResponse
 {
     public List<VendorResponse> Vendors { get; set; }
+
+    public GetAllVendorsResponse()
+    {
+        Vendors = new List<VendorResponse>();
+    }
     
     public GetAllVendorsResponse(List<VendorDto> vendors)
     {

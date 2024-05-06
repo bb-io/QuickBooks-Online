@@ -1,6 +1,5 @@
 ﻿using RestSharp;
 using Apps.QuickBooksOnline.Models.Dtos.Payments;
-using Apps.QuickBooksOnline.Models.Requests;
 using Apps.QuickBooksOnline.Models.Requests.Payments;
 using Apps.QuickBooksOnline.Models.Responses;
 using Blackbird.Applications.Sdk.Common;

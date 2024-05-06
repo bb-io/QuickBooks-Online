@@ -8,6 +8,7 @@ using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using RestSharp;
+using UpdateCustomerRequest = Apps.QuickBooksOnline.Contracts.UpdateCustomerRequest;
 
 namespace Apps.QuickBooksOnline.Actions;
 
@@ -26,7 +27,7 @@ public class CustomerActions(InvocationContext invocationContext) : AppInvocable
     }
     
     [Action("Get customer", Description = "Get a customer")]
-    public async Task<GetCustomerResponse> GetCustomer([ActionParameter] GetCustomerParameters input)
+    public async Task<GetCustomerResponse> GetCustomer([ActionParameter] CustomerRequest input)
     {
         var wrapper = await Client.ExecuteWithJson<CustomerWrapper>($"/customer/{input.CustomerId}", Method.Get, null, Creds);
         return new GetCustomerResponse(wrapper.Customer);
@@ -45,9 +46,9 @@ public class CustomerActions(InvocationContext invocationContext) : AppInvocable
     }
 
     [Action("Update customer", Description = "Update a customer")]
-    public async Task<GetCustomerResponse> UpdateCustomer([ActionParameter] UpdateCustomerParameters input)
+    public async Task<GetCustomerResponse> UpdateCustomer([ActionParameter] UpdateCustomerRequest input)
     {
-        var body = new UpdateCustomerRequest
+        var body = new Clients.Models.Requests.UpdateCustomerRequest
         {
             DisplayName = input.MiddleName,
             CustomerId = input.CustomerId,

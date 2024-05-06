@@ -14,6 +14,10 @@ public class ApplicationConstants
     public const string ProductionClientSecret = "vFhvVGa0UEoXpMR8y9Q2dpe66Wch38P0dXYsc2bs"; // TODO: replace this creds with appropriate values
 
     public const string Scope = "com.intuit.quickbooks.accounting";
+    
+    public const string AppName = "quickbooks";
+    
+    public const string BlackbirdToken = "#{DROPBOX_BLACKBIRD_TOKEN}#";
 
     public static Creds GetCreds(Dictionary<string, string> dictionary)
     {

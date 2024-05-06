@@ -2,7 +2,7 @@
 
 namespace Apps.QuickBooksOnline.Contracts
 {
-    public class UpdateCustomerParameters : GetCustomerParameters
+    public class UpdateCustomerRequest : CustomerRequest
     {
         [Display("Middle name")]
         public string MiddleName { get; set; }
