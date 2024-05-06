@@ -35,11 +35,6 @@ public class VendorActions(InvocationContext invocationContext) : AppInvocable(i
     {
         var dto = await Client.ExecuteWithJson<GetVendorDto>($"/vendor/{request.VendorId}", Method.Get, null, Creds);
         
-        if(dto.Vendor == null)
-        {
-            throw new Exception("Vendor not found.");
-        }
-        
         if(request.DisplayName != null)
         {
             dto.Vendor.DisplayName = request.DisplayName;
