@@ -17,7 +17,7 @@ public class ApplicationConstants
     
     public const string AppName = "quickbooks";
     
-    public const string BlackbirdToken = "#{DROPBOX_BLACKBIRD_TOKEN}#";
+    public const string BlackbirdToken = "#{QUICKBOOKS_BLACKBIRD_TOKEN}#";
 
     public static Creds GetCreds(Dictionary<string, string> dictionary)
     {
