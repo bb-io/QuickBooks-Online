@@ -2,7 +2,7 @@
 
 namespace Apps.QuickBooksOnline.Contracts
 {
-    public class CreateCustomerParameters
+    public class CreateCustomerRequest
     {
         [Display("Middle name")]
         public string MiddleName { get; set; }
