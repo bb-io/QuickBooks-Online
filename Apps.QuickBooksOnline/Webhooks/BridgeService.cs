@@ -11,17 +11,27 @@ public class BridgeService(string bridgeServiceUrl)
     
     public async Task Subscribe(string url, string id, string subscriptionEvent)
     {
+        var logger = new Logger();
+        
         try
         {
             var bridgeSubscriptionRequest =
                 CreateBridgeRequest($"/webhooks/{AppName}/{id}/{subscriptionEvent}", Method.Post);
             bridgeSubscriptionRequest.AddBody(url);
+            
+            await logger.LogAsync(new
+            {
+                BridgeServiceUrl = bridgeServiceUrl,
+                AppName = AppName,
+                Id = id,
+                SubscriptionEvent = subscriptionEvent,
+                Url = url
+            });
 
             await _bridgeClient.ExecuteAsync(bridgeSubscriptionRequest);
         }
         catch (Exception e)
         {
-            var logger = new Logger();
             await logger.LogAsync(new
             {
                 BridgeServiceUrl = bridgeServiceUrl,
