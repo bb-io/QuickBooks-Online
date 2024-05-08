@@ -12,11 +12,6 @@ public abstract class WebhookHandlerBase : AppInvocable, IWebhookEventHandler
 
     protected WebhookHandlerBase(InvocationContext invocationContext) : base(invocationContext)
     {
-        Logger.LogAsync(new
-        {
-            RealmId = Creds.Get(CredNames.CompanyId).Value,
-            From = "WebhookHandlerBase"
-        }).Wait();
         _realmId = Creds.Get(CredNames.CompanyId).Value;
     }
 
@@ -26,16 +21,6 @@ public abstract class WebhookHandlerBase : AppInvocable, IWebhookEventHandler
     public async Task SubscribeAsync(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProvider, Dictionary<string, string> values)
     {        
         var bridgeService = new BridgeService(InvocationContext.UriInfo.BridgeServiceUrl.ToString());
-        await Logger.LogAsync(new
-        {
-            BridgeServiceUrl = InvocationContext.UriInfo.BridgeServiceUrl.ToString(),
-            AppName = ApplicationConstants.AppName,
-            Id = _realmId,
-            SubscriptionEvent = SubscriptionEvent,
-            Url = values["payloadUrl"],
-            From = "SubscribeAsync - WebhookHandlerBase"
-        });
-        
         await bridgeService.Subscribe(values["payloadUrl"], _realmId, SubscriptionEvent);
     }
 
