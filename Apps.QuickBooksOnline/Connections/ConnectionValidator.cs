@@ -1,4 +1,5 @@
 ﻿using Apps.QuickBooksOnline.Actions;
+using Apps.QuickBooksOnline.Models.Requests.Customers;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Connections;
 using Blackbird.Applications.Sdk.Common.Invocation;
@@ -13,7 +14,7 @@ namespace Apps.QuickBooksOnline.Connections
             try
             {
                 var customerActions = new CustomerActions(new InvocationContext() { AuthenticationCredentialsProviders = authProviders });
-                await customerActions.GetAllCustomers();
+                await customerActions.GetAllCustomers(new GetCustomerFilterRequest());
                 
                 return new ConnectionValidationResponse
                 {

@@ -1,4 +1,5 @@
 ﻿using Apps.QuickBooksOnline.Actions;
+using Apps.QuickBooksOnline.Models.Requests.Customers;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 using Blackbird.Applications.Sdk.Common.Invocation;
 
@@ -12,7 +13,7 @@ public class CustomerDataSource(InvocationContext invocationContext)
     {
         var customerActions = new CustomerActions(InvocationContext);
         
-        var customersResponse = await customerActions.GetAllCustomers();
+        var customersResponse = await customerActions.GetAllCustomers(new GetCustomerFilterRequest());
         
         return customersResponse.Customers
             .Where(x => context.SearchString == null ||

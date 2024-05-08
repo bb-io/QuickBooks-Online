@@ -3,6 +3,7 @@ using Apps.QuickBooksOnline.Clients.Models.Requests;
 using Apps.QuickBooksOnline.Contracts;
 using Apps.QuickBooksOnline.Dtos;
 using Apps.QuickBooksOnline.Models.Dtos.Customers;
+using Apps.QuickBooksOnline.Models.Requests.Customers;
 using Apps.QuickBooksOnline.Models.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
@@ -16,9 +17,21 @@ namespace Apps.QuickBooksOnline.Actions;
 public class CustomerActions(InvocationContext invocationContext) : AppInvocable(invocationContext)
 {
     [Action("Get all customers", Description = "Get all customers")]
-    public async Task<GetCustomersResponse> GetAllCustomers()
+    public async Task<GetCustomersResponse> GetAllCustomers([ActionParameter] GetCustomerFilterRequest request)
     {
-        string sql = "select * from Customer Where Metadata.LastUpdatedTime > '2015-03-01'";
+        var lastUpdatedTime = request.LastUpdatedTime?.ToString("yyyy-MM-dd") ?? "2015-03-01";
+        var sql = $"select * from Customer Where Metadata.LastUpdatedTime > '{lastUpdatedTime}'";
+        
+        if (!string.IsNullOrEmpty(request.DisplayName))
+        {
+            sql += $" && DisplayName = '{request.DisplayName}'";
+        }
+        
+        if(!string.IsNullOrEmpty(request.GivenName))
+        {
+            sql += $" && GivenName = '{request.GivenName}'";
+        }
+        
         var wrapper = await Client.ExecuteWithJson<QueryCustomerWrapper>($"/query?query={sql}", Method.Get, null, Creds);
         return new GetCustomersResponse
         {
