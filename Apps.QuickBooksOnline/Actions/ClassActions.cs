@@ -28,7 +28,7 @@ public class ClassActions(InvocationContext invocationContext) : AppInvocable(in
         return new ClassResponse(dto.Class);
     }
     
-    [Action("Create class", Description = "Create class")]
+    [Action("Create class", Description = "Create class, optionally with parent class reference")]
     public async Task<ClassResponse> CreateClass([ActionParameter] CreateClassRequest request)
     {
         var body = new Dictionary<string, object> { { "Name", request.Name } };
@@ -56,7 +56,7 @@ public class ClassActions(InvocationContext invocationContext) : AppInvocable(in
         return new ClassResponse(dto.Class);
     }
     
-    [Action("Update class", Description = "Update class")]
+    [Action("Update class", Description = "Update class, optionally with new name, active status, subclass status, sync token, domain, and fully qualified name")]
     public async Task<ClassResponse> UpdateClass([ActionParameter] UpdateClassRequest request)
     {
         var dto = await Client.ExecuteWithJson<GetClassDto>($"/class/{request.ClassId}", Method.Get, null, Creds);

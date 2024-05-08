@@ -34,68 +34,68 @@ public class VendorActions(InvocationContext invocationContext) : AppInvocable(i
     public async Task<VendorResponse> UpdateVendor([ActionParameter] UpdateVendorRequest request)
     {
         var dto = await Client.ExecuteWithJson<GetVendorDto>($"/vendor/{request.VendorId}", Method.Get, null, Creds);
-        
-        if(request.DisplayName != null)
+
+        if (request.DisplayName != null)
         {
             dto.Vendor.DisplayName = request.DisplayName;
         }
-        
-        if(request.Title != null)
+
+        if (request.Title != null)
         {
             dto.Vendor.Title = request.Title;
         }
-        
-        if(request.GivenName != null)
+
+        if (request.GivenName != null)
         {
             dto.Vendor.GivenName = request.GivenName;
         }
-        
-        if(request.FamilyName != null)
+
+        if (request.FamilyName != null)
         {
             dto.Vendor.FamilyName = request.FamilyName;
         }
-        
-        if(request.Suffix != null)
+
+        if (request.Suffix != null)
         {
             dto.Vendor.Suffix = request.Suffix;
         }
-        
-        if(request.PrimaryEmailAddr != null)
+
+        if (request.PrimaryEmailAddr != null)
         {
             dto.Vendor.PrimaryEmailAddr = new PrimaryEmailAddress { Address = request.PrimaryEmailAddr };
         }
-        
-        if(request.WebAddr != null)
+
+        if (request.WebAddr != null)
         {
             dto.Vendor.WebAddr = new WebAddrDto { URI = request.WebAddr };
         }
-        
-        if(request.PrimaryPhone != null)
+
+        if (request.PrimaryPhone != null)
         {
             dto.Vendor.PrimaryPhone = new PhoneDto { FreeFormNumber = request.PrimaryPhone };
         }
-        
-        if(request.Mobile != null)
+
+        if (request.Mobile != null)
         {
             dto.Vendor.Mobile = new PhoneDto { FreeFormNumber = request.Mobile };
         }
-        
-        if(request.TaxIdentifier != null)
+
+        if (request.TaxIdentifier != null)
         {
             dto.Vendor.TaxIdentifier = request.TaxIdentifier;
         }
-        
-        if(request.AcctNum != null)
+
+        if (request.AcctNum != null)
         {
             dto.Vendor.AcctNum = request.AcctNum;
         }
-        
-        if(request.CompanyName != null)
+
+        if (request.CompanyName != null)
         {
             dto.Vendor.CompanyName = request.CompanyName;
         }
-        
-        if(request.PrintOnCheckName != null)
+
+        if (request.PrintOnCheckName != null)
         {
             dto.Vendor.PrintOnCheckName = request.PrintOnCheckName;
         }
@@ -104,27 +104,27 @@ public class VendorActions(InvocationContext invocationContext) : AppInvocable(i
         {
             dto.Vendor.BillAddr.Line1 = request.AddressLine1;
         }
-        
-        if(request.City != null)
+
+        if (request.City != null)
         {
             dto.Vendor.BillAddr.City = request.City;
         }
-        
-        if(request.PostalCode != null)
+
+        if (request.PostalCode != null)
         {
             dto.Vendor.BillAddr.PostalCode = request.PostalCode;
         }
-        
-        if(request.Country != null)
+
+        if (request.Country != null)
         {
             dto.Vendor.Country = request.Country;
         }
-        
-        if(request.StateCode != null)
+
+        if (request.StateCode != null)
         {
             dto.Vendor.BillAddr.CountrySubDivisionCode = request.StateCode;
         }
-        
+
         var response =
             await Client.ExecuteWithJson<GetVendorDto>("/vendor", Method.Post, dto, Creds);
 
@@ -133,7 +133,7 @@ public class VendorActions(InvocationContext invocationContext) : AppInvocable(i
 
     [Action("Create vendor",
         Description =
-            "Registers a new vendor with provided details, excluding any null fields to avoid validation errors.")]
+            "Registers a new vendor with provided details.")]
     public async Task<VendorResponse> CreateVendor([ActionParameter] CreateVendorRequest request)
     {
         if (string.IsNullOrEmpty(request.DisplayName))

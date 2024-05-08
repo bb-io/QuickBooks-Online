@@ -32,7 +32,7 @@ public class PaymentActions(InvocationContext invocationContext) : AppInvocable(
         return new PaymentResponse(response.Payment);
     }
 
-    [Action("Create payment", Description = "Create a payment")]
+    [Action("Create payment", Description = "Create a payment with a total amount and a customer or job reference")]
     public async Task<PaymentResponse> CreatePayment([ActionParameter] CreatePaymentRequest request)
     {
         if (string.IsNullOrEmpty(request.CustomerId) && string.IsNullOrEmpty(request.JobId))
@@ -81,7 +81,7 @@ public class PaymentActions(InvocationContext invocationContext) : AppInvocable(
         await Client.ExecuteWithJson<object>($"/payment", Method.Post, body, Creds);
     }
 
-    [Action("Send payment", Description = "Send payment to email")]
+    [Action("Send payment", Description = "Send payment to email address provided in request or billing email address")]
     public async Task<PaymentResponse> SendPayment([ActionParameter] SendPaymentRequest request)
     {
         var response = await Client.ExecuteWithJson<GetPaymentDto>($"/payment/{request.PaymentId}/send?sendTo={request.EmailAddress}", Method.Post, null, Creds);

@@ -24,7 +24,7 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
         return new GetAllInvoicesResponse(invoicesWrapper.QueryResponse.Invoice);
     }
 
-    [Action("Get invoice", Description = "Get an invoice")]
+    [Action("Get invoice", Description = "Get an invoice by ID")]
     public async Task<GetInvoiceResponse> GetInvoice([ActionParameter] InvoiceRequest input)
     {
         var invoiceWrapper =
@@ -32,7 +32,7 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
         return new GetInvoiceResponse(invoiceWrapper.Invoice);
     }
 
-    [Action("Create invoice", Description = "Create an invoice")]
+    [Action("Create invoice", Description = "Create an invoice with a single line item and a customer reference")]
     public async Task<GetInvoiceResponse> CreateInvoice([ActionParameter] CreateInvoiceParameters input)
     {
         var body = new
@@ -63,7 +63,7 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
         return new GetInvoiceResponse(invoiceWrapper.Invoice);
     }
 
-    [Action("Update invoice", Description = "Sparse update an invoice")]
+    [Action("Update invoice", Description = "Update an invoice with a new due date and class reference")]
     public async Task<GetInvoiceResponse> UpdateInvoice([ActionParameter] UpdateInvoiceParameters input)
     {
         var data = new Dictionary<string, object>
