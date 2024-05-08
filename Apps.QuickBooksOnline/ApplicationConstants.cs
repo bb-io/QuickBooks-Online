@@ -2,20 +2,17 @@
 
 namespace Apps.QuickBooksOnline;
 
-// test app for sandbox app TODO: replace this creds with appropriate values
 public class ApplicationConstants
 {
-    public const string DeveloperClientId = "ABvIJYgSoW5LfKjoFAUPr1yPJcHJdlnjjF875Hj2wje2FWRboZ";
-    
-    public const string ProductionClientId = "ABvIJYgSoW5LfKjoFAUPr1yPJcHJdlnjjF875Hj2wje2FWRboZ"; // TODO: replace this creds with appropriate values
-
-    public const string DeveloperClientSecret = "vFhvVGa0UEoXpMR8y9Q2dpe66Wch38P0dXYsc2bs"; 
-    
-    public const string ProductionClientSecret = "vFhvVGa0UEoXpMR8y9Q2dpe66Wch38P0dXYsc2bs"; // TODO: replace this creds with appropriate values
-
-    public const string Scope = "com.intuit.quickbooks.accounting";
-    
     public const string AppName = "quickbooks";
+
+    public const string DeveloperClientId = "#{QUICKBOOKS_DEVELOPER_CLIENTID}#";
+    public const string DeveloperClientSecret = "#{QUICKBOOKS_DEVELOPER_CLIENTSECRET}#"; 
+
+    public const string ProductionClientId = ""; // TODO: replace this creds with appropriate values
+    public const string ProductionClientSecret = ""; // TODO: replace this creds with appropriate values
+
+    public const string Scope = "#{QUICKBOOKS_SCOPE}#";
     
     public const string BlackbirdToken = "#{QUICKBOOKS_BLACKBIRD_TOKEN}#";
 

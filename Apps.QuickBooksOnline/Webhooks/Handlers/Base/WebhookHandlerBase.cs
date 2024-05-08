@@ -17,7 +17,6 @@ public abstract class WebhookHandlerBase : AppInvocable, IWebhookEventHandler
 
     public abstract string SubscriptionEvent { get; set; }
 
-
     public async Task SubscribeAsync(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProvider, Dictionary<string, string> values)
     {        
         var bridgeService = new BridgeService(InvocationContext.UriInfo.BridgeServiceUrl.ToString());
