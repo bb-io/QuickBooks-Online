@@ -7,7 +7,7 @@ namespace Apps.QuickBooksOnline.Contracts
 {
     public class DeleteInvoiceRequest : InvoiceRequest
     {
-        [Display("Sync token", Description = "By default, the sync token is set to 0")]
+        [Display("Sync token", Description = "If not provided, we will fetch the latest sync token from the invoice.")]
         public string? SyncToken { get; set; }
 
         [Display("Class reference ID"), DataSource(typeof(ClassDataHandler))]

@@ -17,7 +17,7 @@ Before you can connect you need to make sure that:
 
 ## Connecting
 
-1.  Navigate to Apps, and identify the QuickBooks Online app. You can use search to find it.
+1. Navigate to Apps, and identify the QuickBooks Online app. You can use search to find it.
 2. Click _Add Connection_.
 3. Name your connection for future reference e.g. 'My QuickBooks Online connection'.
 4. Fill in the 'API url' field, for example `https://sandbox-quickbooks.api.intuit.com`.

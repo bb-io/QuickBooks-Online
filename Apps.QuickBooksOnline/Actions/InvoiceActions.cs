@@ -20,7 +20,7 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
         var sql = "select * from Invoice";
         var invoicesWrapper =
             await Client.ExecuteWithJson<QueryInvoicesWrapper>($"/query?query={sql}", Method.Get, null, Creds);
-            
+
         return new GetAllInvoicesResponse(invoicesWrapper.QueryResponse.Invoice);
     }
 
@@ -33,63 +33,61 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
     }
 
     [Action("Create invoice", Description = "Create an invoice with a single line item and a customer reference")]
-    public async Task<GetInvoiceResponse> CreateInvoice([ActionParameter] CreateInvoiceParameters input)
+    public async Task<GetInvoiceResponse> CreateInvoice([ActionParameter] CreateInvoiceRequest input)
     {
-        var body = new
+        var itemActions = new ItemActions(InvocationContext);
+
+        var body = new Dictionary<string, object>
         {
-            Line = new[]
+            { "CustomerRef", new { value = input.CustomerId } }
+        };
+
+        var items = await itemActions.GetItemsByIds(input.ItemIds);
+        var lines = new List<object>();
+        for (var i = 0; i < items.Count; i++)
+        {
+            lines.Add(new
             {
-                new
+                Amount = input.LineAmounts.ElementAt(i),
+                DetailType = "SalesItemLineDetail",
+                SalesItemLineDetail = new
                 {
-                    DetailType = "SalesItemLineDetail",
-                    Amount = input.LineAmount,
-                    SalesItemLineDetail = new
+                    ItemRef = new
                     {
-                        ItemRef = new
-                        {
-                            name = input.ItemName,
-                            value = input.ItemValue
-                        }
+                        value = items[i].Id,
+                        name = items[i].Name
                     }
                 }
-            },
-            CustomerRef = new
-            {
-                value = input.CustomerId
-            }
-        };
+            });
+        }
+        
+        body.Add("Line", lines);
 
         var invoiceWrapper = await Client.ExecuteWithJson<InvoiceWrapper>("/invoice", Method.Post, body, Creds);
         return new GetInvoiceResponse(invoiceWrapper.Invoice);
     }
 
     [Action("Update invoice", Description = "Update an invoice with a new due date and class reference")]
-    public async Task<GetInvoiceResponse> UpdateInvoice([ActionParameter] UpdateInvoiceParameters input)
+    public async Task<GetInvoiceResponse> UpdateInvoice([ActionParameter] UpdateInvoiceRequest input)
     {
+        var syncToken = await GetSyncTokenAsync(input.InvoiceId, input.SyncToken);
         var data = new Dictionary<string, object>
         {
             { "Id", input.InvoiceId },
-            { "DueDate", input.DueDate.ToString("yyyy-MM-dd") },
-            { "SyncToken", !string.IsNullOrWhiteSpace(input.SyncToken) ? input.SyncToken : "0" }
+            { "SyncToken", syncToken }
         };
-        
-        if(!string.IsNullOrWhiteSpace(input.ClassReferenceId))
+
+        if (!string.IsNullOrEmpty(input.ClassReferenceId))
         {
-            if (string.IsNullOrEmpty(input.ClassReferenceName))
+            data.Add("ClassRef", new
             {
-                data.Add("ClassRef", new
-                {
-                    value = input.ClassReferenceId
-                });
-            }
-            else
-            {
-                data.Add("ClassRef", new
-                {
-                    name = input.ClassReferenceName,
-                    value = input.ClassReferenceId
-                });
-            }
+                value = input.ClassReferenceId
+            });
+        }
+        
+        if (input.DueDate.HasValue)
+        {
+            data.Add("DueDate", input.DueDate.Value.ToString("yyyy-MM-dd"));
         }
 
         var invoiceWrapper = await Client.ExecuteWithJson<InvoiceWrapper>("/invoice", Method.Post, data, Creds);
@@ -99,13 +97,15 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
     [Action("Delete invoice", Description = "Delete an invoice")]
     public async Task DeleteInvoice([ActionParameter] DeleteInvoiceRequest input)
     {
+        var syncToken = await GetSyncTokenAsync(input.InvoiceId, input.SyncToken);
+        
         var data = new Dictionary<string, object>
         {
             { "Id", input.InvoiceId },
-            { "SyncToken", !string.IsNullOrWhiteSpace(input.SyncToken) ? input.SyncToken : "0" }
+            { "SyncToken", syncToken }
         };
 
-        if(!string.IsNullOrWhiteSpace(input.ClassReferenceId))
+        if (!string.IsNullOrWhiteSpace(input.ClassReferenceId))
         {
             if (string.IsNullOrEmpty(input.ClassReferenceName))
             {
@@ -135,7 +135,7 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
         {
             endpoint += $"?sendTo={request.Email}";
         }
-        
+
         var wrapper = await Client.ExecuteWithJson<InvoiceWrapper>(endpoint, Method.Post, null, Creds);
         return new GetInvoiceResponse(wrapper.Invoice);
     }
@@ -143,13 +143,14 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
     [Action("Void invoice", Description = "Void an invoice")]
     public async Task<GetInvoiceResponse> VoidInvoice([ActionParameter] VoidInvoiceRequest request)
     {
+        var syncToken = await GetSyncTokenAsync(request.InvoiceId, request.SyncToken);
         var data = new Dictionary<string, object>
         {
             { "Id", request.InvoiceId },
-            { "SyncToken", !string.IsNullOrWhiteSpace(request.SyncToken) ? request.SyncToken : "0" }
+            { "SyncToken", syncToken }
         };
 
-        if(!string.IsNullOrWhiteSpace(request.ClassReferenceId))
+        if (!string.IsNullOrWhiteSpace(request.ClassReferenceId))
         {
             if (string.IsNullOrEmpty(request.ClassReferenceName))
             {
@@ -167,8 +168,19 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
                 });
             }
         }
-        
-        var wrapper = await Client.ExecuteWithJson<InvoiceWrapper>($"/invoice/{request.InvoiceId}?operation=void", Method.Post, data, Creds);
+
+        var wrapper = await Client.ExecuteWithJson<InvoiceWrapper>($"/invoice/{request.InvoiceId}?operation=void",
+            Method.Post, data, Creds);
         return new GetInvoiceResponse(wrapper.Invoice);
+    }
+    
+    private async Task<string> GetSyncTokenAsync(string invoiceId, string? syncToken)
+    {
+        if (string.IsNullOrWhiteSpace(syncToken))
+        {
+            return (await GetInvoice(new InvoiceRequest { InvoiceId = invoiceId })).SyncToken;
+        }
+
+        return syncToken;
     }
 }
