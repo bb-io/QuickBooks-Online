@@ -46,7 +46,7 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
             lines.Add(new
             {
                 DetailType = "SalesItemLineDetail",
-                Amount = input.LineAmounts.ElementAt(i),
+                Amount = (decimal)input.LineAmounts.ElementAt(i),
                 SalesItemLineDetail = new
                 {
                     ItemRef = new

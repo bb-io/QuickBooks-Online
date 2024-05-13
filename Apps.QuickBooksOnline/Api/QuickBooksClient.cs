@@ -61,7 +61,7 @@ namespace Apps.QuickBooksOnline.Api
                 var errorDto = JsonConvert.DeserializeObject<ErrorDto>(response.Content);
                 return new Exception($"Status code: {response.StatusCode}, TID: {tid} | {errorDto}");
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return new Exception($"Status code: {response.StatusCode}, TID: {tid}, Message: {response.Content}");
             }
