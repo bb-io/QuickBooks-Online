@@ -44,32 +44,53 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
     {
         var itemActions = new ItemActions(InvocationContext);
 
-        var items = await itemActions.GetItemsByIds(input.ItemIds);
-        var lines = items.Select((t, i) => new SalesLine
+        var lines = new List<SalesLine>();
+        if (input.ItemIds is null)
         {
-            DetailType = "SalesItemLineDetail",
-            Amount = (decimal)input.LineAmounts.ElementAt(i),
-            SalesItemLineDetail = new Api.Models.Requests.SalesItemLineDetail
+            lines = input.LineAmounts.Select((t, i) => new SalesLine
             {
-                ItemRef = new ItemRef
+                DetailType = "SalesItemLineDetail",
+                Amount = (decimal)t,
+                SalesItemLineDetail = new Api.Models.Requests.SalesItemLineDetail
                 {
-                    Name = t.Name,
-                    Value = t.Id,
-                    ClassRef = input.ClassIds?.ElementAt(i) == null
+                    Qty = input.Quantities?.ElementAt(i) == null
+                        ? 1
+                        : input.Quantities.ElementAt(i),
+                    UnitPrice = input.UnitPrices?.ElementAt(i) == null || !decimal.TryParse(input.UnitPrices.ElementAt(i), out var price)
                         ? null
-                        : new ClassRef
-                        {
-                            Value = input.ClassIds?.ElementAt(i)
-                        }
-                },
-                Qty = input.Quantities?.ElementAt(i) == null
-                    ? 1
-                    : input.Quantities.ElementAt(i),
-                UnitPrice = input.UnitPrices?.ElementAt(i) == null || !decimal.TryParse(input.UnitPrices.ElementAt(i), out var price)
-                    ? null
-                    : price,
-            }
-        }).ToList();
+                        : price,
+                }
+            }).ToList();
+        }
+        else
+        {
+            var items = await itemActions.GetItemsByIds(input.ItemIds);
+            lines = items.Select((t, i) => new SalesLine
+            {
+                DetailType = "SalesItemLineDetail",
+                Amount = (decimal)input.LineAmounts.ElementAt(i),
+                SalesItemLineDetail = new Api.Models.Requests.SalesItemLineDetail
+                {
+                    ItemRef = new ItemRef
+                    {
+                        Name = t.Name,
+                        Value = t.Id,
+                        ClassRef = input.ClassIds?.ElementAt(i) == null
+                            ? null
+                            : new ClassRef
+                            {
+                                Value = input.ClassIds?.ElementAt(i)
+                            }
+                    },
+                    Qty = input.Quantities?.ElementAt(i) == null
+                        ? 1
+                        : input.Quantities.ElementAt(i),
+                    UnitPrice = input.UnitPrices?.ElementAt(i) == null || !decimal.TryParse(input.UnitPrices.ElementAt(i), out var price)
+                        ? null
+                        : price,
+                }
+            }).ToList();
+        }
 
         var body = new CreateInvoiceRequestBody
         {
@@ -84,8 +105,8 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
         return new GetInvoiceResponse(invoiceWrapper.Invoice);
     }
     
-    [Action("Import invoices", Description = "Import invoice from JSON")]
-    public async Task<GetAllInvoicesResponse> ImportInvoice([ActionParameter] ImportInvoiceRequest request)
+    [Action("Import invoice", Description = "Import invoice from JSON")]
+    public async Task<GetInvoiceResponse> ImportInvoice([ActionParameter] ImportInvoiceRequest request)
     {
         try
         {
@@ -113,10 +134,7 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
                 invoiceResponses.Add(invoiceResponse);
             }
 
-            return new GetAllInvoicesResponse
-            {
-                Invoices = invoiceResponses
-            };
+            return invoiceResponses.First();
         }
         catch (Exception e)
         {
