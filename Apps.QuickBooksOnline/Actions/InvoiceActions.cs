@@ -37,10 +37,7 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
     {
         var itemActions = new ItemActions(InvocationContext);
 
-        var body = new Dictionary<string, object>
-        {
-            { "CustomerRef", new { value = input.CustomerId } }
-        };
+        var body = new Dictionary<string, object>();
 
         var items = await itemActions.GetItemsByIds(input.ItemIds);
         var lines = new List<object>();
@@ -48,31 +45,27 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
         {
             lines.Add(new
             {
-                Amount = input.LineAmounts.ElementAt(i),
                 DetailType = "SalesItemLineDetail",
+                Amount = input.LineAmounts.ElementAt(i),
                 SalesItemLineDetail = new
                 {
                     ItemRef = new
                     {
-                        value = items[i].Id,
-                        name = items[i].Name
+                        name = items[i].Name,
+                        value = items[i].Id
                     }
                 }
             });
         }
         
         body.Add("Line", lines);
+        body.Add("CustomerRef", new
+        {
+            value = input.CustomerId
+        });
 
-        try
-        {
-            var invoiceWrapper = await Client.ExecuteWithJson<InvoiceWrapper>("/invoice", Method.Post, body, Creds);
-            return new GetInvoiceResponse(invoiceWrapper.Invoice);
-        }
-        catch (Exception)
-        {
-            var serializedBody = Newtonsoft.Json.JsonConvert.SerializeObject(body); // test
-            throw new Exception($"Error creating invoice, body: {serializedBody}");
-        }
+        var invoiceWrapper = await Client.ExecuteWithJson<InvoiceWrapper>("/invoice", Method.Post, body, Creds);
+        return new GetInvoiceResponse(invoiceWrapper.Invoice);
     }
 
     [Action("Update invoice", Description = "Update an invoice with a new due date and class reference")]
