@@ -53,7 +53,8 @@ namespace Apps.QuickBooksOnline.Api
 
         private Exception GetError(RestResponse response)
         {
-            return new Exception($"Status code: {response.StatusCode}, Message: {response.Content}");
+            var tid = response.Headers?.FirstOrDefault(x => x.Name == "intuit_tid")?.Value ?? "N/A";
+            return new Exception($"Status code: {response.StatusCode}, TID: {tid}, Message: {response.Content}");
         }
 
         private string BuildUrl(string endpoint, AuthenticationCredentialsProvider[] creds)
