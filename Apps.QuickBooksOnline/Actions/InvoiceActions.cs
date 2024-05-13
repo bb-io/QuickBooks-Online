@@ -1,4 +1,5 @@
-﻿using RestSharp;
+﻿using Apps.QuickBooksOnline.Api.Models.Requests;
+using RestSharp;
 using Apps.QuickBooksOnline.Api.Models.Responses;
 using Apps.QuickBooksOnline.Contracts;
 using Apps.QuickBooksOnline.Models.Dtos;
@@ -8,6 +9,8 @@ using Apps.QuickBooksOnline.Models.Responses.Invoices;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Invocation;
+using CustomerRef = Apps.QuickBooksOnline.Models.Dtos.CustomerRef;
+using ItemRef = Apps.QuickBooksOnline.Models.Dtos.ItemRef;
 
 namespace Apps.QuickBooksOnline.Actions;
 
@@ -37,32 +40,34 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
     {
         var itemActions = new ItemActions(InvocationContext);
 
-        var body = new Dictionary<string, object>();
-
         var items = await itemActions.GetItemsByIds(input.ItemIds);
-        var lines = new List<object>();
+
+        var lines = new List<SalesLine>();
         for (var i = 0; i < items.Count; i++)
         {
-            lines.Add(new
+            lines.Add(new SalesLine
             {
                 DetailType = "SalesItemLineDetail",
                 Amount = (decimal)input.LineAmounts.ElementAt(i),
-                SalesItemLineDetail = new
+                SalesItemLineDetail = new Api.Models.Requests.SalesItemLineDetail
                 {
-                    ItemRef = new
+                    ItemRef = new ItemRef
                     {
-                        name = items[i].Name,
-                        value = items[i].Id
+                        Name = items[i].Name,
+                        Value = items[i].Id
                     }
                 }
             });
         }
-        
-        body.Add("Line", lines);
-        body.Add("CustomerRef", new
+
+        var body = new CreateInvoiceRequestBody
         {
-            value = input.CustomerId
-        });
+            Line = lines,
+            CustomerRef = new CustomerRef
+            {
+                Value = input.CustomerId
+            }
+        };
 
         var invoiceWrapper = await Client.ExecuteWithJson<InvoiceWrapper>("/invoice", Method.Post, body, Creds);
         return new GetInvoiceResponse(invoiceWrapper.Invoice);
