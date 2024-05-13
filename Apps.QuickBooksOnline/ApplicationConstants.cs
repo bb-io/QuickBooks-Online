@@ -29,12 +29,7 @@ public class ApplicationConstants
             };
         }
         
-        return new Creds
-        {
-            ClientId = ProductionClientId,
-            ClientSecret = ProductionClientSecret,
-            Scope = Scope
-        };
+        throw new Exception("Production credentials are not set");
     }
 }
 

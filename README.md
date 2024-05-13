@@ -20,10 +20,12 @@ Before you can connect you need to make sure that:
 1. Navigate to Apps, and identify the QuickBooks Online app. You can use search to find it.
 2. Click _Add Connection_.
 3. Name your connection for future reference e.g. 'My QuickBooks Online connection'.
-4. Fill in the 'API url' field, for example `https://sandbox-quickbooks.api.intuit.com`.
+4. Fill in the 'API url' field, for example `https://sandbox-quickbooks.api.intuit.com` or `https://quickbooks.api.intuit.com`.
 5. Fill in the 'Company ID' field with your QuickBooks Online organization ID.
 6. Fill in the 'Minor version' field with the minor version of the QuickBooks Online API you want to use. For now, latest version is `70` (and it can start from `1`).
 7. Click _Connect_.
+
+Also, note, that currently, the QuickBooks Online app available only in a sendbox environment. We are working on adding the production environment as well.
 
 ## Actions
 
@@ -45,11 +47,16 @@ Before you can connect you need to make sure that:
 
 - **Get all invoices**: Get all invoices.
 - **Get invoice by ID**: Get an invoice by ID.
-- **Create invoice**: Create an invoice with a single line item and a customer reference.
+- **Create invoice**: Create an invoice with a customer and line items.
 - **Update invoice**: Update an invoice with a new due date and class reference.
 - **Delete invoice**: Delete an invoice.
 - **Send invoice**: Send an invoice to billing email address or email provided in request.
 - **Void invoice**: Void an invoice with a class reference and sync token.
+
+### Item
+
+- **Get all items**: Get all items.
+- **Get item by ID**: Get an item by ID.
 
 ### Payment
 
@@ -98,6 +105,10 @@ Before you can connect you need to make sure that:
 - **On payments updated:** This event is triggered when a payment or payments is updated.
 - **On payments voided:** This event is triggered when a payment or payments is voided.
 - **On payments deleted:** This event is triggered when a payment or payments is deleted.
+
+## Unsupported features
+
+Quickbooks Online API is quite extensive and we are working on adding more features. If you need a specific feature, please reach out to us.
 
 ## Feedback
 
