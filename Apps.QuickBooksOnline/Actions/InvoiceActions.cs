@@ -39,33 +39,28 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
     public async Task<GetInvoiceResponse> CreateInvoice([ActionParameter] CreateInvoiceRequest input)
     {
         var itemActions = new ItemActions(InvocationContext);
-
         var items = await itemActions.GetItemsByIds(input.ItemIds);
 
-        var lines = new List<SalesLine>();
-        for (var i = 0; i < items.Count; i++)
+        var lines = items.Select((item, index) => new
         {
-            lines.Add(new SalesLine
+            DetailType = "SalesItemLineDetail",
+            Amount = (decimal)input.LineAmounts.ElementAt(index),
+            SalesItemLineDetail = new
             {
-                DetailType = "SalesItemLineDetail",
-                Amount = (decimal)input.LineAmounts.ElementAt(i),
-                SalesItemLineDetail = new Api.Models.Requests.SalesItemLineDetail
+                ItemRef = new
                 {
-                    ItemRef = new ItemRef
-                    {
-                        Name = items[i].Name,
-                        Value = items[i].Id
-                    }
+                    name = item.Name,
+                    value = item.Id
                 }
-            });
-        }
+            }
+        }).ToList();
 
-        var body = new CreateInvoiceRequestBody
+        var body = new
         {
             Line = lines,
-            CustomerRef = new CustomerRef
+            CustomerRef = new
             {
-                Value = input.CustomerId
+                value = input.CustomerId
             }
         };
 
