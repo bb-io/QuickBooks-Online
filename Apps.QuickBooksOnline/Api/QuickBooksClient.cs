@@ -1,5 +1,6 @@
 ﻿using Apps.QuickBooksOnline.Constants;
 using Apps.QuickBooksOnline.Extensions;
+using Apps.QuickBooksOnline.Models.Dtos;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Newtonsoft.Json;
@@ -54,7 +55,16 @@ namespace Apps.QuickBooksOnline.Api
         private Exception GetError(RestResponse response)
         {
             var tid = response.Headers?.FirstOrDefault(x => x.Name == "intuit_tid")?.Value ?? "N/A";
-            return new Exception($"Status code: {response.StatusCode}, TID: {tid}, Message: {response.Content}");
+            
+            try
+            {
+                var errorDto = JsonConvert.DeserializeObject<ErrorDto>(response.Content);
+                return new Exception($"Status code: {response.StatusCode}, TID: {tid} | {errorDto}");
+            }
+            catch (Exception e)
+            {
+                return new Exception($"Status code: {response.StatusCode}, TID: {tid}, Message: {response.Content}");
+            }
         }
 
         private string BuildUrl(string endpoint, AuthenticationCredentialsProvider[] creds)
