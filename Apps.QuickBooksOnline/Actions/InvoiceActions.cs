@@ -87,34 +87,41 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
     [Action("Import invoices", Description = "Import invoice from JSON")]
     public async Task<GetAllInvoicesResponse> ImportInvoice([ActionParameter] ImportInvoiceRequest request)
     {
-        var stream = await fileManagementClient.DownloadAsync(request.File);
-
-        using var reader = new StreamReader(stream);
-        var json = await reader.ReadToEndAsync();
-        
-        var invoicesObject = JsonConvert.DeserializeObject<InvoicesObject>(json);
-        var invoiceResponses = new List<GetInvoiceResponse>();
-        
-        foreach (var invoice in invoicesObject?.Invoices!)
+        try
         {
-            var invoiceRequest = new CreateInvoiceRequest
+            var stream = await fileManagementClient.DownloadAsync(request.File);
+
+            using var reader = new StreamReader(stream);
+            var json = await reader.ReadToEndAsync();
+
+            var invoicesObject = JsonConvert.DeserializeObject<InvoicesObject>(json);
+            var invoiceResponses = new List<GetInvoiceResponse>();
+
+            foreach (var invoice in invoicesObject?.Invoices!)
             {
-                CustomerId = request.CustomerId,
-                LineAmounts = invoice.Lines.Select(x => (double)x.Amount).ToList(),
-                Quantities = invoice.Lines.Select(x => x.Quantity).ToList(),
-                UnitPrices = invoice.Lines.Select(x => x.UnitPrice.ToString(CultureInfo.InvariantCulture)).ToList(),
-                ItemIds = null,
-                ClassIds = null
-            };
-            
-            var invoiceResponse = await CreateInvoice(invoiceRequest);
-            invoiceResponses.Add(invoiceResponse);
-        }
+                var invoiceRequest = new CreateInvoiceRequest
+                {
+                    CustomerId = request.CustomerId,
+                    LineAmounts = invoice.Lines.Select(x => (double)x.Amount).ToList(),
+                    Quantities = invoice.Lines.Select(x => x.Quantity).ToList(),
+                    UnitPrices = invoice.Lines.Select(x => x.UnitPrice.ToString(CultureInfo.InvariantCulture)).ToList(),
+                    ItemIds = null,
+                    ClassIds = null
+                };
 
-        return new GetAllInvoicesResponse
+                var invoiceResponse = await CreateInvoice(invoiceRequest);
+                invoiceResponses.Add(invoiceResponse);
+            }
+
+            return new GetAllInvoicesResponse
+            {
+                Invoices = invoiceResponses
+            };
+        }
+        catch (Exception e)
         {
-            Invoices = invoiceResponses
-        };
+            throw new Exception($"Exception type: {e.GetType()}. Message: {e.Message}. Stack trace: {e.StackTrace}");
+        }
     }
 
     [Action("Update invoice", Description = "Update an invoice with a new due date and class reference")]
