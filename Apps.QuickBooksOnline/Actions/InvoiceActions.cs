@@ -39,28 +39,40 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
     public async Task<GetInvoiceResponse> CreateInvoice([ActionParameter] CreateInvoiceRequest input)
     {
         var itemActions = new ItemActions(InvocationContext);
-        var items = await itemActions.GetItemsByIds(input.ItemIds);
 
-        var lines = items.Select((item, index) => new
+        var items = await itemActions.GetItemsByIds(input.ItemIds);
+        var lines = items.Select((t, i) => new SalesLine
         {
             DetailType = "SalesItemLineDetail",
-            Amount = (decimal)input.LineAmounts.ElementAt(index),
-            SalesItemLineDetail = new
+            Amount = (decimal)input.LineAmounts.ElementAt(i),
+            SalesItemLineDetail = new Api.Models.Requests.SalesItemLineDetail
             {
-                ItemRef = new
+                ItemRef = new ItemRef
                 {
-                    name = item.Name,
-                    value = item.Id
-                }
+                    Name = t.Name,
+                    Value = t.Id,
+                    ClassRef = input.ClassIds?.ElementAt(i) == null
+                        ? null
+                        : new ClassRef
+                        {
+                            Value = input.ClassIds?.ElementAt(i)
+                        }
+                },
+                Qty = input.Quantities?.ElementAt(i) == null
+                    ? 1
+                    : input.Quantities.ElementAt(i),
+                UnitPrice = input.UnitPrices?.ElementAt(i) == null || !decimal.TryParse(input.UnitPrices.ElementAt(i), out var price)
+                    ? null
+                    : price,
             }
         }).ToList();
 
-        var body = new
+        var body = new CreateInvoiceRequestBody
         {
             Line = lines,
-            CustomerRef = new
+            CustomerRef = new CustomerRef
             {
-                value = input.CustomerId
+                Value = input.CustomerId
             }
         };
 
@@ -85,7 +97,7 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
                 value = input.ClassReferenceId
             });
         }
-        
+
         if (input.DueDate.HasValue)
         {
             data.Add("DueDate", input.DueDate.Value.ToString("yyyy-MM-dd"));
@@ -99,7 +111,7 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
     public async Task DeleteInvoice([ActionParameter] DeleteInvoiceRequest input)
     {
         var syncToken = await GetSyncTokenAsync(input.InvoiceId, input.SyncToken);
-        
+
         var data = new Dictionary<string, object>
         {
             { "Id", input.InvoiceId },
@@ -174,7 +186,7 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
             Method.Post, data, Creds);
         return new GetInvoiceResponse(wrapper.Invoice);
     }
-    
+
     private async Task<string> GetSyncTokenAsync(string invoiceId, string? syncToken)
     {
         if (string.IsNullOrWhiteSpace(syncToken))

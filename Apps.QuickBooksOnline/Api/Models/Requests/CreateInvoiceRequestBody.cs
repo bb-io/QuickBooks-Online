@@ -7,6 +7,12 @@ public class SalesItemLineDetail
 {
     [JsonProperty("ItemRef")]
     public ItemRef ItemRef { get; set; }
+
+    [JsonProperty("Qty")]
+    public long Qty { get; set; } = 1;
+
+    [JsonProperty("UnitPrice")]
+    public decimal? UnitPrice { get; set; }
 }
 
 public class SalesLine
@@ -19,6 +25,9 @@ public class SalesLine
 
     [JsonProperty("SalesItemLineDetail")]
     public SalesItemLineDetail SalesItemLineDetail { get; set; }
+
+    [JsonProperty("Description")]
+    public string? Description { get; set; }
 }
 
 public class CreateInvoiceRequestBody

@@ -89,23 +89,14 @@ public class InvoiceDto
 public class ClassRef
 {
     [JsonProperty("value")] 
-    public string Value { get; set; }
+    public string? Value { get; set; }
 
     [JsonProperty("name")] 
-    public string Name { get; set; }
+    public string? Name { get; set; }
 }
 
 public class ProjectRef
 {
-    [JsonProperty("value")]
-    public string Value { get; set; }
-}
-    
-public class CustomerRef
-{
-    [JsonProperty("name")]
-    public string Name { get; set; }
-        
     [JsonProperty("value")]
     public string Value { get; set; }
 }
@@ -178,15 +169,6 @@ public class SalesItemLineDetail
     
 public class TaxCodeRef
 {
-    [JsonProperty("value")]
-    public string Value { get; set; }
-}
-    
-public class ItemRef
-{
-    [JsonProperty("name")]
-    public string Name { get; set; }
-        
     [JsonProperty("value")]
     public string Value { get; set; }
 }
