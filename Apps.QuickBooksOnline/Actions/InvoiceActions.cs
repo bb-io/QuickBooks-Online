@@ -63,8 +63,16 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
         
         body.Add("Line", lines);
 
-        var invoiceWrapper = await Client.ExecuteWithJson<InvoiceWrapper>("/invoice", Method.Post, body, Creds);
-        return new GetInvoiceResponse(invoiceWrapper.Invoice);
+        try
+        {
+            var invoiceWrapper = await Client.ExecuteWithJson<InvoiceWrapper>("/invoice", Method.Post, body, Creds);
+            return new GetInvoiceResponse(invoiceWrapper.Invoice);
+        }
+        catch (Exception e)
+        {
+            var serializedBody = Newtonsoft.Json.JsonConvert.SerializeObject(body);
+            throw new Exception($"Error creating invoice, body: {serializedBody}", e);
+        }
     }
 
     [Action("Update invoice", Description = "Update an invoice with a new due date and class reference")]
