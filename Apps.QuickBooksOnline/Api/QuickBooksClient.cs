@@ -21,11 +21,11 @@ namespace Apps.QuickBooksOnline.Api
         public async Task<RestResponse> ExecuteWithJson(string endpoint, Method method, object? bodyObj,
             AuthenticationCredentialsProvider[] creds)
         {
-            var baseUrl = BuildUrl(endpoint, creds);
+            var url = BuildUrl(endpoint, creds);
 
             var request = new QuickBooksRequest(new()
             {
-                Url = baseUrl,
+                Url = url,
                 Method = method
             }, creds);
 
