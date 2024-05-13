@@ -32,7 +32,7 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
         return new GetInvoiceResponse(invoiceWrapper.Invoice);
     }
 
-    [Action("Create invoice", Description = "Create an invoice with a single line item and a customer reference")]
+    [Action("Create invoice", Description = "Create an invoice with a customer and line items")]
     public async Task<GetInvoiceResponse> CreateInvoice([ActionParameter] CreateInvoiceRequest input)
     {
         var itemActions = new ItemActions(InvocationContext);
@@ -68,10 +68,10 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
             var invoiceWrapper = await Client.ExecuteWithJson<InvoiceWrapper>("/invoice", Method.Post, body, Creds);
             return new GetInvoiceResponse(invoiceWrapper.Invoice);
         }
-        catch (Exception e)
+        catch (Exception)
         {
             var serializedBody = Newtonsoft.Json.JsonConvert.SerializeObject(body); // test
-            throw new Exception($"Error creating invoice, body: {serializedBody}", e);
+            throw new Exception($"Error creating invoice, body: {serializedBody}");
         }
     }
 
