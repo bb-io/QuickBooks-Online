@@ -1,21 +1,25 @@
-﻿using Apps.QuickBooksOnline.Api.Models.Requests;
+﻿using System.Globalization;
+using Apps.QuickBooksOnline.Api.Models.Requests;
 using RestSharp;
 using Apps.QuickBooksOnline.Api.Models.Responses;
 using Apps.QuickBooksOnline.Contracts;
 using Apps.QuickBooksOnline.Models.Dtos;
 using Apps.QuickBooksOnline.Models.Dtos.Invoices;
+using Apps.QuickBooksOnline.Models.Dtos.Invoices.Common;
 using Apps.QuickBooksOnline.Models.Requests.Invoices;
 using Apps.QuickBooksOnline.Models.Responses.Invoices;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Invocation;
+using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
+using Newtonsoft.Json;
 using CustomerRef = Apps.QuickBooksOnline.Models.Dtos.CustomerRef;
 using ItemRef = Apps.QuickBooksOnline.Models.Dtos.ItemRef;
 
 namespace Apps.QuickBooksOnline.Actions;
 
 [ActionList]
-public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(invocationContext)
+public class InvoiceActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) : AppInvocable(invocationContext)
 {
     [Action("Get all invoices", Description = "Get all invoices")]
     public async Task<GetAllInvoicesResponse> GetAllInvoices()
@@ -78,6 +82,39 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
 
         var invoiceWrapper = await Client.ExecuteWithJson<InvoiceWrapper>("/invoice", Method.Post, body, Creds);
         return new GetInvoiceResponse(invoiceWrapper.Invoice);
+    }
+    
+    [Action("Import invoices", Description = "Import invoice from JSON")]
+    public async Task<GetAllInvoicesResponse> ImportInvoice([ActionParameter] ImportInvoiceRequest request)
+    {
+        var stream = await fileManagementClient.DownloadAsync(request.File);
+
+        using var reader = new StreamReader(stream);
+        var json = await reader.ReadToEndAsync();
+        
+        var invoicesObject = JsonConvert.DeserializeObject<InvoicesObject>(json);
+        var invoiceResponses = new List<GetInvoiceResponse>();
+        
+        foreach (var invoice in invoicesObject?.Invoices!)
+        {
+            var invoiceRequest = new CreateInvoiceRequest
+            {
+                CustomerId = request.CustomerId,
+                LineAmounts = invoice.Lines.Select(x => (double)x.Amount).ToList(),
+                Quantities = invoice.Lines.Select(x => x.Quantity).ToList(),
+                UnitPrices = invoice.Lines.Select(x => x.UnitPrice.ToString(CultureInfo.InvariantCulture)).ToList(),
+                ItemIds = null,
+                ClassIds = null
+            };
+            
+            var invoiceResponse = await CreateInvoice(invoiceRequest);
+            invoiceResponses.Add(invoiceResponse);
+        }
+
+        return new GetAllInvoicesResponse
+        {
+            Invoices = invoiceResponses
+        };
     }
 
     [Action("Update invoice", Description = "Update an invoice with a new due date and class reference")]

@@ -313,7 +313,7 @@ public class WebhookList(InvocationContext invocationContext) : AppInvocable(inv
         }
 
         var invoices = new List<GetInvoiceResponse>();
-        var invoiceActions = new InvoiceActions(InvocationContext);
+        var invoiceActions = new InvoiceActions(InvocationContext, null);
 
         foreach (var entity in entities)
         {

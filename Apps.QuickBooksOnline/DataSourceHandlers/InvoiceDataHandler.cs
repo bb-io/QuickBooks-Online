@@ -11,7 +11,7 @@ public class InvoiceDataHandler(InvocationContext invocationContext)
     public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
         CancellationToken cancellationToken)
     {
-        var invoiceActions = new InvoiceActions(InvocationContext);
+        var invoiceActions = new InvoiceActions(InvocationContext, null);
         
         var customersResponse = await invoiceActions.GetAllInvoices();
         
