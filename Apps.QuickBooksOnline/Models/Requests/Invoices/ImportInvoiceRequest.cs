@@ -12,4 +12,7 @@ public class ImportInvoiceRequest
 
     [Display("Customer ID", Description = "The ID of the customer to associate with the invoice."), DataSource(typeof(CustomerDataSource))]
     public string CustomerId { get; set; }
+
+    [Display("Invoice ID", Description = "The ID of the invoice to reimport."), DataSource(typeof(InvoiceDataHandler))]
+    public string? InvoiceId { get; set; }
 }
