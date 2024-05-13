@@ -1,5 +1,4 @@
-﻿using Blackbird.Applications.Sdk.Common;
-using Blackbird.Applications.Sdk.Common.Authentication.OAuth2;
+﻿using Blackbird.Applications.Sdk.Common.Authentication.OAuth2;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using System.Net.Http.Headers;
 using System.Text;
@@ -7,14 +6,10 @@ using System.Text.Json;
 
 namespace Apps.QuickBooksOnline.Auth;
 
-public class OAuth2TokenService : BaseInvocable, IOAuth2TokenService
+public class OAuth2TokenService(InvocationContext invocationContext)
+    : AppInvocable(invocationContext), IOAuth2TokenService
 {
     private const string ExpiresAtKeyName = "expires_at";
-    private const string TokenUrl = "https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer";
-
-    public OAuth2TokenService(InvocationContext invocationContext) : base(invocationContext)
-    {
-    }
 
     public bool IsRefreshToken(Dictionary<string, string> values)
     {
@@ -72,8 +67,9 @@ public class OAuth2TokenService : BaseInvocable, IOAuth2TokenService
         httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",
             Convert.ToBase64String(Encoding.UTF8.GetBytes($"{clientId}:{clientSecret}")));
 
+        var oAuthEndpoints = await GetOAuthEndpointsAsync();
         using var response =
-            await httpClient.PostAsync(TokenUrl, new FormUrlEncodedContent(bodyParameters), cancellationToken);
+            await httpClient.PostAsync(oAuthEndpoints.TokenEndpoint, new FormUrlEncodedContent(bodyParameters), cancellationToken);
 
         var resultDictionary = JsonSerializer
                                    .Deserialize<Dictionary<string, object>>(await response.Content.ReadAsStringAsync())
