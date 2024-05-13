@@ -6,7 +6,7 @@
 		<Nullable>enable</Nullable>
 		<Product>QuickBooks Online</Product>
 		<Description>QuickBooks Online accounting software helps you manage your cash flow, track expenses, send invoices and more all in one place.</Description>
-		<Version>1.0.3</Version>
+		<Version>1.1.0</Version>
 		<AssemblyName>Apps.QuickBooksOnline</AssemblyName>
 	</PropertyGroup>
 
