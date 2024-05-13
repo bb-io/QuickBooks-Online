@@ -70,7 +70,7 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
         }
         catch (Exception e)
         {
-            var serializedBody = Newtonsoft.Json.JsonConvert.SerializeObject(body);
+            var serializedBody = Newtonsoft.Json.JsonConvert.SerializeObject(body); // test
             throw new Exception($"Error creating invoice, body: {serializedBody}", e);
         }
     }
