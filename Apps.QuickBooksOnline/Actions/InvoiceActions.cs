@@ -178,17 +178,9 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
             InvoiceId = input.InvoiceId
         });
         
-        try
-        {
-            var invoiceWrapper = await Client.ExecuteWithJson<InvoiceWrapper>($"/invoice/{input.InvoiceId}",
-                Method.Post, updatedInvoice, Creds);
-            return new GetInvoiceResponse(invoiceWrapper.Invoice);
-        }
-        catch (Exception e)
-        {
-            await Logger.LogAsync(e);
-            throw;
-        }
+        var invoiceWrapper = await Client.ExecuteWithJson<InvoiceWrapper>($"/invoice",
+            Method.Post, updatedInvoice, Creds);
+        return new GetInvoiceResponse(invoiceWrapper.Invoice);
     }
 
     [Action("Import invoice", Description = "Import invoice from JSON")]
