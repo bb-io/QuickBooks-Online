@@ -57,32 +57,70 @@ public class CustomerActions(InvocationContext invocationContext) : AppInvocable
     [Action("Create customer", Description = "Create a customer")]
     public async Task<GetCustomerResponse> CreateCustomer([ActionParameter] CreateCustomerRequest input)
     {
-        var body = new
+        var body = new Dictionary<string, object>();
+
+        if (!string.IsNullOrEmpty(input.DisplayName))
         {
-            DisplayName = input.DisplayName,
-            GivenName = input.GivenName,
-            MiddleName = input.MiddleName,
-            FamilyName = input.FamilyName,
-            PrimaryEmailAddr = new
+            body.Add("DisplayName", input.DisplayName);
+        }
+        
+        if (!string.IsNullOrEmpty(input.GivenName))
+        {
+            body.Add("GivenName", input.GivenName);
+        }
+        
+        if (!string.IsNullOrEmpty(input.MiddleName))
+        {
+            body.Add("MiddleName", input.MiddleName);
+        }
+        
+        if (!string.IsNullOrEmpty(input.FamilyName))
+        {
+            body.Add("FamilyName", input.FamilyName);
+        }
+        
+        if (!string.IsNullOrEmpty(input.PrimaryEmailAddress))
+        {
+            body.Add("PrimaryEmailAddr", new
             {
                 Address = input.PrimaryEmailAddress
-            },
-            PrimaryPhone = new
+            });
+        }
+        
+        if (!string.IsNullOrEmpty(input.PrimaryPhone))
+        {
+            body.Add("PrimaryPhone", new
             {
                 FreeFormNumber = input.PrimaryPhone
-            },
-            FullyQualifiedName = input.FullyQualifiedName,
-            Notes = input.Notes,
-            Suffix = input.Suffix,
-            BillAddr = new
+            });
+        }
+        
+        if (!string.IsNullOrEmpty(input.FullyQualifiedName))
+        {
+            body.Add("FullyQualifiedName", input.FullyQualifiedName);
+        }
+        
+        if (!string.IsNullOrEmpty(input.Notes))
+        {
+            body.Add("Notes", input.Notes);
+        }
+        
+        if (!string.IsNullOrEmpty(input.Suffix))
+        {
+            body.Add("Suffix", input.Suffix);
+        }
+        
+        if (!string.IsNullOrEmpty(input.CountrySubDivisionCode))
+        {
+            body.Add("BillAddr", new
             {
                 CountrySubDivisionCode = input.CountrySubDivisionCode,
                 City = input.City,
                 PostalCode = input.PostalCode,
                 Line1 = input.Line1,
                 Country = input.Country
-            }
-        };
+            });
+        }
 
         var response = await Client.ExecuteWithJson<CustomerWrapper>("/customer", Method.Post, body, Creds);
         return new GetCustomerResponse(response.Customer);
