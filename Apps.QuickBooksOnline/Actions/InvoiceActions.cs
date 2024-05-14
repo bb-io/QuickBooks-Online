@@ -172,12 +172,6 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
         updatedInvoice.TxnDate = input.InvoiceDate?.ToString("yyyy-MM-dd");
         updatedInvoice.DueDate = input.DueDate?.ToString("yyyy-MM-dd");
 
-        await Logger.LogAsync(new
-        {
-            Body = updatedInvoice,
-            InvoiceId = input.InvoiceId
-        });
-        
         var invoiceWrapper = await Client.ExecuteWithJson<InvoiceWrapper>($"/invoice",
             Method.Post, updatedInvoice, Creds);
         return new GetInvoiceResponse(invoiceWrapper.Invoice);
