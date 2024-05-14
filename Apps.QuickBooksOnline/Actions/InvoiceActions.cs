@@ -1,21 +1,25 @@
-﻿using Apps.QuickBooksOnline.Api.Models.Requests;
+﻿using System.Globalization;
+using Apps.QuickBooksOnline.Api.Models.Requests;
 using RestSharp;
 using Apps.QuickBooksOnline.Api.Models.Responses;
 using Apps.QuickBooksOnline.Contracts;
 using Apps.QuickBooksOnline.Models.Dtos;
 using Apps.QuickBooksOnline.Models.Dtos.Invoices;
+using Apps.QuickBooksOnline.Models.Dtos.Invoices.Common;
 using Apps.QuickBooksOnline.Models.Requests.Invoices;
 using Apps.QuickBooksOnline.Models.Responses.Invoices;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Invocation;
+using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
+using Newtonsoft.Json;
 using CustomerRef = Apps.QuickBooksOnline.Models.Dtos.CustomerRef;
 using ItemRef = Apps.QuickBooksOnline.Models.Dtos.ItemRef;
 
 namespace Apps.QuickBooksOnline.Actions;
 
 [ActionList]
-public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(invocationContext)
+public class InvoiceActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) : AppInvocable(invocationContext)
 {
     [Action("Get all invoices", Description = "Get all invoices")]
     public async Task<GetAllInvoicesResponse> GetAllInvoices()
@@ -40,32 +44,53 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
     {
         var itemActions = new ItemActions(InvocationContext);
 
-        var items = await itemActions.GetItemsByIds(input.ItemIds);
-        var lines = items.Select((t, i) => new SalesLine
+        var lines = new List<SalesLine>();
+        if (input.ItemIds is null)
         {
-            DetailType = "SalesItemLineDetail",
-            Amount = (decimal)input.LineAmounts.ElementAt(i),
-            SalesItemLineDetail = new Api.Models.Requests.SalesItemLineDetail
+            lines = input.LineAmounts.Select((t, i) => new SalesLine
             {
-                ItemRef = new ItemRef
+                DetailType = "SalesItemLineDetail",
+                Amount = (decimal)t,
+                SalesItemLineDetail = new Api.Models.Requests.SalesItemLineDetail
                 {
-                    Name = t.Name,
-                    Value = t.Id,
-                    ClassRef = input.ClassIds?.ElementAt(i) == null
+                    Qty = input.Quantities?.ElementAt(i) == null
+                        ? 1
+                        : input.Quantities.ElementAt(i),
+                    UnitPrice = input.UnitPrices?.ElementAt(i) == null || !decimal.TryParse(input.UnitPrices.ElementAt(i), out var price)
                         ? null
-                        : new ClassRef
-                        {
-                            Value = input.ClassIds?.ElementAt(i)
-                        }
-                },
-                Qty = input.Quantities?.ElementAt(i) == null
-                    ? 1
-                    : input.Quantities.ElementAt(i),
-                UnitPrice = input.UnitPrices?.ElementAt(i) == null || !decimal.TryParse(input.UnitPrices.ElementAt(i), out var price)
-                    ? null
-                    : price,
-            }
-        }).ToList();
+                        : price,
+                }
+            }).ToList();
+        }
+        else
+        {
+            var items = await itemActions.GetItemsByIds(input.ItemIds);
+            lines = items.Select((t, i) => new SalesLine
+            {
+                DetailType = "SalesItemLineDetail",
+                Amount = (decimal)input.LineAmounts.ElementAt(i),
+                SalesItemLineDetail = new Api.Models.Requests.SalesItemLineDetail
+                {
+                    ItemRef = new ItemRef
+                    {
+                        Name = t.Name,
+                        Value = t.Id,
+                        ClassRef = input.ClassIds?.ElementAt(i) == null
+                            ? null
+                            : new ClassRef
+                            {
+                                Value = input.ClassIds?.ElementAt(i)
+                            }
+                    },
+                    Qty = input.Quantities?.ElementAt(i) == null
+                        ? 1
+                        : input.Quantities.ElementAt(i),
+                    UnitPrice = input.UnitPrices?.ElementAt(i) == null || !decimal.TryParse(input.UnitPrices.ElementAt(i), out var price)
+                        ? null
+                        : price,
+                }
+            }).ToList();
+        }
 
         var body = new CreateInvoiceRequestBody
         {
@@ -73,40 +98,123 @@ public class InvoiceActions(InvocationContext invocationContext) : AppInvocable(
             CustomerRef = new CustomerRef
             {
                 Value = input.CustomerId
-            }
+            },
+            TxnDate = input.InvoiceDate?.ToString("yyyy-MM-dd")
         };
 
         var invoiceWrapper = await Client.ExecuteWithJson<InvoiceWrapper>("/invoice", Method.Post, body, Creds);
         return new GetInvoiceResponse(invoiceWrapper.Invoice);
     }
-
+    
     [Action("Update invoice", Description = "Update an invoice with a new due date and class reference")]
     public async Task<GetInvoiceResponse> UpdateInvoice([ActionParameter] UpdateInvoiceRequest input)
     {
         var syncToken = await GetSyncTokenAsync(input.InvoiceId, input.SyncToken);
-        var data = new Dictionary<string, object>
+        var updatedInvoice = new UpdateInvoiceRequestBody
         {
-            { "Id", input.InvoiceId },
-            { "SyncToken", syncToken }
+            Id = input.InvoiceId,
+            SyncToken = syncToken
         };
-
-        if (!string.IsNullOrEmpty(input.ClassReferenceId))
+        
+        if (input.ItemIds is null)
         {
-            data.Add("ClassRef", new
+            updatedInvoice.Line = input.LineAmounts.Select((t, i) => new SalesLine
             {
-                value = input.ClassReferenceId
-            });
+                DetailType = "SalesItemLineDetail",
+                Amount = (decimal)t,
+                SalesItemLineDetail = new Api.Models.Requests.SalesItemLineDetail
+                {
+                    Qty = input.Quantities?.ElementAt(i) == null
+                        ? 1
+                        : input.Quantities.ElementAt(i),
+                    UnitPrice = input.UnitPrices?.ElementAt(i) == null || !decimal.TryParse(input.UnitPrices.ElementAt(i), out var price)
+                        ? null
+                        : price,
+                }
+            }).ToList();
         }
-
-        if (input.DueDate.HasValue)
+        else
         {
-            data.Add("DueDate", input.DueDate.Value.ToString("yyyy-MM-dd"));
+            var itemActions = new ItemActions(InvocationContext);
+            var items = await itemActions.GetItemsByIds(input.ItemIds);
+            updatedInvoice.Line = items.Select((t, i) => new SalesLine
+            {
+                DetailType = "SalesItemLineDetail",
+                Amount = (decimal)input.LineAmounts.ElementAt(i),
+                SalesItemLineDetail = new Api.Models.Requests.SalesItemLineDetail
+                {
+                    ItemRef = new ItemRef
+                    {
+                        Name = t.Name,
+                        Value = t.Id,
+                        ClassRef = input.ClassIds?.ElementAt(i) == null
+                            ? null
+                            : new ClassRef
+                            {
+                                Value = input.ClassIds?.ElementAt(i)
+                            }
+                    },
+                    Qty = input.Quantities?.ElementAt(i) == null
+                        ? 1
+                        : input.Quantities.ElementAt(i),
+                    UnitPrice = input.UnitPrices?.ElementAt(i) == null || !decimal.TryParse(input.UnitPrices.ElementAt(i), out var price)
+                        ? null
+                        : price,
+                }
+            }).ToList();
         }
 
-        var invoiceWrapper = await Client.ExecuteWithJson<InvoiceWrapper>("/invoice", Method.Post, data, Creds);
+        if (!string.IsNullOrEmpty(input.CustomerId))
+        {
+            updatedInvoice.CustomerRef = new CustomerRef
+            {
+                Value = input.CustomerId
+            };
+        }
+        
+        updatedInvoice.TxnDate = input.InvoiceDate?.ToString("yyyy-MM-dd");
+        updatedInvoice.DueDate = input.DueDate?.ToString("yyyy-MM-dd");
+
+        var invoiceWrapper = await Client.ExecuteWithJson<InvoiceWrapper>($"/invoice",
+            Method.Post, updatedInvoice, Creds);
         return new GetInvoiceResponse(invoiceWrapper.Invoice);
     }
 
+    [Action("Import invoice", Description = "Import invoice from JSON")]
+    public async Task<GetInvoiceResponse> ImportInvoice([ActionParameter] ImportInvoiceRequest request)
+    {
+        var stream = await fileManagementClient.DownloadAsync(request.File);
+
+        using var reader = new StreamReader(stream);
+        var json = await reader.ReadToEndAsync();
+
+        var invoicesObject = JsonConvert.DeserializeObject<InvoicesObject>(json);
+        var invoiceResponses = new List<GetInvoiceResponse>();
+
+        foreach (var invoice in invoicesObject?.Invoices!)
+        {
+            var invoiceRequest = new CreateInvoiceRequest
+            {
+                CustomerId = request.CustomerId,
+                LineAmounts = invoice.Lines.Select(x => (double)x.Amount).ToList(),
+                Quantities = invoice.Lines.Select(x => x.Quantity).ToList(),
+                UnitPrices = invoice.Lines.Select(x => x.UnitPrice.ToString(CultureInfo.InvariantCulture)).ToList(),
+                InvoiceDate = invoice.InvoiceDate,
+                Descriptions = invoice.Lines.Select(x => x.Description).ToList(),
+                ItemIds = null,
+                ClassIds = null
+            };
+
+            var invoiceResponse = string.IsNullOrEmpty(request.InvoiceId)
+                ? await CreateInvoice(invoiceRequest)
+                : await UpdateInvoice(new UpdateInvoiceRequest(invoiceRequest) { InvoiceId = request.InvoiceId});
+            
+            invoiceResponses.Add(invoiceResponse);
+        }
+
+        return invoiceResponses.First();
+    }
+    
     [Action("Delete invoice", Description = "Delete an invoice")]
     public async Task DeleteInvoice([ActionParameter] DeleteInvoiceRequest input)
     {

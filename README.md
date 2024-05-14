@@ -52,6 +52,7 @@ Also, note, that currently, the QuickBooks Online app available only in a sendbo
 - **Delete invoice**: Delete an invoice.
 - **Send invoice**: Send an invoice to billing email address or email provided in request.
 - **Void invoice**: Void an invoice with a class reference and sync token.
+- **Import invoice**: Import an invoice with a customer and line items. This action uses file in JSON format that can be exported from other apps in Blackbird.
 
 ### Item
 
@@ -78,29 +79,34 @@ Also, note, that currently, the QuickBooks Online app available only in a sendbo
 ## Events
 
 ### Class Events
+
 - **On classes created:** This event is triggered when a class or classes are created.
 - **On classes updated:** This event is triggered when a class or classes is updated.
 - **On classes deleted:** This event is triggered when a class or classes is deleted.
 
 ### Vendor Events
+
 - **On vendors created:** This event is triggered when a vendor or vendors are created.
 - **On vendors updated:** This event is triggered when a vendor or vendors is updated.
 - **On vendors merged:** This event is triggered when a vendor or vendors is merged.
 - **On vendors deleted:** This event is triggered when a vendor or vendors is deleted.
 
 ### Customer Events
+
 - **On customers created:** This event is triggered when a customer or customers are created.
 - **On customers updated:** This event is triggered when a customer or customers is updated.
 - **On customers merged:** This event is triggered when a customer or customers is merged.
 - **On customers deleted:** This event is triggered when a customer or customers is deleted.
 
 ### Invoice Events
+
 - **On invoices created:** This event is triggered when an invoice or invoices is created.
 - **On invoices updated:** This event is triggered when an invoice or invoices is updated.
 - **On invoices voided:** This event is triggered when an invoice or invoices is voided.
 - **On invoices deleted:** This event is triggered when an invoice or invoices is deleted.
 
 ### Payment Events
+
 - **On payments created:** This event is triggered when a payment or payments is created.
 - **On payments updated:** This event is triggered when a payment or payments is updated.
 - **On payments voided:** This event is triggered when a payment or payments is voided.

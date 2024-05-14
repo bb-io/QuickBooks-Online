@@ -25,4 +25,7 @@ public class CreateInvoiceRequest
     
     [Display("Line amounts")]
     public IEnumerable<double> LineAmounts { get; set; }
+
+    [Display("Invoice date")]
+    public DateTime? InvoiceDate { get; set; }
 }

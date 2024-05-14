@@ -37,4 +37,7 @@ public class CreateInvoiceRequestBody
 
     [JsonProperty("CustomerRef")]
     public CustomerRef CustomerRef { get; set; }
+    
+    [JsonProperty("TxnDate")]
+    public string? TxnDate { get; set; }
 }
