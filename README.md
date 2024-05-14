@@ -120,7 +120,7 @@ This example demonstrates how to synchronize invoices from QuickBooks Online wit
 
 ![Example-invoices](image/README/Example-invoices.png))
 
-This bird was build aroung `Export invoice` and `Import invoice` actions. The `Export invoice` action is used to get the invoice from Plunet and the `Import invoice` action is used to create or update the invoice in QuickBooks Online. Under the hood we receive data from Plunet and transform it to the JSON format and then send it to QBO app, parse it and then create or update the invoice.
+This bird was built around the `Export invoice` and `Import invoice` actions. The Export invoice action retrieves the invoice from Plunet, while the Import invoice action creates or updates the invoice in QuickBooks Online. Under the hood, we receive data from Plunet, transform it into JSON format, send it to the QuickBooks Online app, parse it, and then create or update the invoice.
 
 ## Unsupported features
 
