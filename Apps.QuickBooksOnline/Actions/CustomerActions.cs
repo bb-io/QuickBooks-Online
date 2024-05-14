@@ -34,6 +34,12 @@ public class CustomerActions(InvocationContext invocationContext) : AppInvocable
 
         var wrapper =
             await Client.ExecuteWithJson<QueryCustomerWrapper>($"/query?query={sql}", Method.Get, null, Creds);
+        
+        if(wrapper.QueryResponse.Customer == null || wrapper.QueryResponse.Customer.Count == 0)
+        {
+            return new GetCustomersResponse();
+        }
+        
         return new GetCustomersResponse
         {
             Customers = wrapper.QueryResponse.Customer.Select(c => new GetCustomerResponse(c)).ToList()
