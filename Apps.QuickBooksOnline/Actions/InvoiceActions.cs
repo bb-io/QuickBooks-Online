@@ -163,11 +163,14 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
                 }
             }).ToList();
         }
-        
-        updatedInvoice.CustomerRef = new CustomerRef
+
+        if (!string.IsNullOrEmpty(input.CustomerId))
         {
-            Value = input.CustomerId
-        };
+            updatedInvoice.CustomerRef = new CustomerRef
+            {
+                Value = input.CustomerId
+            };
+        }
         
         updatedInvoice.TxnDate = input.InvoiceDate?.ToString("yyyy-MM-dd");
         updatedInvoice.DueDate = input.DueDate?.ToString("yyyy-MM-dd");
