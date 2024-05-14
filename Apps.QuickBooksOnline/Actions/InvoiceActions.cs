@@ -171,9 +171,24 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
         
         updatedInvoice.TxnDate = input.InvoiceDate?.ToString("yyyy-MM-dd");
         updatedInvoice.DueDate = input.DueDate?.ToString("yyyy-MM-dd");
+
+        await Logger.LogAsync(new
+        {
+            Body = updatedInvoice,
+            InvoiceId = input.InvoiceId
+        });
         
-        var invoiceWrapper = await Client.ExecuteWithJson<InvoiceWrapper>($"/invoice/{input.InvoiceId}", Method.Post, updatedInvoice, Creds);
-        return new GetInvoiceResponse(invoiceWrapper.Invoice);
+        try
+        {
+            var invoiceWrapper = await Client.ExecuteWithJson<InvoiceWrapper>($"/invoice/{input.InvoiceId}",
+                Method.Post, updatedInvoice, Creds);
+            return new GetInvoiceResponse(invoiceWrapper.Invoice);
+        }
+        catch (Exception e)
+        {
+            await Logger.LogAsync(e);
+            throw;
+        }
     }
 
     [Action("Import invoice", Description = "Import invoice from JSON")]

@@ -17,6 +17,8 @@ public class AppInvocable(InvocationContext invocationContext) : BaseInvocable(i
 
     protected QuickBooksClient Client { get; } = new();
     
+    protected Logger Logger { get; } = new();
+    
     protected async Task<OAuthEndpoints> GetOAuthEndpointsAsync()
     {
         var restClient = new RestClient();
