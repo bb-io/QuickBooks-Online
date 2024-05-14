@@ -304,7 +304,7 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
             await Client.ExecuteWithJson<InvoiceWrapper>($"/invoice/{request.InvoiceId}", Method.Get, null, Creds);
 
         return invoiceWrapper.Invoice.CustomField
-            .FirstOrDefault<>(x => x.DefinitionId == request.CustomFieldId, StringComparison.OrdinalIgnoreCase)?.Name ?? string.Empty;
+            .FirstOrDefault(x => x.DefinitionId == request.CustomFieldId)?.Name ?? string.Empty;
     }
 
     private async Task<string> GetSyncTokenAsync(string invoiceId, string? syncToken)
