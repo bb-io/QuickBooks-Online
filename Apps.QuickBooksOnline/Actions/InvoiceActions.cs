@@ -296,6 +296,16 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
             Method.Post, data, Creds);
         return new GetInvoiceResponse(wrapper.Invoice);
     }
+    
+    [Action("Get custom field", Description = "Get a custom field value from an invoice")]
+    public async Task<string> GetCustomField([ActionParameter] GetCustomFieldRequest request)
+    {
+        var invoiceWrapper =
+            await Client.ExecuteWithJson<InvoiceWrapper>($"/invoice/{request.InvoiceId}", Method.Get, null, Creds);
+
+        return invoiceWrapper.Invoice.CustomField
+            .FirstOrDefault<>(x => x.DefinitionId == request.CustomFieldId, StringComparison.OrdinalIgnoreCase)?.Name ?? string.Empty;
+    }
 
     private async Task<string> GetSyncTokenAsync(string invoiceId, string? syncToken)
     {
