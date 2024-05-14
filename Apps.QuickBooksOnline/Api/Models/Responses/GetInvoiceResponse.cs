@@ -26,13 +26,17 @@ public class GetInvoiceResponse
         BillEmail = invoice?.BillEmail?.Address;
         Balance = invoice?.Balance ?? 0;
         SyncToken = invoice?.SyncToken;
+        DocNumber = invoice?.DocNumber;
         ClassReference = new ClassResponse
         {
             ClassId = invoice?.ClassRef?.Value,
             ClassName = invoice?.ClassRef?.Name
         };
     }
-
+    
+    [Display("Invoice ID")]
+    public string InvoiceId { get; set; }
+    
     [Display("Customer ID")]
     public string CustomerId { get; set; }
 
@@ -61,8 +65,8 @@ public class GetInvoiceResponse
     [Display("Sync token")]
     public string SyncToken { get; set; }
 
-    [Display("Invoice ID")]
-    public string InvoiceId { get; set; }
+    [Display("Document number")]
+    public string? DocNumber { get; set; }
 
     [Display("Class reference")]
     public ClassResponse ClassReference { get; set; }

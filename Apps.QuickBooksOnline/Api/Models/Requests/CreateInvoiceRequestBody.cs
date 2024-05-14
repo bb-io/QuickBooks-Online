@@ -40,4 +40,7 @@ public class CreateInvoiceRequestBody
     
     [JsonProperty("TxnDate")]
     public string? TxnDate { get; set; }
+    
+    [JsonProperty("DocNumber")]
+    public string? DocNumber { get; set; }
 }

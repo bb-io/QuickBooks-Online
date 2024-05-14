@@ -99,7 +99,8 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
             {
                 Value = input.CustomerId
             },
-            TxnDate = input.InvoiceDate?.ToString("yyyy-MM-dd")
+            TxnDate = input.InvoiceDate?.ToString("yyyy-MM-dd"),
+            DocNumber = input.DocNumber
         };
 
         var invoiceWrapper = await Client.ExecuteWithJson<InvoiceWrapper>("/invoice", Method.Post, body, Creds);
@@ -201,6 +202,7 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
                 UnitPrices = invoice.Lines.Select(x => x.UnitPrice.ToString(CultureInfo.InvariantCulture)).ToList(),
                 InvoiceDate = invoice.InvoiceDate,
                 Descriptions = invoice.Lines.Select(x => x.Description).ToList(),
+                DocNumber = invoice.InvoiceNumber,
                 ItemIds = null,
                 ClassIds = null
             };

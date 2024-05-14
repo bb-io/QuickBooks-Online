@@ -4,5 +4,5 @@ namespace Apps.QuickBooksOnline.Models.Responses;
 
 public class GetCustomersResponse
 {
-    public List<GetCustomerResponse> Customers { get; set; }
+    public List<GetCustomerResponse> Customers { get; set; } = new();
 }

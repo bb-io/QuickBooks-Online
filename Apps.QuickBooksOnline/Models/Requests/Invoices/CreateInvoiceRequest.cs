@@ -28,4 +28,7 @@ public class CreateInvoiceRequest
 
     [Display("Invoice date")]
     public DateTime? InvoiceDate { get; set; }
+
+    [Display("Doc number")]
+    public string? DocNumber { get; set; }
 }

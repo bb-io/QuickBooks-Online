@@ -12,5 +12,5 @@ public class QueryCustomerWrapper
 public class CustomersWrapper
 {
     [JsonProperty("Customer")]
-    public List<CustomerDto> Customer { get; set; }
+    public List<CustomerDto>? Customer { get; set; }
 }
