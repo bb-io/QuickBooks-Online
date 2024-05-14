@@ -183,6 +183,9 @@ public class CustomField
         
     [JsonProperty("Name")]
     public string Name { get; set; }
+    
+    [JsonProperty("StringValue")]
+    public string? StringValue { get; set; }
 }
 
 public class BillEmail
