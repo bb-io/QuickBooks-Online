@@ -306,6 +306,26 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
         return invoiceWrapper.Invoice.CustomField
             .FirstOrDefault(x => x.DefinitionId == request.CustomFieldId)?.StringValue ?? string.Empty;
     }
+    
+    [Action("Set invoice custom field", Description = "Set a custom field value for an invoice")]
+    public async Task SetCustomField([ActionParameter] SetCustomFieldRequest request)
+    {
+        var invoiceWrapper =
+            await Client.ExecuteWithJson<InvoiceWrapper>($"/invoice/{request.InvoiceId}", Method.Get, null, Creds);
+
+        var customField = invoiceWrapper.Invoice.CustomField
+            .FirstOrDefault(x => x.DefinitionId == request.CustomFieldId);
+
+        if (customField is null)
+        {
+            throw new InvalidOperationException("Custom field not found");
+        }
+
+        customField.StringValue = request.CustomFieldValue;
+        invoiceWrapper.Invoice.Sparse = true;
+
+        await Client.ExecuteWithJson<InvoiceWrapper>($"/invoice", Method.Post, invoiceWrapper.Invoice, Creds);
+    }
 
     private async Task<string> GetSyncTokenAsync(string invoiceId, string? syncToken)
     {
