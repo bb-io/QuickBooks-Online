@@ -24,12 +24,12 @@ public class CustomerActions(InvocationContext invocationContext) : AppInvocable
 
         if (!string.IsNullOrEmpty(request.DisplayName))
         {
-            sql += $" && DisplayName = '{request.DisplayName}'";
+            sql += $" AND DisplayName = '{request.DisplayName}'";
         }
 
         if (!string.IsNullOrEmpty(request.GivenName))
         {
-            sql += $" && GivenName = '{request.GivenName}'";
+            sql += $" AND GivenName = '{request.GivenName}'";
         }
 
         var wrapper =
