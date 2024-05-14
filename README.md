@@ -118,7 +118,7 @@ Also, note, that currently, the QuickBooks Online app available only in a sendbo
 
 This example demonstrates how to synchronize invoices from QuickBooks Online with Plunet invoices. First, we receive the text module from the Plunet invoice and check if it's an empty string. If it is empty, we create a new invoice in QuickBooks Online and set the text module to the newly created invoice ID. If it's not empty, we update the existing invoice in QuickBooks Online with the same text module.
 
-![Example-invoices](image/README/Example-invoices.png))
+![Example-invoices](image/README/Example-invoices.png)
 
 This bird was built around the `Export invoice` and `Import invoice` actions. The Export invoice action retrieves the invoice from Plunet, while the Import invoice action creates or updates the invoice in QuickBooks Online. Under the hood, we receive data from Plunet, transform it into JSON format, send it to the QuickBooks Online app, parse it, and then create or update the invoice.
 
