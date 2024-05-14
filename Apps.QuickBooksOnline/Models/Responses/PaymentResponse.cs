@@ -5,7 +5,7 @@ namespace Apps.QuickBooksOnline.Models.Responses;
 
 public class PaymentResponse(PaymentDto dto)
 {
-    [Display("Id")]
+    [Display("Payment ID")]
     public string Id { get; set; } = dto.Id;
 
     [Display("Customer ID")]
