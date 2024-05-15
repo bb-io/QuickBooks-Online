@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using Apps.QuickBooksOnline.Models.Dtos;
+﻿using Apps.QuickBooksOnline.Models.Dtos;
 using Blackbird.Applications.Sdk.Common;
 
 namespace Apps.QuickBooksOnline.Api.Models.Responses;
