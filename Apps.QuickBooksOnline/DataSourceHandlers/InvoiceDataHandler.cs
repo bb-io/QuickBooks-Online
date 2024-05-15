@@ -1,5 +1,6 @@
 ﻿using Apps.QuickBooksOnline.Actions;
 using Apps.QuickBooksOnline.Api.Models.Responses;
+using Apps.QuickBooksOnline.Models.Requests.Invoices;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 using Blackbird.Applications.Sdk.Common.Invocation;
 
@@ -13,7 +14,7 @@ public class InvoiceDataHandler(InvocationContext invocationContext)
     {
         var invoiceActions = new InvoiceActions(InvocationContext, null);
         
-        var customersResponse = await invoiceActions.GetAllInvoices();
+        var customersResponse = await invoiceActions.GetAllInvoices(new InvoiceFilterRequest());
         
         return customersResponse.Invoices
             .Where(x => context.SearchString == null ||
