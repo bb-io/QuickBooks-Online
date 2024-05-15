@@ -19,12 +19,13 @@ using ItemRef = Apps.QuickBooksOnline.Models.Dtos.ItemRef;
 namespace Apps.QuickBooksOnline.Actions;
 
 [ActionList]
-public class InvoiceActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) : AppInvocable(invocationContext)
+public class InvoiceActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient)
+    : AppInvocable(invocationContext)
 {
     [Action("Get all invoices", Description = "Get all invoices")]
-    public async Task<GetAllInvoicesResponse> GetAllInvoices()
+    public async Task<GetAllInvoicesResponse> GetAllInvoices([ActionParameter] InvoiceFilterRequest request)
     {
-        var sql = "select * from Invoice";
+        var sql = BuildInvoiceQuery(request);
         var invoicesWrapper =
             await Client.ExecuteWithJson<QueryInvoicesWrapper>($"/query?query={sql}", Method.Get, null, Creds);
 
@@ -56,7 +57,8 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
                     Qty = input.Quantities?.ElementAt(i) == null
                         ? 1
                         : input.Quantities.ElementAt(i),
-                    UnitPrice = input.UnitPrices?.ElementAt(i) == null || !decimal.TryParse(input.UnitPrices.ElementAt(i), out var price)
+                    UnitPrice = input.UnitPrices?.ElementAt(i) == null ||
+                                !decimal.TryParse(input.UnitPrices.ElementAt(i), out var price)
                         ? null
                         : price,
                 }
@@ -85,7 +87,8 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
                     Qty = input.Quantities?.ElementAt(i) == null
                         ? 1
                         : input.Quantities.ElementAt(i),
-                    UnitPrice = input.UnitPrices?.ElementAt(i) == null || !decimal.TryParse(input.UnitPrices.ElementAt(i), out var price)
+                    UnitPrice = input.UnitPrices?.ElementAt(i) == null ||
+                                !decimal.TryParse(input.UnitPrices.ElementAt(i), out var price)
                         ? null
                         : price,
                 }
@@ -106,7 +109,7 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
         var invoiceWrapper = await Client.ExecuteWithJson<InvoiceWrapper>("/invoice", Method.Post, body, Creds);
         return new GetInvoiceResponse(invoiceWrapper.Invoice);
     }
-    
+
     [Action("Update invoice", Description = "Update an invoice with a new due date and class reference")]
     public async Task<GetInvoiceResponse> UpdateInvoice([ActionParameter] UpdateInvoiceRequest input)
     {
@@ -116,7 +119,7 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
             Id = input.InvoiceId,
             SyncToken = syncToken
         };
-        
+
         if (input.ItemIds is null)
         {
             updatedInvoice.Line = input.LineAmounts.Select((t, i) => new SalesLine
@@ -128,7 +131,8 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
                     Qty = input.Quantities?.ElementAt(i) == null
                         ? 1
                         : input.Quantities.ElementAt(i),
-                    UnitPrice = input.UnitPrices?.ElementAt(i) == null || !decimal.TryParse(input.UnitPrices.ElementAt(i), out var price)
+                    UnitPrice = input.UnitPrices?.ElementAt(i) == null ||
+                                !decimal.TryParse(input.UnitPrices.ElementAt(i), out var price)
                         ? null
                         : price,
                 }
@@ -158,7 +162,8 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
                     Qty = input.Quantities?.ElementAt(i) == null
                         ? 1
                         : input.Quantities.ElementAt(i),
-                    UnitPrice = input.UnitPrices?.ElementAt(i) == null || !decimal.TryParse(input.UnitPrices.ElementAt(i), out var price)
+                    UnitPrice = input.UnitPrices?.ElementAt(i) == null ||
+                                !decimal.TryParse(input.UnitPrices.ElementAt(i), out var price)
                         ? null
                         : price,
                 }
@@ -172,7 +177,7 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
                 Value = input.CustomerId
             };
         }
-        
+
         updatedInvoice.TxnDate = input.InvoiceDate?.ToString("yyyy-MM-dd");
         updatedInvoice.DueDate = input.DueDate?.ToString("yyyy-MM-dd");
 
@@ -209,14 +214,14 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
 
             var invoiceResponse = string.IsNullOrEmpty(request.InvoiceId)
                 ? await CreateInvoice(invoiceRequest)
-                : await UpdateInvoice(new UpdateInvoiceRequest(invoiceRequest) { InvoiceId = request.InvoiceId});
-            
+                : await UpdateInvoice(new UpdateInvoiceRequest(invoiceRequest) { InvoiceId = request.InvoiceId });
+
             invoiceResponses.Add(invoiceResponse);
         }
 
         return invoiceResponses.First();
     }
-    
+
     [Action("Delete invoice", Description = "Delete an invoice")]
     public async Task DeleteInvoice([ActionParameter] DeleteInvoiceRequest input)
     {
@@ -296,7 +301,7 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
             Method.Post, data, Creds);
         return new GetInvoiceResponse(wrapper.Invoice);
     }
-    
+
     [Action("Get invoice custom field", Description = "Get a custom field value from an invoice")]
     public async Task<string> GetCustomField([ActionParameter] GetCustomFieldRequest request)
     {
@@ -306,7 +311,7 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
         return invoiceWrapper.Invoice.CustomField
             .FirstOrDefault(x => x.DefinitionId == request.CustomFieldId)?.StringValue ?? string.Empty;
     }
-    
+
     [Action("Set invoice custom field", Description = "Set a custom field value for an invoice")]
     public async Task SetCustomField([ActionParameter] SetCustomFieldRequest request)
     {
@@ -335,5 +340,29 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
         }
 
         return syncToken;
+    }
+
+    private string BuildInvoiceQuery(InvoiceFilterRequest request)
+    {
+        var sql = "SELECT * FROM Invoice";
+        
+        var conditions = new List<string>();
+        if (request.Paid.HasValue)
+        {
+            conditions.Add(request.Paid.Value ? "Balance = '0'" : "Balance > '0'");
+        }
+
+        if (request.Overdue.HasValue)
+        {
+            var currentDate = DateTime.Now.ToString("yyyy-MM-dd");
+            conditions.Add(request.Overdue.Value ? $"DueDate < '{currentDate}'" : $"DueDate >= '{currentDate}'");
+        }
+
+        if (conditions.Count > 0)
+        {
+            sql += " WHERE " + string.Join(" AND ", conditions);
+        }
+        
+        return sql;
     }
 }

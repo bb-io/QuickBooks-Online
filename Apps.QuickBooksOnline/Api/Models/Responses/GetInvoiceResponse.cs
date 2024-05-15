@@ -27,6 +27,8 @@ public class GetInvoiceResponse
         Balance = invoice?.Balance ?? 0;
         SyncToken = invoice?.SyncToken;
         DocNumber = invoice?.DocNumber;
+        TxnDate = invoice?.TxnDate;
+        DueDate = invoice?.DueDate;
         ClassReference = new ClassResponse
         {
             ClassId = invoice?.ClassRef?.Value,
@@ -67,6 +69,12 @@ public class GetInvoiceResponse
 
     [Display("Document number")]
     public string? DocNumber { get; set; }
+    
+    [Display("Transaction date")]
+    public string? TxnDate { get; set; }
+    
+    [Display("Due date")]
+    public string? DueDate { get; set; }
 
     [Display("Class reference")]
     public ClassResponse ClassReference { get; set; }
