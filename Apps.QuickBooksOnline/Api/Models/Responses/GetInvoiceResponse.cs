@@ -29,7 +29,7 @@ public class GetInvoiceResponse
         SyncToken = invoice?.SyncToken;
         DocNumber = invoice?.DocNumber;
         TxnDate = invoice?.TxnDate;
-        DueDate = DateTime.Parse(invoice?.DueDate ?? DateTime.Now.ToString(CultureInfo.InvariantCulture));
+        DueDate = invoice?.DueDate;
         ClassReference = new ClassResponse
         {
             ClassId = invoice?.ClassRef?.Value,
@@ -75,7 +75,7 @@ public class GetInvoiceResponse
     public string? TxnDate { get; set; }
     
     [Display("Due date")]
-    public DateTime DueDate { get; set; }
+    public string? DueDate { get; set; }
 
     [Display("Class reference")]
     public ClassResponse ClassReference { get; set; }
