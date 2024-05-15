@@ -1,4 +1,5 @@
-﻿using Apps.QuickBooksOnline.Models.Dtos;
+﻿using System.Globalization;
+using Apps.QuickBooksOnline.Models.Dtos;
 using Blackbird.Applications.Sdk.Common;
 
 namespace Apps.QuickBooksOnline.Api.Models.Responses;
@@ -28,6 +29,7 @@ public class GetInvoiceResponse
         SyncToken = invoice?.SyncToken;
         DocNumber = invoice?.DocNumber;
         TxnDate = invoice?.TxnDate;
+        DueDate = DateTime.Parse(invoice?.DueDate ?? DateTime.Now.ToString(CultureInfo.InvariantCulture));
         ClassReference = new ClassResponse
         {
             ClassId = invoice?.ClassRef?.Value,
@@ -71,6 +73,9 @@ public class GetInvoiceResponse
     
     [Display("Transaction date")]
     public string? TxnDate { get; set; }
+    
+    [Display("Due date")]
+    public DateTime DueDate { get; set; }
 
     [Display("Class reference")]
     public ClassResponse ClassReference { get; set; }
