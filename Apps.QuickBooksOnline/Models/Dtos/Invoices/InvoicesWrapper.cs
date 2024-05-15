@@ -11,5 +11,5 @@ public class QueryInvoicesWrapper
 public class InvoicesWrapper
 {
     [JsonProperty("Invoice")]
-    public List<InvoiceDto> Invoice { get; set; }
+    public List<InvoiceDto> Invoice { get; set; } = new ();
 }

@@ -349,7 +349,7 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
         var conditions = new List<string>();
         if (request.Paid.HasValue)
         {
-            conditions.Add(request.Paid.Value ? "Balance = 0" : "Balance > 0");
+            conditions.Add(request.Paid.Value ? "Balance = '0'" : "Balance > '0'");
         }
 
         if (request.Overdue.HasValue)
