@@ -54,6 +54,8 @@ Also, note, that currently, the QuickBooks Online app available only in a sendbo
 - **Void invoice**: Void an invoice with a class reference and sync token.
 - **Import invoice**: Import an invoice with a customer and line items. This action uses file in JSON format that can be exported from other apps in Blackbird. If you will specify 'Invoice ID' as optional input, the app will try to update the invoice with this ID. If you don't specify it, the app will create a new invoice.
 
+Please note that to use the Class reference in an invoice, you must ensure that `Preferences.AccountingInfoPrefs.ClassTrackingPerTxn` is set to true. If it's set to false, no error will be thrown, but the class reference will not be saved.
+
 ### Item
 
 - **Get all items**: Get all items.

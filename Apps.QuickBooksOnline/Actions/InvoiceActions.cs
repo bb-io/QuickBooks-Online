@@ -103,7 +103,11 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
                 Value = input.CustomerId
             },
             TxnDate = input.InvoiceDate?.ToString("yyyy-MM-dd"),
-            DocNumber = input.DocNumber
+            DocNumber = input.DocNumber,
+            ClassRef = new ClassRef
+            {
+                Value = input.ClassId
+            }
         };
 
         var invoiceWrapper = await Client.ExecuteWithJson<InvoiceWrapper>("/invoice", Method.Post, body, Creds);
@@ -175,6 +179,14 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
             updatedInvoice.CustomerRef = new CustomerRef
             {
                 Value = input.CustomerId
+            };
+        }
+        
+        if (!string.IsNullOrEmpty(input.ClassId))
+        {
+            updatedInvoice.ClassRef = new ClassRef
+            {
+                Value = input.ClassId
             };
         }
 
