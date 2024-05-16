@@ -4,6 +4,6 @@ namespace Apps.QuickBooksOnline.Models.Requests;
 
 public class SyncTokenRequest
 {
-    [Display("Sync Token", Description = "By default it set to 0")]
+    [Display("Sync Token")]
     public string? SyncToken { get; set; }
 }
