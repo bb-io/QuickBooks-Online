@@ -19,7 +19,7 @@ public class ReferenceDataSource(InvocationContext invocationContext, [ActionPar
         if (request.EntityType == "Invoice")
         {
             var invoiceDataHandler = new InvoiceDataHandler(InvocationContext);
-            var invoices = await invoiceDataHandler.GetDataAsync(context, cancellationToken);
+            var invoices = await invoiceDataHandler.GetDataAsync(new DataSourceContext { SearchString = context.SearchString }, cancellationToken);
             
             return invoices;
         }

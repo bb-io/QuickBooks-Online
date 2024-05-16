@@ -11,5 +11,5 @@ public class QueryAttachableWrapper
 public class AttachablesWrapper
 {
     [JsonProperty("Attachable")]
-    public List<AttachableDto> Attachable { get; set; }
+    public List<AttachableDto> Attachable { get; set; } = new();
 }
