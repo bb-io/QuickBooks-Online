@@ -211,6 +211,7 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
 
         foreach (var invoice in invoicesObject?.Invoices!)
         {
+            invoice.CustomFields.TryGetValue("class_id", out var classId);
             var invoiceRequest = new CreateInvoiceRequest
             {
                 CustomerId = request.CustomerId,
@@ -220,6 +221,7 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
                 InvoiceDate = invoice.InvoiceDate,
                 Descriptions = invoice.Lines.Select(x => x.Description).ToList(),
                 DocNumber = invoice.InvoiceNumber,
+                ClassId = classId,
                 ItemIds = null,
                 ClassIds = null
             };
