@@ -212,6 +212,11 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
         foreach (var invoice in invoicesObject?.Invoices!)
         {
             invoice.CustomFields.TryGetValue("class_id", out var classId);
+            if (!string.IsNullOrEmpty(request.ClassId))
+            {
+                classId = request.ClassId;
+            }
+            
             var invoiceRequest = new CreateInvoiceRequest
             {
                 CustomerId = request.CustomerId,

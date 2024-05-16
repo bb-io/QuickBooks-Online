@@ -15,4 +15,7 @@ public class ImportInvoiceRequest
 
     [Display("Invoice ID", Description = "The ID of the invoice to reimport."), DataSource(typeof(InvoiceDataHandler))]
     public string? InvoiceId { get; set; }
+
+    [Display("Class ID", Description = "The ID of the class to assign to the invoice."), DataSource(typeof(ClassDataHandler))]
+    public string? ClassId { get; set; }
 }
