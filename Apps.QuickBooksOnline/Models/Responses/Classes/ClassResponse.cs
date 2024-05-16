@@ -30,7 +30,7 @@ public class ClassResponse(ClassDto dto)
     [Display("Sync token")]
     public string SyncToken { get; set; } = dto.SyncToken;
     
-    [Display("Class reference ID")]
+    [Display("Class ID")]
     public string? ClassReferenceId { get; set; } = dto.ParentRef?.Value;
 
     [Display("Created at")]

@@ -247,24 +247,13 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
 
         if (!string.IsNullOrWhiteSpace(input.ClassReferenceId))
         {
-            if (string.IsNullOrEmpty(input.ClassReferenceName))
+            data.Add("ClassRef", new
             {
-                data.Add("ClassRef", new
-                {
-                    value = input.ClassReferenceId
-                });
-            }
-            else
-            {
-                data.Add("ClassRef", new
-                {
-                    name = input.ClassReferenceName,
-                    value = input.ClassReferenceId
-                });
-            }
+                value = input.ClassReferenceId
+            });
         }
 
-        await Client.ExecuteWithJson<object>($"/invoice/{input.InvoiceId}?operation=delete", Method.Post, data, Creds);
+        await Client.ExecuteWithJson($"/invoice?operation=delete", Method.Post, data, Creds);
     }
 
     [Action("Send invoice", Description = "Send an invoice to billing email address or email provided in request")]
@@ -292,21 +281,10 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
 
         if (!string.IsNullOrWhiteSpace(request.ClassReferenceId))
         {
-            if (string.IsNullOrEmpty(request.ClassReferenceName))
+            data.Add("ClassRef", new
             {
-                data.Add("ClassRef", new
-                {
-                    value = request.ClassReferenceId
-                });
-            }
-            else
-            {
-                data.Add("ClassRef", new
-                {
-                    name = request.ClassReferenceName,
-                    value = request.ClassReferenceId
-                });
-            }
+                value = request.ClassReferenceId
+            });
         }
 
         var wrapper = await Client.ExecuteWithJson<InvoiceWrapper>($"/invoice/{request.InvoiceId}?operation=void",
