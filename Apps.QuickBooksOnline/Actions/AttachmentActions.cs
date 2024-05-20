@@ -33,22 +33,26 @@ public class AttachmentActions(InvocationContext invocationContext, IFileManagem
     [Action("Create attachment", Description = "Create attachment.")]
     public async Task<AttachmentResponse> CreateAttachable([ActionParameter] CreateAttachmentRequest request)
     {
-        var body = new
+        var body = new CreateAttachmentDto
         {
             Note = request.Note,
-            AttachableRef = new[]
+        };
+        
+        if (request.EntityType is not null && request.EntityId is not null)
+        {
+            body.AttachableRef = new[]
             {
-                new
+                new AttachableRefDto
                 {
-                    IncludeOnSend = request.IncludeOnSend ?? "false",
-                    EntityRef = new
+                    IncludeOnSend = request.IncludeOnSend?.ToString() ?? "false",
+                    EntityRef = new EntityRefDto
                     {
-                        type = request.EntityType,
-                        value = request.EntityId
+                        Type = request.EntityType,
+                        Value = request.EntityId
                     }
                 }
-            }
-        };
+            };
+        }
         
         var response = await Client.ExecuteWithJson<AttachableDto>("/attachable", Method.Post, body, Creds);
         return new AttachmentResponse(response);

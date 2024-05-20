@@ -30,6 +30,7 @@ namespace Apps.QuickBooksOnline.Api
             }, creds);
 
             if (bodyObj is not null)
+            {
                 request.WithJsonBody(bodyObj, new()
                 {
                     ContractResolver = new DefaultContractResolver()
@@ -38,6 +39,7 @@ namespace Apps.QuickBooksOnline.Api
                     },
                     NullValueHandling = NullValueHandling.Ignore
                 });
+            }
 
             return await ExecuteRequest(request);
         }

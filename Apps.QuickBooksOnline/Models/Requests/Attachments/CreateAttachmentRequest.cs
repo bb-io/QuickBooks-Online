@@ -13,9 +13,9 @@ public class CreateAttachmentRequest
     [Display("Entity type"), StaticDataSource(typeof(ReferenceTypeDataSource))]
     public string? EntityType { get; set; }
     
-    [Display("Entity ID"), DataSource(typeof(InvoiceDataHandler))]
+    [Display("Entity ID"), DataSource(typeof(ReferenceDataSource))]
     public string? EntityId { get; set; }
 
-    [Display("Include on send", Description = "Default is false."), StaticDataSource(typeof(IncludeOnSendDataSource))]
-    public string? IncludeOnSend { get; set; }
+    [Display("Include on send", Description = "Default is false.")]
+    public bool? IncludeOnSend { get; set; }
 }
