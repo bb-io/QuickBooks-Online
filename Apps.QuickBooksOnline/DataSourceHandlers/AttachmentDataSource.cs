@@ -1,4 +1,5 @@
 ﻿using Apps.QuickBooksOnline.Actions;
+using Apps.QuickBooksOnline.Models.Requests.Attachments;
 using Apps.QuickBooksOnline.Models.Responses.Attachable;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 using Blackbird.Applications.Sdk.Common.Invocation;
@@ -13,7 +14,7 @@ public class AttachmentDataSource(InvocationContext invocationContext)
     {
         var classActions = new AttachmentActions(InvocationContext, null);
         
-        var classesResponse = await classActions.GetAllAttachments();
+        var classesResponse = await classActions.GetAllAttachments(new FilterAttachmentsRequest());
         
         return classesResponse.Attachments
             .Where(x => context.SearchString == null ||
