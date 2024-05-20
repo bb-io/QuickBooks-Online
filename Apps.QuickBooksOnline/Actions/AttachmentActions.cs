@@ -69,7 +69,7 @@ public class AttachmentActions(InvocationContext invocationContext, IFileManagem
     public async Task DeleteAttachableById([ActionParameter] AttachmentRequest request)
     {
         var syncToken = await GetSyncToken(request);
-        var body = new
+        var body = new DeleteAttachmentDto
         {
             Id = request.AttachmentId,
             SyncToken = syncToken
