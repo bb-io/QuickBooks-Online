@@ -5,7 +5,7 @@ using Blackbird.Applications.Sdk.Common.Invocation;
 
 namespace Apps.QuickBooksOnline.DataSourceHandlers;
 
-public class ReferenceDataSource(InvocationContext invocationContext, [ActionParameter] CreateAttachmentRequest request)
+public class ReferenceDataSource(InvocationContext invocationContext, [ActionParameter] FilterAttachmentsRequest request)
     : AppInvocable(invocationContext), IAsyncDataSourceHandler
 {
     public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,

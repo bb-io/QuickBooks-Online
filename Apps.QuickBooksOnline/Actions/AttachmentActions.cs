@@ -13,9 +13,16 @@ namespace Apps.QuickBooksOnline.Actions;
 public class AttachmentActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) : AppInvocable(invocationContext)
 {
     [Action("Get all attachments", Description = "Get all attachments.")]
-    public async Task<GetAllAttachmentsResponse> GetAllAttachments()
+    public async Task<GetAllAttachmentsResponse> GetAllAttachments([ActionParameter] FilterAttachmentsRequest request)
     {
         var sql = "select * from attachable";
+
+        if (!string.IsNullOrEmpty(request.EntityType) && !string.IsNullOrEmpty(request.EntityId))
+        {
+            sql +=
+                $" where AttachableRef.EntityRef.Type = '{request.EntityType}' and AttachableRef.EntityRef.Value = '{request.EntityId}'";
+        }
+
         var classesWrapper =
             await Client.ExecuteWithJson<QueryAttachableWrapper>($"/query?query={sql}", Method.Get, null, Creds);
 
@@ -26,8 +33,8 @@ public class AttachmentActions(InvocationContext invocationContext, IFileManagem
     public async Task<AttachmentResponse> GetAttachableById([ActionParameter] AttachmentRequest request)
     {
         var attachable =
-            await Client.ExecuteWithJson<AttachableDto>($"/attachable/{request.AttachmentId}", Method.Get, null, Creds);
-        return new AttachmentResponse(attachable);
+            await Client.ExecuteWithJson<AttachableWrapper>($"/attachable/{request.AttachmentId}", Method.Get, null, Creds);
+        return new AttachmentResponse(attachable.Attachable);
     }
     
     [Action("Create attachment", Description = "Create attachment.")]
@@ -54,8 +61,8 @@ public class AttachmentActions(InvocationContext invocationContext, IFileManagem
             };
         }
         
-        var response = await Client.ExecuteWithJson<AttachableDto>("/attachable", Method.Post, body, Creds);
-        return new AttachmentResponse(response);
+        var response = await Client.ExecuteWithJson<AttachableWrapper>("/attachable", Method.Post, body, Creds);
+        return new AttachmentResponse(response.Attachable);
     }
     
     [Action("Delete attachment", Description = "Delete attachment by ID.")]
