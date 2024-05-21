@@ -15,10 +15,32 @@ using Task = System.Threading.Tasks.Task;
 
 namespace Apps.QuickBooksOnline.Actions;
 
+
 [ActionList]
 public class AttachmentActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient)
     : AppInvocable(invocationContext)
 {
+    private static List<string> ApprovedFileTypes =
+    [
+        "ai",
+        "csv",
+        "doc",
+        "docx",
+        "eps",
+        "gif",
+        "jpeg",
+        "jpg",
+        "ods",
+        "pdf",
+        "png",
+        "rtf",
+        "tif",
+        "txt",
+        "xls",
+        "xlsx",
+        "xml"
+    ];
+    
     [Action("Get all attachments", Description = "Get all attachments.")]
     public async Task<GetAllAttachmentsResponse> GetAllAttachments([ActionParameter] FilterAttachmentsRequest request)
     {
@@ -73,6 +95,12 @@ public class AttachmentActions(InvocationContext invocationContext, IFileManagem
 
         if (request.File is not null)
         {
+            if (!ApprovedFileTypes.Any(x => request.File.Name.EndsWith(x)))
+            {
+                throw new Exception("File type not supported. Supported file types are: " +
+                                    string.Join(", ", ApprovedFileTypes) + ".");
+            }
+            
             var fileStream = await fileManagementClient.DownloadAsync(request.File);
             var fileBytes = await fileStream.GetByteData();
 
@@ -120,6 +148,57 @@ public class AttachmentActions(InvocationContext invocationContext, IFileManagem
         };
 
         await Client.ExecuteWithJson($"/attachable?operation=delete", Method.Post, body, Creds);
+    }
+    
+    [Action("Upload file to attachment", Description = "Upload file to attachment by ID.")]
+    public async Task<AttachmentResponse> UploadFileToAttachableById([ActionParameter] UploadFileToAttachmentRequest request)
+    {
+        try
+        {
+            var attachable =
+                await Client.ExecuteWithJson<AttachableDto>($"/attachable/{request.AttachmentId}", Method.Get, null, Creds);
+
+            if (attachable.FileName != null)
+            {
+                throw new Exception("Attachment already has a file attached.");
+            }
+
+            var fileStream = await fileManagementClient.DownloadAsync(request.File);
+            var fileBytes = await fileStream.GetByteData();
+
+            var boundary = "----WebKitFormBoundary7MA4YWxkTrZu0gW";
+            var multipartContent = new MultipartFormDataContent(boundary);
+
+            var metadataContent =
+                new StringContent(JsonConvert.SerializeObject(new { request.File.Name }), Encoding.UTF8, "application/json");
+            metadataContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
+            {
+                Name = "file_metadata_01",
+                FileName = "attachment.json"
+            };
+
+            var fileContent = new ByteArrayContent(fileBytes);
+            fileContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
+            {
+                Name = "file_content_01",
+                FileName = request.File.Name
+            };
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue(request.File.ContentType);
+
+            multipartContent.Add(metadataContent);
+            multipartContent.Add(fileContent);
+
+            var response =
+                await Client.ExecuteWithMultipart<IntuitResponse>($"/upload", Method.Post,
+                    multipartContent, Creds);
+        
+            return new AttachmentResponse(response.AttachableResponse.Attachable);
+        }
+        catch (Exception e)
+        {
+            await Logger.Log(e);
+            throw;
+        }
     }
 
     [Action("Download attachment", Description = "Download attachment by ID.")]
