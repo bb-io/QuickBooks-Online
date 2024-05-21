@@ -44,10 +44,12 @@ public class AttachmentActions(InvocationContext invocationContext, IFileManagem
     {
         var attachable = new Intuit.Ipp.Data.Attachable
         {
-            FileName = request.File.Name,
-            ContentType = request.File.ContentType,
-            Note = request.Note,
-            AttachableRef = new[]
+            Note = request.Note
+        };
+        
+        if(request.EntityType is not null && request.EntityId is not null)
+        {
+            attachable.AttachableRef = new[]
             {
                 new Intuit.Ipp.Data.AttachableRef
                 {
@@ -55,10 +57,11 @@ public class AttachmentActions(InvocationContext invocationContext, IFileManagem
                     {
                         type = request.EntityType,
                         Value = request.EntityId
-                    }
+                    },
+                    IncludeOnSend = request.IncludeOnSend ?? false
                 }
-            }
-        };
+            };
+        }
         
         var dataService = GetDataService();
         var attachableResponse = dataService.Add(attachable);
@@ -70,6 +73,8 @@ public class AttachmentActions(InvocationContext invocationContext, IFileManagem
             await fileStream.CopyToAsync(memoryStream);
             memoryStream.Position = 0;
 
+            attachable.FileName = request.File.Name;
+            attachable.ContentType = request.File.ContentType;
             attachable = dataService.Upload(attachableResponse, memoryStream);
         }
         
