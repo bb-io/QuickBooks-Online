@@ -37,14 +37,18 @@ public class AppInvocable(InvocationContext invocationContext) : BaseInvocable(i
     
     protected DataService GetDataService()
     {
-        var apiToken = Creds.Get("Authorization").Value;
+        var accessToken = Creds.Get("Authorization").Value;
         var realmId = Creds.Get(CredNames.CompanyId).Value;
         
-        var serviceContext = new ServiceContext(realmId, IntuitServicesType.QBO, new OAuth2RequestValidator(apiToken));
+        var serviceContext = new ServiceContext(realmId, IntuitServicesType.QBO, new OAuth2RequestValidator(accessToken));
         serviceContext.IppConfiguration.BaseUrl.Qbo = Creds.Get(CredNames.ApiUrl).Value;
         serviceContext.IppConfiguration.MinorVersion.Qbo = Creds.Get(CredNames.MinorVersion).Value;
 
-        serviceContext.IppConfiguration.Logger = new Intuit.Ipp.Core.Configuration.Logger();
+        var logger = new Intuit.Ipp.Core.Configuration.Logger
+        {
+            CustomLogger = Logger
+        };
+        serviceContext.IppConfiguration.Logger = logger;
 
         return new DataService(serviceContext);
     }

@@ -51,8 +51,6 @@ public class AttachmentActions(InvocationContext invocationContext, IFileManagem
                 Note = request.Note
             };
             
-            await Logger.Log(attachable);
-
             if (request.EntityType is not null && request.EntityId is not null)
             {
                 attachable.AttachableRef = new[]
@@ -67,7 +65,9 @@ public class AttachmentActions(InvocationContext invocationContext, IFileManagem
                         IncludeOnSend = request.IncludeOnSend ?? false
                     }
                 };
-            }
+            }         
+            
+            await Logger.Log(attachable);
 
             var dataService = GetDataService();
             var attachableResponse = dataService.Add(attachable);
