@@ -136,6 +136,42 @@ public class AttachmentActions(InvocationContext invocationContext, IFileManagem
             return new AttachmentResponse(response.Attachable);
         }
     }
+    
+    [Action("Update attachment", Description = "Update attachment by ID.")]
+    public async Task<AttachmentResponse> UpdateAttachableById([ActionParameter] UpdateAttachmentRequest request)
+    {
+        var syncToken = await GetSyncToken(new AttachmentRequest() { AttachmentId = request.AttachmentId, SyncToken = request.SyncToken });
+        
+        var body = new UpdateAttachmentDto
+        {
+            Id = request.AttachmentId,
+            SyncToken = syncToken
+        };
+        
+        if (request.Note is not null)
+        {
+            body.Note = request.Note;
+        }
+        
+        if (request.IncludeOnSend is not null && request.EntityType is not null && request.EntityId is not null)
+        {
+            body.AttachableRef = new[]
+            {
+                new AttachableRefDto
+                {
+                    IncludeOnSend = request.IncludeOnSend.ToString(),
+                    EntityRef = new EntityRefDto()
+                    {
+                        Type = request.EntityType,
+                        Value = request.EntityId
+                    }
+                }
+            };
+        }
+
+        var response = await Client.ExecuteWithJson<AttachableWrapper>("/attachable", Method.Post, body, Creds);
+        return new AttachmentResponse(response.Attachable);
+    }
 
     [Action("Delete attachment", Description = "Delete attachment by ID.")]
     public async Task DeleteAttachableById([ActionParameter] AttachmentRequest request)
@@ -148,57 +184,6 @@ public class AttachmentActions(InvocationContext invocationContext, IFileManagem
         };
 
         await Client.ExecuteWithJson($"/attachable?operation=delete", Method.Post, body, Creds);
-    }
-    
-    [Action("Upload file to attachment", Description = "Upload file to attachment by ID.")]
-    public async Task<AttachmentResponse> UploadFileToAttachableById([ActionParameter] UploadFileToAttachmentRequest request)
-    {
-        try
-        {
-            var attachable =
-                await Client.ExecuteWithJson<AttachableDto>($"/attachable/{request.AttachmentId}", Method.Get, null, Creds);
-
-            if (attachable.FileName != null)
-            {
-                throw new Exception("Attachment already has a file attached.");
-            }
-
-            var fileStream = await fileManagementClient.DownloadAsync(request.File);
-            var fileBytes = await fileStream.GetByteData();
-
-            var boundary = "----WebKitFormBoundary7MA4YWxkTrZu0gW";
-            var multipartContent = new MultipartFormDataContent(boundary);
-
-            var metadataContent =
-                new StringContent(JsonConvert.SerializeObject(new { request.File.Name }), Encoding.UTF8, "application/json");
-            metadataContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
-            {
-                Name = "file_metadata_01",
-                FileName = "attachment.json"
-            };
-
-            var fileContent = new ByteArrayContent(fileBytes);
-            fileContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
-            {
-                Name = "file_content_01",
-                FileName = request.File.Name
-            };
-            fileContent.Headers.ContentType = new MediaTypeHeaderValue(request.File.ContentType);
-
-            multipartContent.Add(metadataContent);
-            multipartContent.Add(fileContent);
-
-            var response =
-                await Client.ExecuteWithMultipart<IntuitResponse>($"/upload", Method.Post,
-                    multipartContent, Creds);
-        
-            return new AttachmentResponse(response.AttachableResponse.Attachable);
-        }
-        catch (Exception e)
-        {
-            await Logger.Log(e);
-            throw;
-        }
     }
 
     [Action("Download attachment", Description = "Download attachment by ID.")]
