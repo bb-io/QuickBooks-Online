@@ -10,7 +10,7 @@ using RestSharp;
 
 namespace Apps.QuickBooksOnline.Api;
 
-public class QuickBooksClient() : RestClient
+public class QuickBooksClient : RestClient
 {
     public async Task<T> ExecuteWithJson<T>(string endpoint, Method method, object? bodyObj,
         AuthenticationCredentialsProvider[] creds)
@@ -35,12 +35,23 @@ public class QuickBooksClient() : RestClient
 
         var httpClient = new HttpClient();
         var response = await httpClient.SendAsync(request);
+        
+        var responseContent = await response.Content.ReadAsStringAsync();
+        await Logger.LogAsync(new { ResponseCintent = $"Response Content: {responseContent}"});
 
         if (!response.IsSuccessStatusCode)
-            throw GetError(await response.Content.ReadAsStringAsync(), response.StatusCode);
+            throw GetError(responseContent, response.StatusCode);
 
-        var responseData = await response.Content.ReadAsStringAsync();
-        return JsonConvert.DeserializeObject<T>(responseData)!;
+        try
+        {
+            return JsonConvert.DeserializeObject<T>(responseContent)!;
+        }
+        catch (JsonException ex)
+        {
+            await Logger.LogAsync($"JSON Deserialization Error: {ex.Message}");
+            await Logger.LogAsync($"Response Content: {responseContent}");
+            throw;
+        }
     }
 
     public async Task<RestResponse> ExecuteWithJson(string endpoint, Method method, object? bodyObj,
