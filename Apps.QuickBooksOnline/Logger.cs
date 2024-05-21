@@ -9,8 +9,8 @@ public class Logger
     public async Task Log<T>(T obj)
         where T : class
     {
-        var client = new RestClient(string.Empty);
-        var request = new RestRequest(_logUrl, Method.Post)
+        var client = new RestClient(_logUrl);
+        var request = new RestRequest(string.Empty, Method.Post)
             .AddJsonBody(obj);
         
         await client.ExecuteAsync(request);
