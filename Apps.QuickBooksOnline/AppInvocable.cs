@@ -10,6 +10,8 @@ using Intuit.Ipp.DataService;
 using Intuit.Ipp.Security;
 using Newtonsoft.Json;
 using RestSharp;
+using Serilog;
+using Serilog.Events;
 
 namespace Apps.QuickBooksOnline;
 
@@ -21,6 +23,13 @@ public class AppInvocable(InvocationContext invocationContext) : BaseInvocable(i
     private static string DiscoveryUrl => "https://developer.api.intuit.com/.well-known/openid_configuration";
 
     protected QuickBooksClient Client { get; } = new();
+
+    static AppInvocable()
+    {
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Fatal()
+            .CreateLogger();
+    }
 
     protected async Task<OAuthEndpoints> GetOAuthEndpointsAsync()
     {
