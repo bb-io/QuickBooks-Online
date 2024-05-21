@@ -1,7 +1,9 @@
 ﻿using System.Net;
+using System.Xml.Serialization;
 using Apps.QuickBooksOnline.Constants;
 using Apps.QuickBooksOnline.Extensions;
 using Apps.QuickBooksOnline.Models.Dtos;
+using Apps.QuickBooksOnline.Models.Responses.Attachable;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Newtonsoft.Json;
@@ -18,8 +20,9 @@ public class QuickBooksClient : RestClient
         var response = await ExecuteWithJson(endpoint, method, bodyObj, creds);
         return JsonConvert.DeserializeObject<T>(response.Content);
     }
-    
-    public async Task<T> ExecuteWithMultipart<T>(string endpoint, Method method, HttpContent multipartContent, AuthenticationCredentialsProvider[] creds)
+
+    public async Task<T> ExecuteWithMultipart<T>(string endpoint, Method method, HttpContent multipartContent,
+        AuthenticationCredentialsProvider[] creds)
     {
         var url = BuildUrl(endpoint, creds);
 
@@ -29,22 +32,32 @@ public class QuickBooksClient : RestClient
             RequestUri = new Uri(url),
             Content = multipartContent
         };
-        
+
         var authenticationCredentialsProvider = creds.First(p => p.KeyName == "Authorization");
         request.Headers.Add("Authorization", authenticationCredentialsProvider.Value);
 
         var httpClient = new HttpClient();
         var response = await httpClient.SendAsync(request);
-        
+
         var responseContent = await response.Content.ReadAsStringAsync();
-        await Logger.LogAsync(new { ResponseCintent = $"Response Content: {responseContent}"});
+        await Logger.LogAsync(new { ResponseCintent = $"Response Content: {responseContent}" });
 
         if (!response.IsSuccessStatusCode)
             throw GetError(responseContent, response.StatusCode);
 
         try
         {
-            return JsonConvert.DeserializeObject<T>(responseContent)!;
+            if (typeof(T) == typeof(IntuitResponse))
+            {
+                var serializer = new XmlSerializer(typeof(IntuitResponse));
+                using var stringReader = new StringReader(responseContent);
+                var xmlResponse = (T)serializer.Deserialize(stringReader);
+                return xmlResponse;
+            }
+            else
+            {
+                return JsonConvert.DeserializeObject<T>(responseContent)!;
+            }
         }
         catch (JsonException ex)
         {
@@ -93,7 +106,7 @@ public class QuickBooksClient : RestClient
     private Exception GetError(RestResponse response)
     {
         var tid = response.Headers?.FirstOrDefault(x => x.Name == "intuit_tid")?.Value ?? "N/A";
-            
+
         try
         {
             var errorDto = JsonConvert.DeserializeObject<ErrorDto>(response.Content);
@@ -104,11 +117,11 @@ public class QuickBooksClient : RestClient
             return new Exception($"Status code: {response.StatusCode}, TID: {tid}, Message: {response.Content}");
         }
     }
-    
+
     private Exception GetError(string responseContent, HttpStatusCode statusCode)
     {
-        var tid = "N/A"; 
-            
+        var tid = "N/A";
+
         try
         {
             var errorDto = JsonConvert.DeserializeObject<ErrorDto>(responseContent);
@@ -121,13 +134,13 @@ public class QuickBooksClient : RestClient
     }
 
     private string BuildUrl(string endpoint, AuthenticationCredentialsProvider[] creds)
-    {            
+    {
         var host = creds.GetValueByName(CredNames.ApiUrl);
         var companyId = creds.GetValueByName(CredNames.CompanyId);
         var minorVersion = creds.GetValueByName(CredNames.MinorVersion);
 
-        return endpoint.Contains('?') 
-            ? $"{host}/v3/company/{companyId}{endpoint}&minorversion={minorVersion}" 
+        return endpoint.Contains('?')
+            ? $"{host}/v3/company/{companyId}{endpoint}&minorversion={minorVersion}"
             : $"{host}/v3/company/{companyId}{endpoint}?minorversion={minorVersion}";
     }
 }

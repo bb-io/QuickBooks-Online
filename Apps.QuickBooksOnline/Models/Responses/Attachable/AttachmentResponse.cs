@@ -21,6 +21,21 @@ public class AttachmentResponse
         }).ToList();
     }
 
+    public AttachmentResponse(Attachable xmlDto)
+    {
+        Id = xmlDto.Id;
+        FileName = xmlDto.FileName;
+        Note = xmlDto.Note;
+        Domain = "QBO";
+        Sparse = false;
+        FileName = xmlDto.FileName;
+        AttachmentReferences = xmlDto.AttachableRef.Select(x => new AttachmentReference
+        {
+            EntityId = x.Value,
+            EntityType = x.Type
+        }).ToList();
+    }
+
     [Display("Attachment ID")] public string Id { get; set; }
 
     [Display("Note")] public string? Note { get; set; }

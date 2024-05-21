@@ -96,8 +96,8 @@ public class AttachmentActions(InvocationContext invocationContext, IFileManagem
                 multipartContent.Add(metadataContent);
                 multipartContent.Add(fileContent);
                 
-                var response = await Client.ExecuteWithMultipart<AttachableWrapper>("/upload", Method.Post, multipartContent, Creds);
-                return new AttachmentResponse(response.Attachable);
+                var response = await Client.ExecuteWithMultipart<IntuitResponse>("/upload", Method.Post, multipartContent, Creds);
+                return new AttachmentResponse(response.AttachableResponse.Attachable);
             }
             else
             {
