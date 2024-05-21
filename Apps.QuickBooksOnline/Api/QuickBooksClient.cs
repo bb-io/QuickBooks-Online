@@ -54,16 +54,12 @@ public class QuickBooksClient : RestClient
                 var xmlResponse = (T)serializer.Deserialize(stringReader);
                 return xmlResponse;
             }
-            else
-            {
-                return JsonConvert.DeserializeObject<T>(responseContent)!;
-            }
+            
+            return JsonConvert.DeserializeObject<T>(responseContent)!;
         }
-        catch (JsonException ex)
+        catch (JsonException)
         {
-            await Logger.LogAsync($"JSON Deserialization Error: {ex.Message}");
-            await Logger.LogAsync($"Response Content: {responseContent}");
-            throw;
+            throw new JsonSerializationException($"Failed to deserialize response content: {responseContent}");
         }
     }
 

@@ -21,6 +21,14 @@ public class AttachableDto
 
     [JsonProperty("FileName")]
     public string? FileName { get; set; }
+
+    [JsonProperty("TempDownloadUri")]
+    public string TempDownloadUri { get; set; }
+    
+    [JsonProperty("ThumbnailTempDownloadUri")]
+    public string ThumbnailTempDownloadUri { get; set; }
+
+    public long Size { get; set; }
     
     [JsonProperty("MetaData")]
     public MetaData MetaData { get; set; }
