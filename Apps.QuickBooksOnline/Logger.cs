@@ -18,8 +18,8 @@ public class Logger
     
     public async Task Log(Exception ex)
     {
-        var client = new RestClient(string.Empty);
-        var request = new RestRequest(_logUrl, Method.Post)
+        var client = new RestClient(_logUrl);
+        var request = new RestRequest(string.Empty, Method.Post)
             .AddJsonBody(new
             {
                 ExceptionMessage = ex.Message,
