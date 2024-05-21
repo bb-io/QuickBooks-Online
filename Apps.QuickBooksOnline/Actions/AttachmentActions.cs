@@ -140,7 +140,7 @@ public class AttachmentActions(InvocationContext invocationContext, IFileManagem
     [Action("Update attachment", Description = "Update attachment by ID.")]
     public async Task<AttachmentResponse> UpdateAttachableById([ActionParameter] UpdateAttachmentRequest request)
     {
-        var syncToken = await GetSyncToken(new AttachmentRequest() { AttachmentId = request.AttachmentId, SyncToken = request.SyncToken });
+        var syncToken = await GetSyncToken(new AttachmentRequest { AttachmentId = request.AttachmentId, SyncToken = request.SyncToken });
         
         var body = new UpdateAttachmentDto
         {
@@ -194,6 +194,11 @@ public class AttachmentActions(InvocationContext invocationContext, IFileManagem
                 Creds);
         var downloadUrl = attachable.Attachable.TempDownloadUri;
 
+        if (string.IsNullOrEmpty(downloadUrl))
+        {
+            throw new Exception("You can not download this attachment, file is missing.");
+        }
+
         var restClient = new RestClient(downloadUrl!);
         var restRequest = new QuickBooksRequest(new QuickBookRequestParameters
         {
@@ -225,8 +230,7 @@ public class AttachmentActions(InvocationContext invocationContext, IFileManagem
             return request.SyncToken;
         }
 
-        var attachable =
-            await Client.ExecuteWithJson<AttachableDto>($"/attachable/{request.AttachmentId}", Method.Get, null, Creds);
+        var attachable = await GetAttachableById(request);
         return attachable.SyncToken;
     }
 }

@@ -23,10 +23,10 @@ public class AttachableDto
     public string? FileName { get; set; }
 
     [JsonProperty("TempDownloadUri")]
-    public string TempDownloadUri { get; set; }
+    public string? TempDownloadUri { get; set; }
     
     [JsonProperty("ThumbnailTempDownloadUri")]
-    public string ThumbnailTempDownloadUri { get; set; }
+    public string? ThumbnailTempDownloadUri { get; set; }
 
     public long Size { get; set; }
     

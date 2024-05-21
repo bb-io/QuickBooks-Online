@@ -14,5 +14,6 @@ public class UpdateAttachmentRequest : FilterAttachmentsRequest
     [Display("Include on send", Description = "Default is false.")]
     public bool? IncludeOnSend { get; set; }
 
+    [Display("Sync token")]
     public string? SyncToken { get; set; }
 }
