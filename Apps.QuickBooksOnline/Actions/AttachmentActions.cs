@@ -6,7 +6,9 @@ using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Blackbird.Applications.Sdk.Utils.Extensions.Files;
+using Intuit.Ipp.Data;
 using RestSharp;
+using AttachableRef = Intuit.Ipp.Data.AttachableRef;
 using Task = System.Threading.Tasks.Task;
 
 namespace Apps.QuickBooksOnline.Actions;
@@ -42,44 +44,59 @@ public class AttachmentActions(InvocationContext invocationContext, IFileManagem
     [Action("Create attachment", Description = "Create attachment.")]
     public async Task<AttachmentResponse> CreateAttachable([ActionParameter] CreateAttachmentRequest request)
     {
-        var attachable = new Intuit.Ipp.Data.Attachable
+        try
         {
-            Note = request.Note
-        };
-        
-        if(request.EntityType is not null && request.EntityId is not null)
-        {
-            attachable.AttachableRef = new[]
+            var attachable = new Attachable
             {
-                new Intuit.Ipp.Data.AttachableRef
-                {
-                    EntityRef = new Intuit.Ipp.Data.ReferenceType()
-                    {
-                        type = request.EntityType,
-                        Value = request.EntityId
-                    },
-                    IncludeOnSend = request.IncludeOnSend ?? false
-                }
+                Note = request.Note
             };
+            
+            await Logger.Log(attachable);
+
+            if (request.EntityType is not null && request.EntityId is not null)
+            {
+                attachable.AttachableRef = new[]
+                {
+                    new AttachableRef
+                    {
+                        EntityRef = new ReferenceType()
+                        {
+                            type = request.EntityType,
+                            Value = request.EntityId
+                        },
+                        IncludeOnSend = request.IncludeOnSend ?? false
+                    }
+                };
+            }
+
+            var dataService = GetDataService();
+            var attachableResponse = dataService.Add(attachable);
+            
+            await Logger.Log(new
+            {
+                AttachableResponse = attachableResponse
+            });
+
+            if (request.File is not null)
+            {
+                var fileStream = await fileManagementClient.DownloadAsync(request.File);
+                var memoryStream = new MemoryStream();
+                await fileStream.CopyToAsync(memoryStream);
+                memoryStream.Position = 0;
+
+                attachable.FileName = request.File.Name;
+                attachable.ContentType = request.File.ContentType;
+                attachable = dataService.Upload(attachableResponse, memoryStream);
+            }
+
+            return new AttachmentResponse(attachable);
+
         }
-        
-        var dataService = GetDataService();
-        var attachableResponse = dataService.Add(attachable);
-        
-        if (request.File is not null)
+        catch (Exception e)
         {
-            var fileStream = await fileManagementClient.DownloadAsync(request.File);
-            var memoryStream = new MemoryStream();
-            await fileStream.CopyToAsync(memoryStream);
-            memoryStream.Position = 0;
-
-            attachable.FileName = request.File.Name;
-            attachable.ContentType = request.File.ContentType;
-            attachable = dataService.Upload(attachableResponse, memoryStream);
+            await Logger.Log(e);
+            throw;
         }
-        
-        return new AttachmentResponse(attachable);
-
     }
     
     [Action("Delete attachment", Description = "Delete attachment by ID.")]

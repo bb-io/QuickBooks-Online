@@ -21,6 +21,8 @@ public class AppInvocable(InvocationContext invocationContext) : BaseInvocable(i
         InvocationContext.AuthenticationCredentialsProviders.ToArray();
     
     private static string DiscoveryUrl => "https://developer.api.intuit.com/.well-known/openid_configuration";
+    
+    protected Logger Logger { get; } = new();
 
     protected QuickBooksClient Client { get; } = new();
 
@@ -42,7 +44,7 @@ public class AppInvocable(InvocationContext invocationContext) : BaseInvocable(i
         serviceContext.IppConfiguration.BaseUrl.Qbo = Creds.Get(CredNames.ApiUrl).Value;
         serviceContext.IppConfiguration.MinorVersion.Qbo = Creds.Get(CredNames.MinorVersion).Value;
 
-        serviceContext.IppConfiguration.Logger = new Logger();
+        serviceContext.IppConfiguration.Logger = new Intuit.Ipp.Core.Configuration.Logger();
 
         return new DataService(serviceContext);
     }
