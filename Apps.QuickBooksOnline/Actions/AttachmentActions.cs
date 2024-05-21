@@ -1,4 +1,6 @@
-﻿using Apps.QuickBooksOnline.Models.Dtos.Attachables;
+﻿using System.Net.Http.Headers;
+using System.Text;
+using Apps.QuickBooksOnline.Models.Dtos.Attachables;
 using Apps.QuickBooksOnline.Models.Requests.Attachments;
 using Apps.QuickBooksOnline.Models.Responses.Attachable;
 using Blackbird.Applications.Sdk.Common;
@@ -6,6 +8,7 @@ using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Blackbird.Applications.Sdk.Utils.Extensions.Files;
+using Newtonsoft.Json;
 using RestSharp;
 using Task = System.Threading.Tasks.Task;
 
@@ -47,6 +50,8 @@ public class AttachmentActions(InvocationContext invocationContext, IFileManagem
             var body = new CreateAttachmentDto
             {
                 Note = request.Note,
+                FileName = request.File?.Name,
+                ContentType = request.File?.ContentType
             };
 
             if (request.EntityType is not null && request.EntityId is not null)
@@ -68,12 +73,38 @@ public class AttachmentActions(InvocationContext invocationContext, IFileManagem
             if (request.File is not null)
             {
                 var fileStream = await fileManagementClient.DownloadAsync(request.File);
-                var bytes = await fileStream.GetByteData();
+                var fileBytes = await fileStream.GetByteData();
+                var base64FileContent = Convert.ToBase64String(fileBytes);
+                
+                var boundary = "----WebKitFormBoundary7MA4YWxkTrZu0gW";
+                var multipartContent = new MultipartFormDataContent(boundary);
+                
+                var metadataContent = new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json");
+                metadataContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
+                {
+                    Name = "file_metadata_01",
+                    FileName = "attachment.json"
+                };
+
+                var fileContent = new ByteArrayContent(fileBytes);
+                fileContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
+                {
+                    Name = "file_content_01",
+                    FileName = request.File.Name
+                };
+                fileContent.Headers.ContentType = new MediaTypeHeaderValue(request.File.ContentType);
+
+                multipartContent.Add(metadataContent);
+                multipartContent.Add(fileContent);
+                
+                var response = await Client.ExecuteWithMultipart<AttachableWrapper>("/upload", Method.Post, multipartContent, Creds);
+                return new AttachmentResponse(response.Attachable);
             }
-            
-            var response = await Client.ExecuteWithJson<AttachableWrapper>("/attachable", Method.Post, body, Creds);
-            
-            return new AttachmentResponse(response.Attachable);
+            else
+            {
+                var response = await Client.ExecuteWithJson<AttachableWrapper>("/attachable", Method.Post, body, Creds);
+                return new AttachmentResponse(response.Attachable);
+            }
         }
         catch (Exception e)
         {

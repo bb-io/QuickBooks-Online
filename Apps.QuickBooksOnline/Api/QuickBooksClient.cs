@@ -1,4 +1,5 @@
-﻿using Apps.QuickBooksOnline.Constants;
+﻿using System.Net;
+using Apps.QuickBooksOnline.Constants;
 using Apps.QuickBooksOnline.Extensions;
 using Apps.QuickBooksOnline.Models.Dtos;
 using Blackbird.Applications.Sdk.Common.Authentication;
@@ -16,6 +17,27 @@ public class QuickBooksClient() : RestClient
     {
         var response = await ExecuteWithJson(endpoint, method, bodyObj, creds);
         return JsonConvert.DeserializeObject<T>(response.Content);
+    }
+    
+    public async Task<T> ExecuteWithMultipart<T>(string endpoint, Method method, HttpContent multipartContent, AuthenticationCredentialsProvider[] creds)
+    {
+        var url = BuildUrl(endpoint, creds);
+
+        var request = new HttpRequestMessage
+        {
+            Method = HttpMethod.Post,
+            RequestUri = new Uri(url),
+            Content = multipartContent
+        };
+
+        var httpClient = new HttpClient();
+        var response = await httpClient.SendAsync(request);
+
+        if (!response.IsSuccessStatusCode)
+            throw GetError(await response.Content.ReadAsStringAsync(), response.StatusCode);
+
+        var responseData = await response.Content.ReadAsStringAsync();
+        return JsonConvert.DeserializeObject<T>(responseData)!;
     }
 
     public async Task<RestResponse> ExecuteWithJson(string endpoint, Method method, object? bodyObj,
@@ -66,6 +88,21 @@ public class QuickBooksClient() : RestClient
         catch (Exception)
         {
             return new Exception($"Status code: {response.StatusCode}, TID: {tid}, Message: {response.Content}");
+        }
+    }
+    
+    private Exception GetError(string responseContent, HttpStatusCode statusCode)
+    {
+        var tid = "N/A"; 
+            
+        try
+        {
+            var errorDto = JsonConvert.DeserializeObject<ErrorDto>(responseContent);
+            return new Exception($"Status code: {statusCode}, TID: {tid} | {errorDto}");
+        }
+        catch (Exception)
+        {
+            return new Exception($"Status code: {statusCode}, TID: {tid}, Message: {responseContent}");
         }
     }
 
