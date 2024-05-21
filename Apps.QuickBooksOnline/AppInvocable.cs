@@ -1,8 +1,13 @@
 ﻿using Apps.QuickBooksOnline.Api;
+using Apps.QuickBooksOnline.Constants;
 using Apps.QuickBooksOnline.Models.Dtos;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Invocation;
+using Blackbird.Applications.Sdk.Utils.Extensions.Sdk;
+using Intuit.Ipp.Core;
+using Intuit.Ipp.DataService;
+using Intuit.Ipp.Security;
 using Newtonsoft.Json;
 using RestSharp;
 
@@ -16,7 +21,7 @@ public class AppInvocable(InvocationContext invocationContext) : BaseInvocable(i
     private static string DiscoveryUrl => "https://developer.api.intuit.com/.well-known/openid_configuration";
 
     protected QuickBooksClient Client { get; } = new();
-    
+
     protected async Task<OAuthEndpoints> GetOAuthEndpointsAsync()
     {
         var restClient = new RestClient();
@@ -24,6 +29,18 @@ public class AppInvocable(InvocationContext invocationContext) : BaseInvocable(i
         var endpoints = JsonConvert.DeserializeObject<OAuthEndpoints>(json.Content!)!;
         
         return endpoints;
+    }
+    
+    protected DataService GetDataService()
+    {
+        var apiToken = Creds.Get("Authorization").Value;
+        var realmId = Creds.Get(CredNames.CompanyId).Value;
+        
+        var serviceContext = new ServiceContext(realmId, IntuitServicesType.QBO, new OAuth2RequestValidator(apiToken));
+        serviceContext.IppConfiguration.BaseUrl.Qbo = Creds.Get(CredNames.ApiUrl).Value;
+        serviceContext.IppConfiguration.MinorVersion.Qbo = Creds.Get(CredNames.MinorVersion).Value;
+
+        return new DataService(serviceContext);
     }
     
     protected OAuthEndpoints GetOAuthEndpoints()

@@ -5,7 +5,9 @@ using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
+using Blackbird.Applications.Sdk.Utils.Extensions.Files;
 using RestSharp;
+using Task = System.Threading.Tasks.Task;
 
 namespace Apps.QuickBooksOnline.Actions;
 
@@ -40,29 +42,39 @@ public class AttachmentActions(InvocationContext invocationContext, IFileManagem
     [Action("Create attachment", Description = "Create attachment.")]
     public async Task<AttachmentResponse> CreateAttachable([ActionParameter] CreateAttachmentRequest request)
     {
-        var body = new CreateAttachmentDto
+        var attachable = new Intuit.Ipp.Data.Attachable
         {
+            FileName = request.File.Name,
+            ContentType = request.File.ContentType,
             Note = request.Note,
-        };
-        
-        if (request.EntityType is not null && request.EntityId is not null)
-        {
-            body.AttachableRef = new[]
+            AttachableRef = new[]
             {
-                new AttachableRefDto
+                new Intuit.Ipp.Data.AttachableRef
                 {
-                    IncludeOnSend = request.IncludeOnSend?.ToString() ?? "false",
-                    EntityRef = new EntityRefDto
+                    EntityRef = new Intuit.Ipp.Data.ReferenceType()
                     {
-                        Type = request.EntityType,
+                        type = request.EntityType,
                         Value = request.EntityId
                     }
                 }
-            };
+            }
+        };
+        
+        var dataService = GetDataService();
+        var attachableResponse = dataService.Add(attachable);
+        
+        if (request.File is not null)
+        {
+            var fileStream = await fileManagementClient.DownloadAsync(request.File);
+            var memoryStream = new MemoryStream();
+            await fileStream.CopyToAsync(memoryStream);
+            memoryStream.Position = 0;
+
+            attachable = dataService.Upload(attachableResponse, memoryStream);
         }
         
-        var response = await Client.ExecuteWithJson<AttachableWrapper>("/attachable", Method.Post, body, Creds);
-        return new AttachmentResponse(response.Attachable);
+        return new AttachmentResponse(attachable);
+
     }
     
     [Action("Delete attachment", Description = "Delete attachment by ID.")]
@@ -95,7 +107,7 @@ public class AttachmentActions(InvocationContext invocationContext, IFileManagem
         string fileName = attachment.FileName ?? restResponse.Headers?.FirstOrDefault(x => x.Name == "Content-Disposition")?.Value?.ToString()?.Split("filename=")[1] ?? "attachment";
         
         var fileReference = await fileManagementClient.UploadAsync(memoryStream, restResponse.ContentType!, fileName);
-        
+
         return new DownloadAttachmentResponse
         {
             File = fileReference
