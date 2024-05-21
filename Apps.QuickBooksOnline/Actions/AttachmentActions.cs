@@ -6,9 +6,7 @@ using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Blackbird.Applications.Sdk.Utils.Extensions.Files;
-using Intuit.Ipp.Data;
 using RestSharp;
-using AttachableRef = Intuit.Ipp.Data.AttachableRef;
 using Task = System.Threading.Tasks.Task;
 
 namespace Apps.QuickBooksOnline.Actions;
@@ -46,51 +44,36 @@ public class AttachmentActions(InvocationContext invocationContext, IFileManagem
     {
         try
         {
-            var attachable = new Attachable
+            var body = new CreateAttachmentDto
             {
-                Note = request.Note
+                Note = request.Note,
             };
-            
+
             if (request.EntityType is not null && request.EntityId is not null)
             {
-                attachable.AttachableRef = new[]
+                body.AttachableRef = new[]
                 {
-                    new AttachableRef
+                    new AttachableRefDto
                     {
-                        EntityRef = new ReferenceType()
+                        EntityRef = new EntityRefDto()
                         {
-                            type = request.EntityType,
+                            Type = request.EntityType,
                             Value = request.EntityId
-                        },
-                        IncludeOnSend = request.IncludeOnSend ?? false
+                        }
                     }
                 };
-            }         
-            
-            await Logger.Log(attachable);
+            }
 
-            var dataService = GetDataService();
-            var attachableResponse = dataService.Add(attachable);
-            
-            await Logger.Log(new
-            {
-                AttachableResponse = attachableResponse
-            });
 
             if (request.File is not null)
             {
                 var fileStream = await fileManagementClient.DownloadAsync(request.File);
-                var memoryStream = new MemoryStream();
-                await fileStream.CopyToAsync(memoryStream);
-                memoryStream.Position = 0;
-
-                attachable.FileName = request.File.Name;
-                attachable.ContentType = request.File.ContentType;
-                attachable = dataService.Upload(attachableResponse, memoryStream);
+                var bytes = await fileStream.GetByteData();
             }
-
-            return new AttachmentResponse(attachable);
-
+            
+            var response = await Client.ExecuteWithJson<AttachableWrapper>("/attachable", Method.Post, body, Creds);
+            
+            return new AttachmentResponse(response.Attachable);
         }
         catch (Exception e)
         {

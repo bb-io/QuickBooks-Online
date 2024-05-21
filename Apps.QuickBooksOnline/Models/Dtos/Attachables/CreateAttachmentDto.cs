@@ -9,6 +9,12 @@ public class CreateAttachmentDto
     
     [JsonProperty("AttachableRef")]
     public AttachableRefDto[] AttachableRef { get; set; }
+    
+    [JsonProperty("FileName")]
+    public string FileName { get; set; }
+    
+    [JsonProperty("ContentType")]
+    public string ContentType { get; set; }
 }
 
 public class AttachableRefDto

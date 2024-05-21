@@ -21,22 +21,6 @@ public class AttachmentResponse
         }).ToList();
     }
 
-    public AttachmentResponse(Intuit.Ipp.Data.Attachable dto)
-    {
-        Id = dto.Id;
-        Note = dto.Note;
-        Domain = dto.domain;
-        Sparse = dto.sparse;
-        SyncToken = dto.SyncToken;
-        FileName = dto.FileName;
-        AttachmentReferences = dto.AttachableRef.Select(x => new AttachmentReference
-        {
-            EntityId = x.EntityRef.Value,
-            EntityType = x.EntityRef.type,
-            IncludeOnSend = x.IncludeOnSend
-        }).ToList();
-    }
-
     [Display("Attachment ID")] public string Id { get; set; }
 
     [Display("Note")] public string? Note { get; set; }
