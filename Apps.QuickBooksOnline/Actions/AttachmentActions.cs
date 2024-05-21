@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Headers;
 using System.Text;
+using Apps.QuickBooksOnline.Api;
 using Apps.QuickBooksOnline.Models.Dtos.Attachables;
 using Apps.QuickBooksOnline.Models.Requests.Attachments;
 using Apps.QuickBooksOnline.Models.Responses.Attachable;
@@ -132,7 +133,11 @@ public class AttachmentActions(InvocationContext invocationContext, IFileManagem
         var downloadUrl = response.Content;
         
         var restClient = new RestClient(downloadUrl!);
-        var restRequest = new RestRequest(string.Empty, Method.Get);
+        var restRequest = new QuickBooksRequest(new QuickBookRequestParameters
+        {
+            Method = Method.Get,
+            Url = string.Empty
+        }, Creds);
         var restResponse = await restClient.ExecuteAsync(restRequest);
         
         var memoryStream = new MemoryStream(restResponse.RawBytes!);

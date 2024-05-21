@@ -13,12 +13,12 @@ public class AttachmentResponse
         Sparse = dto.Sparse;
         SyncToken = dto.SyncToken;
         FileName = dto.FileName;
-        AttachmentReferences = dto.AttachableRef.Select(x => new AttachmentReference
+        AttachmentReferences = dto.AttachableRef?.Select(x => new AttachmentReference
         {
             EntityId = x.EntityRef.Value,
             EntityType = x.EntityRef.Type,
             IncludeOnSend = x.IncludeOnSend
-        }).ToList();
+        }).ToList() ?? new List<AttachmentReference>();
     }
 
     public AttachmentResponse(Attachable xmlDto)
@@ -29,11 +29,11 @@ public class AttachmentResponse
         Domain = "QBO";
         Sparse = false;
         FileName = xmlDto.FileName;
-        AttachmentReferences = xmlDto.AttachableRef.Select(x => new AttachmentReference
+        AttachmentReferences = xmlDto.AttachableRef?.Select(x => new AttachmentReference
         {
             EntityId = x.Value,
             EntityType = x.Type
-        }).ToList();
+        }).ToList() ?? new List<AttachmentReference>();
     }
 
     [Display("Attachment ID")] public string Id { get; set; }
