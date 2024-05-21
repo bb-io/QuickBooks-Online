@@ -29,6 +29,9 @@ public class QuickBooksClient() : RestClient
             RequestUri = new Uri(url),
             Content = multipartContent
         };
+        
+        var authenticationCredentialsProvider = creds.First(p => p.KeyName == "Authorization");
+        request.Headers.Add("Authorization", authenticationCredentialsProvider.Value);
 
         var httpClient = new HttpClient();
         var response = await httpClient.SendAsync(request);

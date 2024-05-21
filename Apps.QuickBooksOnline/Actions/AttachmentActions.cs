@@ -74,7 +74,6 @@ public class AttachmentActions(InvocationContext invocationContext, IFileManagem
             {
                 var fileStream = await fileManagementClient.DownloadAsync(request.File);
                 var fileBytes = await fileStream.GetByteData();
-                var base64FileContent = Convert.ToBase64String(fileBytes);
                 
                 var boundary = "----WebKitFormBoundary7MA4YWxkTrZu0gW";
                 var multipartContent = new MultipartFormDataContent(boundary);
