@@ -78,6 +78,15 @@ Please note that to use the Class reference in an invoice, you must ensure that 
 - **Update vendor**: Updates an existing vendor with provided details.
 - **Create vendor**: Registers a new vendor with provided details.
 
+### Attachment
+
+- **Get all attachments**: Get all attachments.
+- **Get attachment**: Get an attachment by ID.
+- **Create attachment**: Create an attachment with a File or Note.
+- **Update attachment**: Update an attachment by ID.
+- **Delete attachment**: Delete attachment by ID.
+- **Download attachment**: Download attachment by ID.
+
 ## Events
 
 ### Class Events

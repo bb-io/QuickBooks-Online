@@ -67,7 +67,7 @@ public class AttachmentActions(InvocationContext invocationContext, IFileManagem
         return new AttachmentResponse(attachable.Attachable);
     }
 
-    [Action("Create attachment", Description = "Create attachment.")]
+    [Action("Create attachment", Description = "Create attachment with file or note")]
     public async Task<AttachmentResponse> CreateAttachable([ActionParameter] CreateAttachmentRequest request)
     {
         var body = new CreateAttachmentDto
