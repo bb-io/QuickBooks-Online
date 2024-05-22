@@ -103,7 +103,11 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
                 Value = input.CustomerId
             },
             TxnDate = input.InvoiceDate?.ToString("yyyy-MM-dd"),
-            DocNumber = input.DocNumber
+            DocNumber = input.DocNumber,
+            ClassRef = new ClassRef
+            {
+                Value = input.ClassId
+            }
         };
 
         var invoiceWrapper = await Client.ExecuteWithJson<InvoiceWrapper>("/invoice", Method.Post, body, Creds);
@@ -177,6 +181,14 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
                 Value = input.CustomerId
             };
         }
+        
+        if (!string.IsNullOrEmpty(input.ClassId))
+        {
+            updatedInvoice.ClassRef = new ClassRef
+            {
+                Value = input.ClassId
+            };
+        }
 
         updatedInvoice.TxnDate = input.InvoiceDate?.ToString("yyyy-MM-dd");
         updatedInvoice.DueDate = input.DueDate?.ToString("yyyy-MM-dd");
@@ -199,6 +211,12 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
 
         foreach (var invoice in invoicesObject?.Invoices!)
         {
+            invoice.CustomFields.TryGetValue("class_id", out var classId);
+            if (!string.IsNullOrEmpty(request.ClassId))
+            {
+                classId = request.ClassId;
+            }
+            
             var invoiceRequest = new CreateInvoiceRequest
             {
                 CustomerId = request.CustomerId,
@@ -208,6 +226,7 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
                 InvoiceDate = invoice.InvoiceDate,
                 Descriptions = invoice.Lines.Select(x => x.Description).ToList(),
                 DocNumber = invoice.InvoiceNumber,
+                ClassId = classId,
                 ItemIds = null,
                 ClassIds = null
             };
@@ -235,24 +254,13 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
 
         if (!string.IsNullOrWhiteSpace(input.ClassReferenceId))
         {
-            if (string.IsNullOrEmpty(input.ClassReferenceName))
+            data.Add("ClassRef", new
             {
-                data.Add("ClassRef", new
-                {
-                    value = input.ClassReferenceId
-                });
-            }
-            else
-            {
-                data.Add("ClassRef", new
-                {
-                    name = input.ClassReferenceName,
-                    value = input.ClassReferenceId
-                });
-            }
+                value = input.ClassReferenceId
+            });
         }
 
-        await Client.ExecuteWithJson<object>($"/invoice/{input.InvoiceId}?operation=delete", Method.Post, data, Creds);
+        await Client.ExecuteWithJson($"/invoice?operation=delete", Method.Post, data, Creds);
     }
 
     [Action("Send invoice", Description = "Send an invoice to billing email address or email provided in request")]
@@ -280,21 +288,10 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
 
         if (!string.IsNullOrWhiteSpace(request.ClassReferenceId))
         {
-            if (string.IsNullOrEmpty(request.ClassReferenceName))
+            data.Add("ClassRef", new
             {
-                data.Add("ClassRef", new
-                {
-                    value = request.ClassReferenceId
-                });
-            }
-            else
-            {
-                data.Add("ClassRef", new
-                {
-                    name = request.ClassReferenceName,
-                    value = request.ClassReferenceId
-                });
-            }
+                value = request.ClassReferenceId
+            });
         }
 
         var wrapper = await Client.ExecuteWithJson<InvoiceWrapper>($"/invoice/{request.InvoiceId}?operation=void",

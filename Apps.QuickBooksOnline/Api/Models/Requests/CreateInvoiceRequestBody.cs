@@ -43,4 +43,7 @@ public class CreateInvoiceRequestBody
     
     [JsonProperty("DocNumber")]
     public string? DocNumber { get; set; }
+    
+    [JsonProperty("ClassRef")]
+    public ClassRef? ClassRef { get; set; }
 }

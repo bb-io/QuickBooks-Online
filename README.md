@@ -52,7 +52,9 @@ Also, note, that currently, the QuickBooks Online app available only in a sendbo
 - **Delete invoice**: Delete an invoice.
 - **Send invoice**: Send an invoice to billing email address or email provided in request.
 - **Void invoice**: Void an invoice with a class reference and sync token.
-- **Import invoice**: Import an invoice with a customer and line items. This action uses file in JSON format that can be exported from other apps in Blackbird. If you will specify 'Invoice ID' as optional input, the app will try to update the invoice with this ID. If you don't specify it, the app will create a new invoice.
+- **Import invoice**: Import an invoice with a customer and line items. This action uses file in JSON format that can be exported from other apps in Blackbird. If you will specify 'Invoice ID' as optional input, the app will try to update the invoice with this ID. If you don't specify it, the app will create a new invoice. Supported the next custom fields: 'class_id' - will be mapped to 'ClassRef' in the invoice, but if Class ID is specified from optional input we prefer it
+
+Please note that to use the Class reference in an invoice, you must ensure that `Preferences.AccountingInfoPrefs.ClassTrackingPerTxn` is set to true. If it's set to false, no error will be thrown, but the class reference will not be saved.
 
 ### Item
 
@@ -75,6 +77,15 @@ Also, note, that currently, the QuickBooks Online app available only in a sendbo
 - **Get vendor by ID**: Get a vendor by ID.
 - **Update vendor**: Updates an existing vendor with provided details.
 - **Create vendor**: Registers a new vendor with provided details.
+
+### Attachment
+
+- **Get all attachments**: Get all attachments.
+- **Get attachment**: Get an attachment by ID.
+- **Create attachment**: Create an attachment with a File or Note.
+- **Update attachment**: Update an attachment by ID.
+- **Delete attachment**: Delete attachment by ID.
+- **Download attachment**: Download attachment by ID.
 
 ## Events
 

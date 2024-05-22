@@ -13,7 +13,7 @@ namespace Apps.QuickBooksOnline.Contracts
         [Display("Sync token", Description = "By default, the sync token is set to 0")]
         public string? SyncToken { get; set; }
         
-        [Display("Class reference ID"), DataSource(typeof(ClassDataHandler))]
+        [Display("Class ID"), DataSource(typeof(ClassDataHandler))]
         public string? ClassReferenceId { get; set; }
 
         [Display("Class reference name")]

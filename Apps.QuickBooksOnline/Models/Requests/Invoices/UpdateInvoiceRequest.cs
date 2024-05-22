@@ -31,6 +31,9 @@ public class UpdateInvoiceRequest : InvoiceRequest
     
     [Display("Due date")]
     public DateTime? DueDate { get; set; }
+    
+    [Display("Class ID"), DataSource(typeof(ClassDataHandler))]
+    public string? ClassId { get; set; }
 
     public UpdateInvoiceRequest()
     { }
@@ -45,5 +48,6 @@ public class UpdateInvoiceRequest : InvoiceRequest
         Descriptions = createInvoiceRequest.Descriptions;
         LineAmounts = createInvoiceRequest.LineAmounts;
         InvoiceDate = createInvoiceRequest.InvoiceDate;
+        ClassId = createInvoiceRequest.ClassId;
     }
 }

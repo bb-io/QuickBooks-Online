@@ -14,9 +14,11 @@ public class AppInvocable(InvocationContext invocationContext) : BaseInvocable(i
         InvocationContext.AuthenticationCredentialsProviders.ToArray();
     
     private static string DiscoveryUrl => "https://developer.api.intuit.com/.well-known/openid_configuration";
+    
+    protected Logger Logger { get; } = new();
 
     protected QuickBooksClient Client { get; } = new();
-    
+
     protected async Task<OAuthEndpoints> GetOAuthEndpointsAsync()
     {
         var restClient = new RestClient();

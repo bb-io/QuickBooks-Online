@@ -1,5 +1,4 @@
-﻿using Apps.QuickBooksOnline.Models.Dtos.Vendors;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace Apps.QuickBooksOnline.Models.Dtos.Classes;
 

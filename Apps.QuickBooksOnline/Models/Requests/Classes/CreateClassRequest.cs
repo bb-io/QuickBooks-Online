@@ -6,7 +6,7 @@ public class CreateClassRequest
 {
     public string Name { get; set; }
 
-    [Display("Class reference ID")]
+    [Display("Class ID")]
     public string? ClassReferenceId { get; set; }
     
     [Display("Reference name")]

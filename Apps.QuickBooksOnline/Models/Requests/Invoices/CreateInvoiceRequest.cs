@@ -31,4 +31,7 @@ public class CreateInvoiceRequest
 
     [Display("Doc number")]
     public string? DocNumber { get; set; }
+
+    [Display("Class ID"), DataSource(typeof(ClassDataHandler))]
+    public string? ClassId { get; set; }
 }
