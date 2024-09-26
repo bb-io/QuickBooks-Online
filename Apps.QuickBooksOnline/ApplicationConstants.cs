@@ -9,8 +9,8 @@ public class ApplicationConstants
     public const string DeveloperClientId = "#{QUICKBOOKS_DEVELOPER_CLIENTID}#";
     public const string DeveloperClientSecret = "#{QUICKBOOKS_DEVELOPER_CLIENTSECRET}#"; 
 
-    public const string ProductionClientId = ""; // TODO: replace this creds with appropriate values
-    public const string ProductionClientSecret = ""; // TODO: replace this creds with appropriate values
+    public const string ProductionClientId = "#{QUICKBOOKS_PRODUCTION_CLIENTID}#";
+    public const string ProductionClientSecret = "#{QUICKBOOKS_PRODUCTION_CLIENTSECRET}#";
 
     public const string Scope = "#{QUICKBOOKS_SCOPE}#";
     
@@ -27,9 +27,15 @@ public class ApplicationConstants
                 ClientSecret = DeveloperClientSecret,
                 Scope = Scope
             };
+        } else
+        {
+            return new Creds
+            {
+                ClientId = ProductionClientId,
+                ClientSecret = ProductionClientSecret,
+                Scope = Scope
+            };
         }
-        
-        throw new Exception("Production credentials are not set");
     }
 }
 

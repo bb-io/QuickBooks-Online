@@ -25,8 +25,6 @@ Before you can connect you need to make sure that:
 6. Fill in the 'Minor version' field with the minor version of the QuickBooks Online API you want to use. For now, latest version is `70` (and it can start from `1`).
 7. Click _Connect_.
 
-Also, note, that currently, the QuickBooks Online app available only in a sendbox environment. We are working on adding the production environment as well.
-
 ## Actions
 
 ### Class
