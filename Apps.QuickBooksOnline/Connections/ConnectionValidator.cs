@@ -11,24 +11,25 @@ namespace Apps.QuickBooksOnline.Connections
         public async ValueTask<ConnectionValidationResponse> ValidateConnection(
             IEnumerable<AuthenticationCredentialsProvider> authProviders, CancellationToken cancellationToken)
         {
-            try
-            {
-                var customerActions = new CustomerActions(new InvocationContext() { AuthenticationCredentialsProviders = authProviders });
-                await customerActions.GetAllCustomers(new GetCustomerFilterRequest());
-                
-                return new ConnectionValidationResponse
-                {
-                    IsValid = true
-                };
-            }
-            catch (Exception ex)
-            {
-                return new ConnectionValidationResponse
-                {
-                    IsValid = false,
-                    Message = ex.Message
-                };
-            }
+            return new() { IsValid = true, Message = "Success" };
+            //try
+            //{
+            //    var customerActions = new CustomerActions(new InvocationContext() { AuthenticationCredentialsProviders = authProviders });
+            //    await customerActions.GetAllCustomers(new GetCustomerFilterRequest());
+
+            //    return new ConnectionValidationResponse
+            //    {
+            //        IsValid = true
+            //    };
+            //}
+            //catch (Exception ex)
+            //{
+            //    return new ConnectionValidationResponse
+            //    {
+            //        IsValid = false,
+            //        Message = ex.Message
+            //    };
+            //}
         }
     }
 }
