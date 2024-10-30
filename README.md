@@ -37,6 +37,7 @@ Before you can connect you need to make sure that:
 ### Customer
 
 - **Get all customers**: Get all customers.
+- **Find customer**: Get the first matching customer given the provided criteria.
 - **Get customer by ID**: Get a customer by ID.
 - **Create customer**: Create a customer.
 - **Update customer**: Update a customer.
