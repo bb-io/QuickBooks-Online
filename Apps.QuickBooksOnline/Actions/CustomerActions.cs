@@ -46,6 +46,34 @@ public class CustomerActions(InvocationContext invocationContext) : AppInvocable
         };
     }
 
+    [Action("Find customer", Description = "Returns the first matching customer given the provided criteria")]
+    public async Task<GetCustomerResponse> FindCustomer([ActionParameter] GetCustomerFilterRequest request)
+    {
+        var lastUpdatedTime = request.LastUpdatedTime?.ToString("yyyy-MM-dd") ?? "2015-03-01";
+        var sql = $"select * from Customer Where Metadata.LastUpdatedTime > '{lastUpdatedTime}'";
+
+        if (!string.IsNullOrEmpty(request.DisplayName))
+        {
+            sql += $" AND DisplayName = '{request.DisplayName}'";
+        }
+
+        if (!string.IsNullOrEmpty(request.GivenName))
+        {
+            sql += $" AND GivenName = '{request.GivenName}'";
+        }
+
+        var wrapper =
+            await Client.ExecuteWithJson<QueryCustomerWrapper>($"/query?query={sql}", Method.Get, null, Creds);
+
+        if (wrapper.QueryResponse.Customer == null || wrapper.QueryResponse.Customer.Count == 0)
+        {
+            return null;
+        }
+
+         return new GetCustomerResponse(wrapper.QueryResponse.Customer.First());
+        
+    }
+
     [Action("Get customer", Description = "Get a customer")]
     public async Task<GetCustomerResponse> GetCustomer([ActionParameter] CustomerRequest input)
     {
