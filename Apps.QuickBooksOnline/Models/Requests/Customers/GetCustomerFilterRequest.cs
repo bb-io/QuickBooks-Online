@@ -10,6 +10,9 @@ public class GetCustomerFilterRequest
     [Display("Given name")]
     public string? GivenName { get; set; }
 
+    [Display("Company name")]
+    public string? CompanyName { get; set; }
+
     [Display("Last updated time", Description = "By default, it will be set to 2015-03-01")]
     public DateTime? LastUpdatedTime { get; set; }
 }

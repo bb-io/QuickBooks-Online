@@ -62,6 +62,11 @@ public class CustomerActions(InvocationContext invocationContext) : AppInvocable
             sql += $" AND GivenName = '{request.GivenName}'";
         }
 
+        if (!string.IsNullOrEmpty(request.CompanyName))
+        {
+            sql += $" AND CompanyName = '{request.CompanyName}'";
+        }
+        
         var wrapper =
             await Client.ExecuteWithJson<QueryCustomerWrapper>($"/query?query={sql}", Method.Get, null, Creds);
 
