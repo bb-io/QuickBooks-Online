@@ -96,7 +96,12 @@ public class CustomerActions(InvocationContext invocationContext) : AppInvocable
         {
             body.Add("DisplayName", input.DisplayName);
         }
-        
+
+        if (!string.IsNullOrEmpty(input.CompanyName))
+        {
+            body.Add("CompanyName", input.CompanyName);
+        }
+
         if (!string.IsNullOrEmpty(input.GivenName))
         {
             body.Add("GivenName", input.GivenName);
@@ -151,8 +156,14 @@ public class CustomerActions(InvocationContext invocationContext) : AppInvocable
                 City = input.City,
                 PostalCode = input.PostalCode,
                 Line1 = input.Line1,
+                Line2 = input.Line2,
                 Country = input.Country
             });
+        }
+
+        if (!string.IsNullOrEmpty(input.Term))
+        {
+            body.Add("SalesTermRef", new { value = input.Term });
         }
 
         var response = await Client.ExecuteWithJson<CustomerWrapper>("/customer", Method.Post, body, Creds);
