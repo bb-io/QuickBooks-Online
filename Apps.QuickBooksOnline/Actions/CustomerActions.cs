@@ -166,6 +166,11 @@ public class CustomerActions(InvocationContext invocationContext) : AppInvocable
             body.Add("SalesTermRef", new { value = input.Term });
         }
 
+        if (!string.IsNullOrEmpty(input.Currency))
+        {
+            body.Add("CurrencyRef", new { value = input.Currency });
+        }
+
         var response = await Client.ExecuteWithJson<CustomerWrapper>("/customer", Method.Post, body, Creds);
         return new GetCustomerResponse(response.Customer);
     }

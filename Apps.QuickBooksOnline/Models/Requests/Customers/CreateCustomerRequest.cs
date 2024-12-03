@@ -53,4 +53,6 @@ public class CreateCustomerRequest
 
     [DataSource(typeof(TermDataSource))]
     public string? Term { get; set; }
+
+    public string? Currency { get; set; }
 }
