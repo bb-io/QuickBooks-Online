@@ -1,4 +1,6 @@
-﻿using Blackbird.Applications.Sdk.Common;
+﻿using Apps.QuickBooksOnline.DataSourceHandlers;
+using Blackbird.Applications.Sdk.Common;
+using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.QuickBooksOnline.Models.Requests.Customers;
 
@@ -6,7 +8,10 @@ public class CreateCustomerRequest
 {
     [Display("Display name")]
     public string? DisplayName { get; set; }
-        
+
+    [Display("Company name")]
+    public string? CompanyName { get; set; }
+
     [Display("Given name")]
     public string? GivenName { get; set; }
         
@@ -41,5 +46,13 @@ public class CreateCustomerRequest
     [Display("Line 1")]
     public string? Line1 { get; set; }
 
+    [Display("Line 2")]
+    public string? Line2 { get; set; }
+
     public string? Country { get; set; }
+
+    [DataSource(typeof(TermDataSource))]
+    public string? Term { get; set; }
+
+    public string? Currency { get; set; }
 }
