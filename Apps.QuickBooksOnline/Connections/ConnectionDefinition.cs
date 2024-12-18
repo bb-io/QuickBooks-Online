@@ -13,7 +13,6 @@ public class ConnectionDefinition : IConnectionDefinition
         {
             Name = "OAuth2",
             AuthenticationType = ConnectionAuthenticationType.OAuth2,
-            ConnectionUsage = ConnectionUsage.Actions,
             ConnectionProperties = new List<ConnectionProperty>()
             {
                 new (CredNames.ApiUrl){ DisplayName = "API url" },
@@ -27,23 +26,19 @@ public class ConnectionDefinition : IConnectionDefinition
     {
         var token = values.First(v => v.Key == "access_token");
         yield return new AuthenticationCredentialsProvider(
-            AuthenticationCredentialsRequestLocation.Header,
             "Authorization",
             $"bearer {token.Value}"
         );
 
         yield return new AuthenticationCredentialsProvider(
-            AuthenticationCredentialsRequestLocation.None,
             CredNames.ApiUrl,
             values[CredNames.ApiUrl]);
 
         yield return new AuthenticationCredentialsProvider(
-            AuthenticationCredentialsRequestLocation.None,
             CredNames.CompanyId,
             values[CredNames.CompanyId]);
 
         yield return new AuthenticationCredentialsProvider(
-            AuthenticationCredentialsRequestLocation.None,
             CredNames.MinorVersion,
             values[CredNames.MinorVersion]);
     }

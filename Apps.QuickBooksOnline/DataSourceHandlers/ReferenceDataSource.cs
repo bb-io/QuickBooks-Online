@@ -6,9 +6,9 @@ using Blackbird.Applications.Sdk.Common.Invocation;
 namespace Apps.QuickBooksOnline.DataSourceHandlers;
 
 public class ReferenceDataSource(InvocationContext invocationContext, [ActionParameter] FilterAttachmentsRequest request)
-    : AppInvocable(invocationContext), IAsyncDataSourceHandler
+    : AppInvocable(invocationContext), IAsyncDataSourceItemHandler
 {
-    public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
+    public async Task<IEnumerable<DataSourceItem>> GetDataAsync(DataSourceContext context,
         CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(request.EntityType))

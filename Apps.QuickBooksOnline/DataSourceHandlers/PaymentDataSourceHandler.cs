@@ -6,9 +6,9 @@ using Blackbird.Applications.Sdk.Common.Invocation;
 namespace Apps.QuickBooksOnline.DataSourceHandlers;
 
 public class PaymentDataSourceHandler(InvocationContext invocationContext)
-    : AppInvocable(invocationContext), IAsyncDataSourceHandler
+    : AppInvocable(invocationContext), IAsyncDataSourceItemHandler
 {
-    public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
+    public async Task<IEnumerable<DataSourceItem>> GetDataAsync(DataSourceContext context,
         CancellationToken cancellationToken)
     {
         var paymentActions = new PaymentActions(InvocationContext);
@@ -19,7 +19,7 @@ public class PaymentDataSourceHandler(InvocationContext invocationContext)
             .Where(x => context.SearchString == null ||
                         x.CustomerName.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
             .Take(20)
-            .ToDictionary(x => x.Id, GetReadableName);
+            .Select(x => new DataSourceItem(x.Id, GetReadableName(x)));
     }
     
     private string GetReadableName(PaymentResponse response)

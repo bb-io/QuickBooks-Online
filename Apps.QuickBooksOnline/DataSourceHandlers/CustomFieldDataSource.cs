@@ -8,9 +8,9 @@ using RestSharp;
 namespace Apps.QuickBooksOnline.DataSourceHandlers;
 
 public class CustomFieldDataSource(InvocationContext invocationContext, [ActionParameter] GetCustomFieldRequest request)
-    : AppInvocable(invocationContext), IAsyncDataSourceHandler
+    : AppInvocable(invocationContext), IAsyncDataSourceItemHandler
 {
-    public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
+    public async Task<IEnumerable<DataSourceItem>> GetDataAsync(DataSourceContext context,
         CancellationToken cancellationToken)
     {
         if(string.IsNullOrWhiteSpace(request.InvoiceId))
@@ -23,6 +23,6 @@ public class CustomFieldDataSource(InvocationContext invocationContext, [ActionP
             .Where(x => context.SearchString == null ||
                         x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
             .Take(20)
-            .ToDictionary(x => x.DefinitionId, x => x.Name);
+            .Select(x => new DataSourceItem(x.DefinitionId, x.Name));
     }
 }

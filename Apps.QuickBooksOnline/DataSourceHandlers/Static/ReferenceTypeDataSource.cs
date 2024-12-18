@@ -1,14 +1,15 @@
 ﻿using Blackbird.Applications.Sdk.Common.Dictionaries;
+using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.QuickBooksOnline.DataSourceHandlers.Static;
 
-public class ReferenceTypeDataSource : IStaticDataSourceHandler
+public class ReferenceTypeDataSource : IStaticDataSourceItemHandler
 {
-    public Dictionary<string, string> GetData()
+    IEnumerable<DataSourceItem> IStaticDataSourceItemHandler.GetData()
     {
-        return new Dictionary<string, string>
+        return new List<DataSourceItem>()
         {
-            { "Invoice", "Invoice" }
+            new ("Invoice", "Invoice")
         };
     }
 }
