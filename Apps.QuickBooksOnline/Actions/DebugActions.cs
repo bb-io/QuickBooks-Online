@@ -13,10 +13,19 @@ namespace Apps.QuickBooksOnline.Actions
     public class DebugActions(InvocationContext invocationContext) : AppInvocable(invocationContext)
     {
         [Action("Debug", Description = "For debugging purposes")]
-        public InvocationContext Debug()
+        public DebugResponse Debug()
         {
-            return InvocationContext;
+            var token = Creds.First(p => p.KeyName == "Authorization");
+            return new DebugResponse
+            {
+                Token = token.Value
+            };
         }
+    }
+
+    public class DebugResponse
+    {
+        public string Token { get; set; }
     }
 
 }
