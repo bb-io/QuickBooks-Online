@@ -28,7 +28,7 @@ public class GetCustomerResponse
         Balance = customer.Balance; 
     }
 
-    [Display("Id")]
+    [Display("Customer ID")]
     public string Id { get; set; }
 
     [Display("Display name")]

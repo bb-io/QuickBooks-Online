@@ -4,7 +4,7 @@ namespace Apps.QuickBooksOnline.Models.Dtos.Attachables;
 
 public class DeleteAttachmentDto
 {
-    [Display("Id")]
+    [Display("Attachment ID")]
     public string Id { get; set; }
     
     [Display("SyncToken")]   

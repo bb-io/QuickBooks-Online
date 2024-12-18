@@ -7,20 +7,20 @@ using Blackbird.Applications.Sdk.Common.Invocation;
 namespace Apps.QuickBooksOnline.DataSourceHandlers;
 
 public class AttachmentDataSource(InvocationContext invocationContext)
-    : AppInvocable(invocationContext), IAsyncDataSourceHandler
+    : AppInvocable(invocationContext), IAsyncDataSourceItemHandler
 {
-    public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
+    public async Task<IEnumerable<DataSourceItem>> GetDataAsync(DataSourceContext context,
         CancellationToken cancellationToken)
     {
         var classActions = new AttachmentActions(InvocationContext, null);
         
         var classesResponse = await classActions.GetAllAttachments(new FilterAttachmentsRequest());
-        
+
         return classesResponse.Attachments
             .Where(x => context.SearchString == null ||
                         BuildReadableName(x).Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
             .Take(20)
-            .ToDictionary(x => x.Id, BuildReadableName);
+            .Select(x => new DataSourceItem(x.Id, BuildReadableName(x)));
     }
     
     private string BuildReadableName(AttachmentResponse attachment)
