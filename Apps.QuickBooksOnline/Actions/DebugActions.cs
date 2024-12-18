@@ -12,7 +12,7 @@ namespace Apps.QuickBooksOnline.Actions
     [ActionList]
     public class DebugActions(InvocationContext invocationContext) : AppInvocable(invocationContext)
     {
-        [Display("Debug")]
+        [Action("Debug", Description = "For debugging purposes")]
         public InvocationContext Debug()
         {
             return InvocationContext;
