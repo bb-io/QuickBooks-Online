@@ -1,6 +1,9 @@
 {
   "ConnectionDefinition": {
-    "Authorization": ""
+    "Authorization": "bearer ",
+    "api_url": "",
+    "company_id": "",
+    "minor_version": ""
   },
   "TestFolder": "C:\\Users\\..."
 }
