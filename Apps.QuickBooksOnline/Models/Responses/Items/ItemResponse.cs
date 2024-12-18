@@ -15,10 +15,10 @@ public class ItemResponse(ItemDto dto)
     public string Type { get; set; } = dto.Type;
 
     [Display("Income account ID")]
-    public string IncomingAccountId { get; set; } = dto.IncomeAccountRef.Value;
+    public string IncomingAccountId { get; set; } = dto.IncomeAccountRef?.Value;
 
     [Display("Income account name")]
-    public string IncomeAccountName { get; set; } = dto.IncomeAccountRef.Name;
+    public string IncomeAccountName { get; set; } = dto.IncomeAccountRef?.Name;
 
     [Display("Unit price")]
     public double UnitPrice { get; set; } = dto.UnitPrice;
