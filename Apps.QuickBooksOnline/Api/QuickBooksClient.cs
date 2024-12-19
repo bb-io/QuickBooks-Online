@@ -5,6 +5,7 @@ using Apps.QuickBooksOnline.Extensions;
 using Apps.QuickBooksOnline.Models.Dtos;
 using Apps.QuickBooksOnline.Models.Responses.Attachable;
 using Blackbird.Applications.Sdk.Common.Authentication;
+using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -101,6 +102,11 @@ public class QuickBooksClient : RestClient
 
     private Exception GetError(RestResponse response)
     {
+        if (response.StatusCode == HttpStatusCode.Unauthorized)
+        {
+            return new PluginMisconfigurationException("You are not connected to Quickbooks anymore. Please reconfigure your connection.");
+        }
+
         var tid = response.Headers?.FirstOrDefault(x => x.Name == "intuit_tid")?.Value ?? "N/A";
 
         try

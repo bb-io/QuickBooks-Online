@@ -6,6 +6,7 @@ using Apps.QuickBooksOnline.Models.Requests.Customers;
 using Apps.QuickBooksOnline.Models.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
+using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using RestSharp;
 using CreateCustomerRequest = Apps.QuickBooksOnline.Models.Requests.Customers.CreateCustomerRequest;
@@ -147,23 +148,53 @@ public class CustomerActions(InvocationContext invocationContext) : AppInvocable
         {
             body.Add("Suffix", input.Suffix);
         }
-        
+
+        var billingAddress = new Dictionary<string, string>();
+
         if (!string.IsNullOrEmpty(input.CountrySubDivisionCode))
         {
-            body.Add("BillAddr", new
-            {
-                CountrySubDivisionCode = input.CountrySubDivisionCode,
-                City = input.City,
-                PostalCode = input.PostalCode,
-                Line1 = input.Line1,
-                Line2 = input.Line2,
-                Country = input.Country
-            });
+            billingAddress.Add("CountrySubDivisionCode", input.CountrySubDivisionCode);
+        }
+
+        if (!string.IsNullOrEmpty(input.Line1))
+        {
+            billingAddress.Add("Line1", input.Line1);
+        }
+
+        if (!string.IsNullOrEmpty(input.Line2))
+        {
+            billingAddress.Add("Line2", input.Line2);
+        }
+
+        if (!string.IsNullOrEmpty(input.City))
+        {
+            billingAddress.Add("City", input.City);
+        }
+
+        if (!string.IsNullOrEmpty(input.PostalCode))
+        {
+            billingAddress.Add("PostalCode", input.PostalCode);
+        }
+
+        if (!string.IsNullOrEmpty(input.Country))
+        {
+            billingAddress.Add("Country", input.Country);
+        }
+
+        if (billingAddress.Count > 0)
+        {
+            body.Add("BillAddr", billingAddress);
         }
 
         if (!string.IsNullOrEmpty(input.Term))
         {
-            body.Add("SalesTermRef", new { value = input.Term });
+            if (int.TryParse(input.Term, out int value))
+            {
+                body.Add("SalesTermRef", new { value = input.Term });
+            } else
+            {
+                throw new PluginMisconfigurationException("The Term ID value should be numeric and corresponding to the Term IDs in your Quickbooks connection.");
+            }                
         }
 
         if (!string.IsNullOrEmpty(input.Currency))
