@@ -14,6 +14,13 @@ namespace Tests.QuickBooksOnline
             await TestDataHandler(handler);
         }
 
+        [TestMethod]
+        public async Task TermDataHandler_ShouldNotThrowError()
+        {
+            var handler = new TermDataSource(InvocationContext);
+            await TestDataHandler(handler);
+        }
+
 
         private async Task TestDataHandler(IAsyncDataSourceItemHandler dataSourceItemHandler)
         {
