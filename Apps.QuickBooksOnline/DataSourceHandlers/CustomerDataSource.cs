@@ -6,9 +6,9 @@ using Blackbird.Applications.Sdk.Common.Invocation;
 namespace Apps.QuickBooksOnline.DataSourceHandlers;
 
 public class CustomerDataSource(InvocationContext invocationContext)
-    : AppInvocable(invocationContext), IAsyncDataSourceHandler
+    : AppInvocable(invocationContext), IAsyncDataSourceItemHandler
 {
-    public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
+    public async Task<IEnumerable<DataSourceItem>> GetDataAsync(DataSourceContext context,
         CancellationToken cancellationToken)
     {
         var customerActions = new CustomerActions(InvocationContext);
@@ -19,6 +19,6 @@ public class CustomerDataSource(InvocationContext invocationContext)
             .Where(x => context.SearchString == null ||
                         x.DisplayName.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
             .Take(20)
-            .ToDictionary(x => x.Id, x => x.DisplayName);
+            .Select(x => new DataSourceItem(x.Id, x.DisplayName));
     }
 }

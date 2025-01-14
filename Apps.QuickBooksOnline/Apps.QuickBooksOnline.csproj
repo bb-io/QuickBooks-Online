@@ -6,12 +6,12 @@
 		<Nullable>enable</Nullable>
 		<Product>QuickBooks Online</Product>
 		<Description>QuickBooks Online accounting software helps you manage your cash flow, track expenses, send invoices and more all in one place.</Description>
-		<Version>1.1.12</Version>
+		<Version>1.1.17</Version>
 		<AssemblyName>Apps.QuickBooksOnline</AssemblyName>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Blackbird.Applications.Sdk.Common" Version="2.6.0" />
+		<PackageReference Include="Blackbird.Applications.Sdk.Common" Version="2.11.0" />
 		<PackageReference Include="Blackbird.Applications.Sdk.Utils" Version="1.0.25" />
 	</ItemGroup>
 	<ItemGroup>

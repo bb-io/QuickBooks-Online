@@ -10,9 +10,9 @@ using RestSharp;
 namespace Apps.QuickBooksOnline.DataSourceHandlers;
 
 public class TermDataSource(InvocationContext invocationContext)
-    : AppInvocable(invocationContext), IAsyncDataSourceHandler
+    : AppInvocable(invocationContext), IAsyncDataSourceItemHandler
 {
-    public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
+    public async Task<IEnumerable<DataSourceItem>> GetDataAsync(DataSourceContext context,
         CancellationToken cancellationToken)
     {
         var sql = "select * from Term";
@@ -25,6 +25,6 @@ public class TermDataSource(InvocationContext invocationContext)
             .Where(x => context.SearchString == null ||
                         x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
             .Take(20)
-            .ToDictionary(x => x.Id, x => x.Name);
+            .Select(x => new DataSourceItem(x.Id, x.Name));
     }
 }
