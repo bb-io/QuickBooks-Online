@@ -20,6 +20,12 @@ public class ItemResponse(ItemDto dto)
     [Display("Income account name")]
     public string IncomeAccountName { get; set; } = dto.IncomeAccountRef?.Name;
 
+    [Display("Tax code value")]
+    public string TaxCodeValue { get; set; } = dto.SalesTaxCodeRef?.Value ?? "";
+
+    [Display("Tax code name")]
+    public string TaxCodeName { get; set; } = dto.SalesTaxCodeRef?.Name ?? "";
+
     [Display("Unit price")]
     public double UnitPrice { get; set; } = dto.UnitPrice;
 

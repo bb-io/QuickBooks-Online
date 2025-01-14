@@ -13,6 +13,9 @@ public class SalesItemLineDetail
 
     [JsonProperty("UnitPrice")]
     public decimal? UnitPrice { get; set; }
+
+    [JsonProperty("TaxCodeRef")]
+    public TaxCodeRef? TaxCodeRef { get; set; }
 }
 
 public class SalesLine

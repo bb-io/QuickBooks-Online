@@ -84,6 +84,11 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
                                 Value = input.ClassIds?.ElementAt(i)
                             }
                     },
+                    TaxCodeRef = String.IsNullOrEmpty(t.TaxCodeValue) ? null :
+                    new TaxCodeRef
+                    {
+                        Value = t.TaxCodeValue
+                    },
                     Qty = input.Quantities?.ElementAt(i) == null
                         ? 1
                         : input.Quantities.ElementAt(i),
