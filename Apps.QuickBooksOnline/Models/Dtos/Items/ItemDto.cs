@@ -28,7 +28,10 @@ public class ItemDto
     
     [JsonProperty("IncomeAccountRef")]
     public IncomeAccountRefDto IncomeAccountRef { get; set; }
-    
+
+    [JsonProperty("SalesTaxCodeRef")]
+    public SalesTaxCodeRefDto? SalesTaxCodeRef { get; set; }
+
    [JsonProperty("PurchaseCost")] 
    public double PurchaseCost { get; set; }
 
@@ -51,6 +54,14 @@ public class IncomeAccountRefDto
     [JsonProperty("value")]
     public string Value { get; set; }
     
+    [JsonProperty("name")]
+    public string Name { get; set; }
+}
+public class SalesTaxCodeRefDto
+{
+    [JsonProperty("value")]
+    public string Value { get; set; }
+
     [JsonProperty("name")]
     public string Name { get; set; }
 }

@@ -52,6 +52,7 @@ public class CreateCustomerRequest
     public string? Country { get; set; }
 
     [DataSource(typeof(TermDataSource))]
+    [Display("Payment terms")]
     public string? Term { get; set; }
 
     public string? Currency { get; set; }
