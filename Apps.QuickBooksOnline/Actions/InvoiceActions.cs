@@ -15,6 +15,7 @@ using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Newtonsoft.Json;
 using CustomerRef = Apps.QuickBooksOnline.Models.Dtos.CustomerRef;
 using ItemRef = Apps.QuickBooksOnline.Models.Dtos.ItemRef;
+using Blackbird.Applications.Sdk.Common.Exceptions;
 
 namespace Apps.QuickBooksOnline.Actions;
 
@@ -115,8 +116,16 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
             }
         };
 
-        var invoiceWrapper = await Client.ExecuteWithJson<InvoiceWrapper>("/invoice", Method.Post, body, Creds);
-        return new GetInvoiceResponse(invoiceWrapper.Invoice);
+        try 
+        {
+            var invoiceWrapper = await Client.ExecuteWithJson<InvoiceWrapper>("/invoice", Method.Post, body, Creds);
+            return new GetInvoiceResponse(invoiceWrapper.Invoice);
+        } 
+        catch (Exception ex) 
+        {
+            throw new PluginApplicationException(ex.Message);
+        }
+        
     }
 
     [Action("Update invoice", Description = "Update an invoice with a new due date and class reference")]
