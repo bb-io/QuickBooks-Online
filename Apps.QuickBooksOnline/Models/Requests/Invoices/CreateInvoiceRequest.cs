@@ -37,4 +37,7 @@ public class CreateInvoiceRequest
 
     [Display("Tax code"), DataSource(typeof(TaxCodeDataHandler))]
     public string? TaxCode { get; set; }
+
+    [Display("Sales terms"), DataSource(typeof(TermDataSource))]
+    public string? SalesTerms { get; set; }
 }

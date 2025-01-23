@@ -40,6 +40,9 @@ public class CreateInvoiceRequestBody
 
     [JsonProperty("CustomerRef")]
     public CustomerRef CustomerRef { get; set; }
+
+    [JsonProperty("SalesTermRef")]
+    public SalesTermRef? SalesTermRef { get; set; }
     
     [JsonProperty("TxnDate")]
     public string? TxnDate { get; set; }
