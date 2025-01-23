@@ -51,6 +51,7 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
         {
             lines = input.LineAmounts.Select((t, i) => new SalesLine
             {
+                Description = input.Descriptions?.ElementAt(i) ?? null,
                 DetailType = "SalesItemLineDetail",
                 Amount = (decimal)t,
                 SalesItemLineDetail = new Api.Models.Requests.SalesItemLineDetail
@@ -68,8 +69,10 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
         else
         {
             var items = await itemActions.GetItemsByIds(input.ItemIds);
+            
             lines = items.Select((t, i) => new SalesLine
             {
+                Description = input.Descriptions?.ElementAt(i) ?? null,
                 DetailType = "SalesItemLineDetail",
                 Amount = (decimal)input.LineAmounts.ElementAt(i),
                 SalesItemLineDetail = new Api.Models.Requests.SalesItemLineDetail
@@ -113,6 +116,10 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
             ClassRef = new ClassRef
             {
                 Value = input.ClassId
+            },
+            SalesTermRef = new SalesTermRef
+            {
+                Value = input.SalesTerms
             }
         };
 
