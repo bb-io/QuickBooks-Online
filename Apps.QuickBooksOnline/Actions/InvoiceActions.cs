@@ -68,7 +68,17 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
         }
         else
         {
-            var items = await itemActions.GetItemsByIds(input.ItemIds);
+            var items = new List<Models.Responses.Items.ItemResponse>();
+            try { items = await itemActions.GetItemsByIds(input.ItemIds); }
+            catch (Exception e)
+            {
+                if (e.Message.Contains("Invalid ID"))
+                { throw new PluginMisconfigurationException("The item ID provided is not valid."); }
+                else 
+                {
+                    throw new PluginApplicationException(e.Message);
+                }
+            } 
             
             lines = items.Select((t, i) => new SalesLine
             {
