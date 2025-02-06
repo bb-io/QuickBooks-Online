@@ -47,6 +47,12 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
         var itemActions = new ItemActions(InvocationContext);
 
         var lines = new List<SalesLine>();
+
+        if (input.ItemIds is not null && input.ItemIds.Any(x => string.IsNullOrWhiteSpace(x)))
+        {
+            throw new PluginMisconfigurationException("Item IDs list contains empty or whitespace values. Please provide valid Item IDs.");
+        }
+
         if (input.ItemIds is null)
         {
             lines = input.LineAmounts.Select((t, i) => new SalesLine

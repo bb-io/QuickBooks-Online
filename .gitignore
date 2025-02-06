@@ -356,3 +356,4 @@ healthchecksdb
 *.env
 /Apps.Github/ApplicationConstants.cs
 /Tests.QuickBooksOnline/appsettings.json
+/Tests.QuickBooksOnline/appsettings.json
