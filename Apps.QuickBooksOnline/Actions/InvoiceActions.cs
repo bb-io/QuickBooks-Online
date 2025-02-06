@@ -48,9 +48,9 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
 
         var lines = new List<SalesLine>();
 
-        if (input.ItemIds is not null && input.ItemIds.Any(x => string.IsNullOrWhiteSpace(x)))
+        if (input.ItemIds != null && input.ItemIds.Any(x => x != null && string.IsNullOrWhiteSpace(x)))
         {
-            throw new PluginMisconfigurationException("Item IDs list contains empty or whitespace values. Please provide valid Item IDs.");
+            throw new PluginMisconfigurationException("Item IDs list contains only whitespace values. Please provide valid Item IDs.");
         }
 
         if (input.ItemIds is null)
@@ -161,9 +161,9 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
             SyncToken = syncToken
         };
 
-        if (input.ItemIds is not null && input.ItemIds.Any(x => string.IsNullOrWhiteSpace(x)))
+        if (input.ItemIds != null && input.ItemIds.Any(x => x != null && string.IsNullOrWhiteSpace(x)))
         {
-            throw new PluginMisconfigurationException("Item IDs list contains empty or whitespace values. Please provide valid Item IDs.");
+            throw new PluginMisconfigurationException("Item IDs list contains only whitespace values. Please provide valid Item IDs.");
         }
 
         if (input.ItemIds is null)

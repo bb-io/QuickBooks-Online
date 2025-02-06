@@ -18,7 +18,7 @@ namespace Tests.QuickBooksOnline
          
             var action = new InvoiceActions(InvocationContext,FileManager);
 
-            var input = new CreateInvoiceRequest {CustomerId= "67", LineAmounts = [12,33], ItemIds = ["",""], 
+            var input = new CreateInvoiceRequest {CustomerId= "67", LineAmounts = [12,33], ItemIds = ["1","2"], 
                 UnitPrices = ["2","3"], DocNumber="CASE",
                 SalesTerms = "1",
                 Quantities = [6,11],
