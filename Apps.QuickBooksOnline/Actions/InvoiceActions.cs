@@ -161,6 +161,11 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
             SyncToken = syncToken
         };
 
+        if (input.ItemIds is not null && input.ItemIds.Any(x => string.IsNullOrWhiteSpace(x)))
+        {
+            throw new PluginMisconfigurationException("Item IDs list contains empty or whitespace values. Please provide valid Item IDs.");
+        }
+
         if (input.ItemIds is null)
         {
             updatedInvoice.Line = input.LineAmounts.Select((t, i) => new SalesLine
