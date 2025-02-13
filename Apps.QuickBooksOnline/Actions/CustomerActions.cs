@@ -201,9 +201,20 @@ public class CustomerActions(InvocationContext invocationContext) : AppInvocable
         {
             body.Add("CurrencyRef", new { value = input.Currency });
         }
-
-        var response = await Client.ExecuteWithJson<CustomerWrapper>("/customer", Method.Post, body, Creds);
-        return new GetCustomerResponse(response.Customer);
+        try 
+        {
+            var response = await Client.ExecuteWithJson<CustomerWrapper>("/customer", Method.Post, body, Creds);
+            return new GetCustomerResponse(response.Customer);
+        }
+        catch (Exception e)
+        {
+            if (e.Message.Contains("Duplicate Name Exists")) 
+            {
+                throw new PluginMisconfigurationException("A customer with the same name already exists");
+            }
+            else { throw new PluginApplicationException(e.Message); }
+        }
+        
     }
 
     [Action("Update customer", Description = "Update a customer with the given ID including optional fields")]
