@@ -151,6 +151,64 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
         
     }
 
+
+    [Action("Create bill", Description = "Create a bill with a vendor and line items")]
+    public async Task<GetBillResponse> CreateBill([ActionParameter] CreateBillRequest input)
+    {
+        if (input.AccountIds == null || !input.AccountIds.Any())
+            throw new PluginMisconfigurationException("Please provide at least one account ID.");
+
+        if (input.LineAmounts == null || !input.LineAmounts.Any())
+            throw new PluginMisconfigurationException("Please provide at least one line amount.");
+
+        if (input.LineAmounts.Count() != input.AccountIds.Count())
+            throw new PluginMisconfigurationException(
+                "The number of line amounts must match the number of account IDs."
+            );
+
+        var lines = input.LineAmounts.Select((amount, i) => new ExpenseLine
+        {
+            Id = (i + 1).ToString(),
+            DetailType = "AccountBasedExpenseLineDetail",
+            Amount = (decimal)amount,
+            Description = input.Descriptions?.ElementAtOrDefault(i),
+
+            AccountBasedExpenseLineDetail = new AccountBasedExpenseLineDetail
+            {
+                AccountRef = new AccountRef
+                {
+                    Value = input.AccountIds.ElementAt(i)
+                }
+            }
+        }).ToList();
+
+        var body = new CreateBillRequestBody
+        {
+            Line = lines,
+            VendorRef = new VendorRef
+            {
+                Value = input.VendorId
+            },
+            TxnDate = input.BillDate?.ToString("yyyy-MM-dd"),
+            DueDate = input.DueDate?.ToString("yyyy-MM-dd"),
+            DocNumber = input.DocNumber
+        };
+
+        try
+        {
+            var billWrapper = await Client.ExecuteWithJson<BillWrapper>("/bill", Method.Post, body, Creds);
+            return new GetBillResponse(billWrapper.Bill);
+        }
+        catch (Exception ex)
+        {
+            throw new PluginApplicationException(ex.Message);
+        }
+    }
+
+
+
+
+
     [Action("Update invoice", Description = "Update an invoice with a new due date and class reference")]
     public async Task<GetInvoiceResponse> UpdateInvoice([ActionParameter] UpdateInvoiceRequest input)
     {
