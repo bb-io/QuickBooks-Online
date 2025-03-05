@@ -32,5 +32,19 @@ namespace Tests.QuickBooksOnline
                 Console.WriteLine($"{item.Value}: {item.DisplayName}");
             }
         }
+
+        [TestMethod]
+        public async Task VendorDataHandler_ShouldNotThrowError()
+        {
+            var handler = new VendorDataSource(InvocationContext);
+            await TestDataHandler(handler);
+        }
+
+        [TestMethod]
+        public async Task PaymentDataHandler_ShouldNotThrowError()
+        {
+            var handler = new PaymentDataSourceHandler(InvocationContext);
+            await TestDataHandler(handler);
+        }
     }
 }

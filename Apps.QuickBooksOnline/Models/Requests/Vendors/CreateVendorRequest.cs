@@ -66,4 +66,7 @@ public class CreateVendorRequest
 
     [Display("State code")]
     public string? StateCode { get; set; }
+
+    [Display("Currency code")]
+    public string? CurrencyCode { get; set; }
 }
