@@ -1,4 +1,6 @@
-﻿using Apps.QuickBooksOnline.Models.Dtos.Payments;
+﻿using Apps.QuickBooksOnline.Api.Models.Requests;
+using Apps.QuickBooksOnline.Api.Models.Responses;
+using Apps.QuickBooksOnline.Models.Dtos.Payments;
 using Apps.QuickBooksOnline.Models.Dtos.Vendors;
 using Apps.QuickBooksOnline.Models.Requests.Vendors;
 using Apps.QuickBooksOnline.Models.Responses.Vendors;
@@ -22,6 +24,36 @@ public class VendorActions(InvocationContext invocationContext) : AppInvocable(i
 
         return new GetAllVendorsResponse(vendorsWrapper.QueryResponse.Vendor);
     }
+
+    [Action("Find vendor", Description = "Returns the first matching vendor given the provided criteria")]
+    public async Task<GetVendorResponse> FindVendor([ActionParameter] GetVendorFilterRequest request)
+    {
+        var lastUpdatedTime = request.LastUpdatedTime?.ToString("yyyy-MM-dd") ?? "2015-03-01";
+        var sql = $"select * from Vendor Where MetaData.LastUpdatedTime > '{lastUpdatedTime}'";
+
+        if (!string.IsNullOrEmpty(request.DisplayName))
+        {
+            sql += $" AND DisplayName = '{request.DisplayName}'";
+        }
+        if (!string.IsNullOrEmpty(request.GivenName))
+        {
+            sql += $" AND GivenName = '{request.GivenName}'";
+        }
+        if (!string.IsNullOrEmpty(request.CompanyName))
+        {
+            sql += $" AND CompanyName = '{request.CompanyName}'";
+        }
+
+        var vendorsWrapper = await Client.ExecuteWithJson<QueryVendorsWrapper>($"/query?query={sql}", Method.Get, null, Creds);
+
+        if (vendorsWrapper.QueryResponse.Vendor == null || vendorsWrapper.QueryResponse.Vendor.Count == 0)
+        {
+            return null;
+        }
+
+        return new GetVendorResponse(vendorsWrapper.QueryResponse.Vendor.First());
+    }
+
 
     [Action("Get vendor", Description = "Get vendor by ID")]
     public async Task<VendorResponse> GetVendorById([ActionParameter] VendorRequest request)
