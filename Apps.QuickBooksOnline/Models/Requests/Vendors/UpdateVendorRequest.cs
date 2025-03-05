@@ -1,4 +1,5 @@
 ﻿using Apps.QuickBooksOnline.DataSourceHandlers;
+using Apps.QuickBooksOnline.DataSourceHandlers.Static;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 

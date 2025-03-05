@@ -112,11 +112,11 @@ public class QuickBooksClient : RestClient
         try
         {
             var errorDto = JsonConvert.DeserializeObject<ErrorDto>(response.Content);
-            return new Exception($"Status code: {response.StatusCode}, TID: {tid} | {errorDto}");
+            return new PluginApplicationException($"Status code: {response.StatusCode}, TID: {tid} | {errorDto}");
         }
         catch (Exception)
         {
-            return new Exception($"Status code: {response.StatusCode}, TID: {tid}, Message: {response.Content}");
+            return new PluginApplicationException($"Status code: {response.StatusCode}, TID: {tid}, Message: {response.Content}");
         }
     }
 
@@ -127,11 +127,11 @@ public class QuickBooksClient : RestClient
         try
         {
             var errorDto = JsonConvert.DeserializeObject<ErrorDto>(responseContent);
-            return new Exception($"Status code: {statusCode}, TID: {tid} | {errorDto}");
+            return new PluginApplicationException($"Status code: {statusCode}, TID: {tid} | {errorDto}");
         }
         catch (Exception)
         {
-            return new Exception($"Status code: {statusCode}, TID: {tid}, Message: {responseContent}");
+            return new PluginApplicationException($"Status code: {statusCode}, TID: {tid}, Message: {responseContent}");
         }
     }
 

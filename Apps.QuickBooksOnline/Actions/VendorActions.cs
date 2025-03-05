@@ -1,8 +1,10 @@
-﻿using Apps.QuickBooksOnline.Models.Dtos.Vendors;
+﻿using Apps.QuickBooksOnline.Models.Dtos.Payments;
+using Apps.QuickBooksOnline.Models.Dtos.Vendors;
 using Apps.QuickBooksOnline.Models.Requests.Vendors;
 using Apps.QuickBooksOnline.Models.Responses.Vendors;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
+using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using RestSharp;
 
@@ -138,7 +140,7 @@ public class VendorActions(InvocationContext invocationContext) : AppInvocable(i
     {
         if (string.IsNullOrEmpty(request.DisplayName))
         {
-            throw new Exception("Display name must be provided.");
+            throw new PluginMisconfigurationException("Display name must be provided.");
         }
 
         var body = new Dictionary<string, object>
@@ -146,6 +148,8 @@ public class VendorActions(InvocationContext invocationContext) : AppInvocable(i
             { "DisplayName", request.DisplayName }
         };
 
+
+        AddPropertyIfNotNull(body, "CurrencyRef", request.CurrencyCode != null ? new { value = request.CurrencyCode }: null);
         AddPropertyIfNotNull(body, "Title", request.Title);
         AddPropertyIfNotNull(body, "GivenName", request.GivenName);
         AddPropertyIfNotNull(body, "MiddleName", request.MiddleName);
