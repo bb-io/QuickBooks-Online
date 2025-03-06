@@ -89,6 +89,7 @@ namespace Apps.QuickBooksOnline.Api.Models.Requests
         [JsonProperty("AccountRef")]
         [Display("Account reference")]
         public AccountRef AccountRef { get; set; }
+        public TaxCodeRef TaxCodeRef { get; set; }
     }
     public class AccountRef
     {
