@@ -35,7 +35,7 @@ namespace Apps.QuickBooksOnline.Api.Models.Requests
         [Display("Sales terms"), DataSource(typeof(TermDataSource))]
         public string? SalesTerms { get; set; }
 
-        [Display("Tax code"), DataSource(typeof(TaxCodeDataHandler))]
-        public IEnumerable<string>? TaxCode { get; set; }
+        //[Display("Tax code"), DataSource(typeof(TaxCodeDataHandler))]
+        //public IEnumerable<string>? TaxCode { get; set; }
     }
 }
