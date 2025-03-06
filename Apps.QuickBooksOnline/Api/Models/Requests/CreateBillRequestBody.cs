@@ -76,7 +76,7 @@ namespace Apps.QuickBooksOnline.Api.Models.Requests
         public decimal Amount { get; set; }
 
         [JsonProperty("AccountBasedExpenseLineDetail")]
-        [Display("Account basede expense line detail")]
+        [Display("Account based expense line detail")]
         public AccountBasedExpenseLineDetail AccountBasedExpenseLineDetail { get; set; }
 
         [JsonProperty("Description")]
