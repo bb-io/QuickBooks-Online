@@ -25,6 +25,9 @@ namespace Apps.QuickBooksOnline.Api.Models.Requests
 
         [JsonProperty("DocNumber")]
         public string DocNumber { get; set; }
+
+        [JsonProperty("SalesTermRef")]
+        public SalesTermRef? SalesTermRef { get; set; }
     }
     public class BillWrapper
     {
@@ -55,6 +58,10 @@ namespace Apps.QuickBooksOnline.Api.Models.Requests
 
         [JsonProperty("Line")]
         public IEnumerable<ExpenseLine> Line { get; set; }
+
+
+        [JsonProperty("SalesTermRef")]
+        public SalesTermRef? SalesTermRef { get; set; }
     }
     public class ExpenseLine
     {
