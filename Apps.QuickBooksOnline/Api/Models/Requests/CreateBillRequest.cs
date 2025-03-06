@@ -31,5 +31,8 @@ namespace Apps.QuickBooksOnline.Api.Models.Requests
 
         [Display("Doc number")]
         public string? DocNumber { get; set; }
+
+        [Display("Sales terms"), DataSource(typeof(TermDataSource))]
+        public string? SalesTerms { get; set; }
     }
 }
