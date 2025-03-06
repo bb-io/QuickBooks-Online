@@ -171,6 +171,9 @@ public class TaxCodeRef
 {
     [JsonProperty("value")]
     public string Value { get; set; }
+
+    [JsonProperty("name")]
+    public string? Name { get; set; }
 }
     
 public class CustomField

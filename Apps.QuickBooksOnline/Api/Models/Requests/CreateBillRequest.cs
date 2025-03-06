@@ -14,7 +14,7 @@ namespace Apps.QuickBooksOnline.Api.Models.Requests
         [Display("Vendor ID"), DataSource(typeof(VendorDataSource))]
         public string VendorId { get; set; }
 
-        [Display("Account IDs", Description = "Account references for each line item")]
+        [Display("Category IDs", Description = "Account references for each line item"), DataSource(typeof(AccountDataSource))]
         public IEnumerable<string> AccountIds { get; set; }
 
         [Display("Line amounts", Description = "Amounts for each line item")]
@@ -34,5 +34,8 @@ namespace Apps.QuickBooksOnline.Api.Models.Requests
 
         [Display("Sales terms"), DataSource(typeof(TermDataSource))]
         public string? SalesTerms { get; set; }
+
+        [Display("Tax code"), DataSource(typeof(TaxCodeDataHandler))]
+        public IEnumerable<string>? TaxCode { get; set; }
     }
 }

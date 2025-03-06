@@ -16,6 +16,9 @@ using Newtonsoft.Json;
 using CustomerRef = Apps.QuickBooksOnline.Models.Dtos.CustomerRef;
 using ItemRef = Apps.QuickBooksOnline.Models.Dtos.ItemRef;
 using Blackbird.Applications.Sdk.Common.Exceptions;
+using Apps.QuickBooksOnline.Models.Dtos.Items;
+using Apps.QuickBooksOnline.Models.Responses.Items;
+using Apps.QuickBooksOnline.Models.Dtos.Accounts;
 
 namespace Apps.QuickBooksOnline.Actions;
 
@@ -165,7 +168,6 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
             throw new PluginMisconfigurationException(
                 "The number of line amounts must match the number of account IDs."
             );
-
         var lines = input.LineAmounts.Select((amount, i) => new ExpenseLine
         {
             Id = (i + 1).ToString(),
@@ -178,7 +180,12 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
                 AccountRef = new AccountRef
                 {
                     Value = input.AccountIds.ElementAt(i)
-                }
+                },
+                TaxCodeRef =
+                    new TaxCodeRef
+                    {
+                        Value = input.TaxCode?.ElementAtOrDefault(i) ?? GetTaxCodeForAccount(input.AccountIds.ElementAt(i)).Result
+                    },
             }
         }).ToList();
 
@@ -209,9 +216,11 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
         }
     }
 
-
-
-
+    private async Task<string> GetTaxCodeForAccount(string AccountID)
+    {
+        var accountWrapper = await Client.ExecuteWithJson<AccountWrapper>($"/account/{AccountID}", Method.Get, null, Creds);
+        return accountWrapper.Account.TaxCodeRef.Value;
+    }
 
     [Action("Update invoice", Description = "Update an invoice with a new due date and class reference")]
     public async Task<GetInvoiceResponse> UpdateInvoice([ActionParameter] UpdateInvoiceRequest input)
