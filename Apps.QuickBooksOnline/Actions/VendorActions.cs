@@ -44,6 +44,11 @@ public class VendorActions(InvocationContext invocationContext) : AppInvocable(i
             sql += $" AND CompanyName = '{request.CompanyName}'";
         }
 
+        if (!string.IsNullOrEmpty(request.AcctNum))
+        {
+            sql += $" AND AcctNum = '{request.AcctNum}'";
+        }
+
         var vendorsWrapper = await Client.ExecuteWithJson<QueryVendorsWrapper>($"/query?query={sql}", Method.Get, null, Creds);
 
         if (vendorsWrapper.QueryResponse.Vendor == null || vendorsWrapper.QueryResponse.Vendor.Count == 0)
