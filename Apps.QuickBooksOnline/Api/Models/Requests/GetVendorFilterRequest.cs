@@ -15,5 +15,8 @@ namespace Apps.QuickBooksOnline.Api.Models.Requests
 
         [Display("Last updated time")]
         public DateTime? LastUpdatedTime { get; set; }
+
+        [Display("Account number")]
+        public string? AcctNum { get; set; }
     }
 }
