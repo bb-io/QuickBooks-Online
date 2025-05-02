@@ -43,7 +43,7 @@ public class OAuth2TokenService(InvocationContext invocationContext)
         var bodyParameters = new Dictionary<string, string>
         {
             { "grant_type", grant_type },
-            { "redirect_uri", InvocationContext.UriInfo.AuthorizationCodeRedirectUri.ToString() },
+            { "redirect_uri", $"{InvocationContext.UriInfo.BridgeServiceUrl.ToString().TrimEnd('/')}/AuthorizationCode" },
             { "code", code }
         };
         
