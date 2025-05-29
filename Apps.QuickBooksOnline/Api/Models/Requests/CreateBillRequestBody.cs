@@ -26,6 +26,9 @@ namespace Apps.QuickBooksOnline.Api.Models.Requests
         [JsonProperty("DocNumber")]
         public string DocNumber { get; set; }
 
+        [JsonProperty("PrivateNote")]
+        public string PrivateNote { get; set; }
+
         [JsonProperty("SalesTermRef")]
         public SalesTermRef? SalesTermRef { get; set; }
     }

@@ -198,6 +198,7 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
             TxnDate = input.BillDate?.ToString("yyyy-MM-dd"),
             DueDate = input.DueDate?.ToString("yyyy-MM-dd"),
             DocNumber = input.DocNumber,
+            PrivateNote = input.PrivateNote,
             SalesTermRef = new SalesTermRef
             {
                 Value = input.SalesTerms
