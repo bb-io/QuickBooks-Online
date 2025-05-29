@@ -202,6 +202,10 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
             SalesTermRef = new SalesTermRef
             {
                 Value = input.SalesTerms
+            },
+            DepartmentRef = new DepartmentRef
+            {
+                Value = input.Department
             }
         };
 

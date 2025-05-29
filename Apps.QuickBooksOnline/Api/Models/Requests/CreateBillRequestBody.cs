@@ -31,6 +31,9 @@ namespace Apps.QuickBooksOnline.Api.Models.Requests
 
         [JsonProperty("SalesTermRef")]
         public SalesTermRef? SalesTermRef { get; set; }
+
+        [JsonProperty("DepartmenRef")]
+        public DepartmentRef? DepartmentRef { get; set; }
     }
     public class BillWrapper
     {
