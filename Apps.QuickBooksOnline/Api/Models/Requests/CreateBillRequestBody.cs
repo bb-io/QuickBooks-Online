@@ -65,6 +65,8 @@ namespace Apps.QuickBooksOnline.Api.Models.Requests
         [JsonProperty("Line")]
         public IEnumerable<ExpenseLine> Line { get; set; }
 
+        [JsonProperty("DepartmentRef")]
+        public DepartmentRef? DepartmentRef { get; set; }
 
         [JsonProperty("SalesTermRef")]
         public SalesTermRef? SalesTermRef { get; set; }

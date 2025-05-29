@@ -199,13 +199,13 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
             DueDate = input.DueDate?.ToString("yyyy-MM-dd"),
             DocNumber = input.DocNumber,
             PrivateNote = input.PrivateNote,
+            //DepartmentRef = new DepartmentRef
+            //{
+            //    Value = input.Department
+            //},
             SalesTermRef = new SalesTermRef
             {
                 Value = input.SalesTerms
-            },
-            DepartmentRef = new DepartmentRef
-            {
-                Value = input.Department
             }
         };
 
