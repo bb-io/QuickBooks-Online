@@ -188,26 +188,51 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
             }
         }).ToList();
 
-        var body = new CreateBillRequestBody
+        object body;
+
+        if (String.IsNullOrEmpty(input.Department))
         {
-            Line = lines,
-            VendorRef = new VendorRef
+            body = new CreateBillRequestBody
             {
-                Value = input.VendorId
-            },
-            TxnDate = input.BillDate?.ToString("yyyy-MM-dd"),
-            DueDate = input.DueDate?.ToString("yyyy-MM-dd"),
-            DocNumber = input.DocNumber,
-            PrivateNote = input.PrivateNote,
-            //DepartmentRef = new DepartmentRef
-            //{
-            //    Value = input.Department
-            //},
-            SalesTermRef = new SalesTermRef
+                Line = lines,
+                VendorRef = new VendorRef
+                {
+                    Value = input.VendorId
+                },
+                TxnDate = input.BillDate?.ToString("yyyy-MM-dd"),
+                DueDate = input.DueDate?.ToString("yyyy-MM-dd"),
+                DocNumber = input.DocNumber,
+                PrivateNote = input.PrivateNote,
+                SalesTermRef = new SalesTermRef
+                {
+                    Value = input.SalesTerms
+                }
+            };
+        }
+        else 
+        {
+            body = new CreateBillRequestBody
             {
-                Value = input.SalesTerms
-            }
-        };
+                Line = lines,
+                VendorRef = new VendorRef
+                {
+                    Value = input.VendorId
+                },
+                TxnDate = input.BillDate?.ToString("yyyy-MM-dd"),
+                DueDate = input.DueDate?.ToString("yyyy-MM-dd"),
+                DocNumber = input.DocNumber,
+                PrivateNote = input.PrivateNote,
+                DepartmentRef = new DepartmentRef
+                {
+                    Value = input.Department
+                },
+                SalesTermRef = new SalesTermRef
+                {
+                    Value = input.SalesTerms
+                }
+            };
+        }
+        
 
         try
         {
