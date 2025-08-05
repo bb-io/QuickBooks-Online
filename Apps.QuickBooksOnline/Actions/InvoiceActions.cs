@@ -188,51 +188,27 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
             }
         }).ToList();
 
-        object body;
 
-        if (String.IsNullOrEmpty(input.Department))
+        var body = new CreateBillRequestBody
         {
-            body = new CreateBillRequestBody
-            {
-                Line = lines,
-                VendorRef = new VendorRef
-                {
-                    Value = input.VendorId
-                },
-                TxnDate = input.BillDate?.ToString("yyyy-MM-dd"),
-                DueDate = input.DueDate?.ToString("yyyy-MM-dd"),
-                DocNumber = input.DocNumber,
-                PrivateNote = input.PrivateNote,
-                SalesTermRef = new SalesTermRef
-                {
-                    Value = input.SalesTerms
-                }
-            };
-        }
-        else 
+            Line = lines,
+            VendorRef = new VendorRef { Value = input.VendorId },
+            TxnDate = input.BillDate?.ToString("yyyy-MM-dd"),
+            DueDate = input.DueDate?.ToString("yyyy-MM-dd"),
+            DocNumber = input.DocNumber,
+            PrivateNote = input.PrivateNote,
+            SalesTermRef = new SalesTermRef { Value = input.SalesTerms }
+        };
+
+        if (!String.IsNullOrEmpty(input.Department))
         {
-            body = new CreateBillRequestBody
-            {
-                Line = lines,
-                VendorRef = new VendorRef
-                {
-                    Value = input.VendorId
-                },
-                TxnDate = input.BillDate?.ToString("yyyy-MM-dd"),
-                DueDate = input.DueDate?.ToString("yyyy-MM-dd"),
-                DocNumber = input.DocNumber,
-                PrivateNote = input.PrivateNote,
-                DepartmentRef = new DepartmentRef
-                {
-                    Value = input.Department
-                },
-                SalesTermRef = new SalesTermRef
-                {
-                    Value = input.SalesTerms
-                }
-            };
+            body.DepartmentRef = new DepartmentRef { Value = input.Department };
         }
-        
+
+        if (!String.IsNullOrEmpty(input.Currency))
+        {
+            body.CurrencyRef = new CurrencyRef { Value = input.Currency };
+        }
 
         try
         {
