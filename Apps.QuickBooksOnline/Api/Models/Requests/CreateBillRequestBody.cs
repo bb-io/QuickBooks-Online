@@ -32,8 +32,11 @@ namespace Apps.QuickBooksOnline.Api.Models.Requests
         [JsonProperty("SalesTermRef")]
         public SalesTermRef? SalesTermRef { get; set; }
 
-        [JsonProperty("DepartmenRef")]
+        [JsonProperty("DepartmentRef")]
         public DepartmentRef? DepartmentRef { get; set; }
+
+        [JsonProperty("CurrencyRef")]
+        public CurrencyRef? CurrencyRef { get; set; }
     }
     public class BillWrapper
     {
@@ -70,6 +73,9 @@ namespace Apps.QuickBooksOnline.Api.Models.Requests
 
         [JsonProperty("SalesTermRef")]
         public SalesTermRef? SalesTermRef { get; set; }
+
+        [JsonProperty("CurrencyRef")]
+        public CurrencyRef? CurrencyRef { get; set; }
     }
     public class ExpenseLine
     {
@@ -103,6 +109,16 @@ namespace Apps.QuickBooksOnline.Api.Models.Requests
     {
         [JsonProperty("value")]
         public string Value { get; set; }
+    }
+
+    public class CurrencyRef
+    {
+        [JsonProperty("value")]
+        public string? Value { get; set; }
+
+        [JsonProperty("name")]
+        public string? Name { get; set; }
+
     }
 
     public class VendorRef

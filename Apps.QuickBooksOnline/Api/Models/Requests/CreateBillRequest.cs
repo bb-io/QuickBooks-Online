@@ -41,6 +41,9 @@ namespace Apps.QuickBooksOnline.Api.Models.Requests
         [Display("Sales terms"), DataSource(typeof(TermDataSource))]
         public string? SalesTerms { get; set; }
 
+        [Display("Currency code", Description = "A three letter string representing the ISO 4217 code for the currency. For example, USD, AUD, EUR, and so on.")]
+        public string? Currency { get; set; }
+
         //[Display("Tax code"), DataSource(typeof(TaxCodeDataHandler))]
         //public IEnumerable<string>? TaxCode { get; set; }
     }
