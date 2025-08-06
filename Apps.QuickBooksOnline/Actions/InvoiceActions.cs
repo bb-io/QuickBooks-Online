@@ -208,8 +208,20 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
         if (!String.IsNullOrEmpty(input.Currency))
         {
             body.CurrencyRef = new CurrencyRef { Value = input.Currency };
+            if (input.ExchangeRate.HasValue && input.ExchangeRate.Value)
+            {
+                try 
+                {
+                    var rate = await Client.ExecuteWithJson<RateWrapper>($"/exchangerate?sourcecurrencycode={input.Currency}", Method.Get, body, Creds);
+                    body.ExchangeRate = rate?.ExchangeRate?.Rate;
+                }
+                catch (Exception e)
+                {
+                    throw new PluginApplicationException("Error getting exchange rate: " + e.Message);
+                }
+            }
         }
-
+        
         try
         {
             var billWrapper = await Client.ExecuteWithJson<BillWrapper>("/bill", Method.Post, body, Creds);

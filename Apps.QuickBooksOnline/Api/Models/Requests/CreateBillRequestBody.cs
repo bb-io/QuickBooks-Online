@@ -37,6 +37,9 @@ namespace Apps.QuickBooksOnline.Api.Models.Requests
 
         [JsonProperty("CurrencyRef")]
         public CurrencyRef? CurrencyRef { get; set; }
+
+        [JsonProperty("ExchangeRate")]
+        public decimal? ExchangeRate { get; set; }
     }
     public class BillWrapper
     {
@@ -125,5 +128,17 @@ namespace Apps.QuickBooksOnline.Api.Models.Requests
     {
         [JsonProperty("value")]
         public string Value { get; set; }
+    }
+
+    public class RateWrapper
+    {
+        public ExchangeRate ExchangeRate { get; set; }
+    }
+
+    public class ExchangeRate
+    {
+        public string SourceCurrencyCode { get; set; }
+        public string TargetCurrencyCode { get; set; }
+        public decimal Rate { get; set; }
     }
 }
