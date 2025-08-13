@@ -181,10 +181,10 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
                 {
                     Value = input.AccountIds.ElementAt(i)
                 },
-                //TaxCodeRef = new TaxCodeRef
-                //{
-                //    Value =  GetTaxCodeForAccount(input.AccountIds.ElementAt(i)).Result ?? input.TaxCode?.ElementAtOrDefault(i) 
-                //}
+                TaxCodeRef = new TaxCodeRef
+                {
+                    Value = GetTaxCodeForAccount(input.AccountIds.ElementAt(i)).Result ?? input.TaxCode?.ElementAtOrDefault(i)
+                }
             }
         }).ToList();
 

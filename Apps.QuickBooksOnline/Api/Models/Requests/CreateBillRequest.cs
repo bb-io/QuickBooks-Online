@@ -47,7 +47,7 @@ namespace Apps.QuickBooksOnline.Api.Models.Requests
         [Display("Include exchange rate")]
         public bool? ExchangeRate { get; set; }
 
-        //[Display("Tax code"), DataSource(typeof(TaxCodeDataHandler))]
-        //public IEnumerable<string>? TaxCode { get; set; }
+        [Display("Tax code"), DataSource(typeof(TaxCodeDataHandler))]
+        public IEnumerable<string>? TaxCode { get; set; }
     }
 }
