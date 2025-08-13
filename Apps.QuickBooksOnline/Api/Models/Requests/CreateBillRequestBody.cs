@@ -103,10 +103,12 @@ namespace Apps.QuickBooksOnline.Api.Models.Requests
 
     public class AccountBasedExpenseLineDetail
     {
+        [JsonProperty("TaxCodeRef")]
+        public TaxCodeRef? TaxCodeRef { get; set; }
+
         [JsonProperty("AccountRef")]
         [Display("Account reference")]
-        public AccountRef AccountRef { get; set; }
-        public TaxCodeRef TaxCodeRef { get; set; }
+        public AccountRef AccountRef { get; set; }        
     }
     public class AccountRef
     {
