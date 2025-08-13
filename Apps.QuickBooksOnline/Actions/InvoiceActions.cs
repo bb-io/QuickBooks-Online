@@ -183,9 +183,9 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
                 },
                 TaxCodeRef = new TaxCodeRef
                 {
-                    Value =
-                    //GetTaxCodeForAccount(input.AccountIds.ElementAt(i)).Result ??
-                      input.TaxCode?.ElementAtOrDefault(i)
+                    Value =                  
+                      input.TaxCode?.ElementAtOrDefault(i) ?? 
+                      GetTaxCodeForAccount(input.AccountIds.ElementAt(i)).Result
                 }
             }
         }).ToList();
