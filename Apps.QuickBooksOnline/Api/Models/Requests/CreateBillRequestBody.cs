@@ -40,6 +40,9 @@ namespace Apps.QuickBooksOnline.Api.Models.Requests
 
         [JsonProperty("ExchangeRate")]
         public decimal? ExchangeRate { get; set; }
+
+        [JsonProperty("GlobalTaxCalculation")]
+        public string? GlobalTaxCalculation { get; set; }
     }
     public class BillWrapper
     {

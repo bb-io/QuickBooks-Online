@@ -207,6 +207,11 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
             body.DepartmentRef = new DepartmentRef { Value = input.Department };
         }
 
+        if (!String.IsNullOrEmpty(input.GlobalTaxCalculation))
+        {
+            body.GlobalTaxCalculation = input.GlobalTaxCalculation;
+        }
+
         if (!String.IsNullOrEmpty(input.Currency))
         {
             body.CurrencyRef = new CurrencyRef { Value = input.Currency };
@@ -238,7 +243,7 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
     private async Task<string> GetTaxCodeForAccount(string AccountID)
     {
         var accountWrapper = await Client.ExecuteWithJson<AccountWrapper>($"/account/{AccountID}", Method.Get, null, Creds);
-        return accountWrapper.Account.TaxCodeRef.Value;
+        return accountWrapper.Account.TaxCodeRef?.Value ?? null;
     }
 
     [Action("Update invoice", Description = "Update an invoice with a new due date and class reference")]
