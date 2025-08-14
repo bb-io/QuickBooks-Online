@@ -207,6 +207,11 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
             body.DepartmentRef = new DepartmentRef { Value = input.Department };
         }
 
+        if (!String.IsNullOrEmpty(input.GlobalTaxCalculation))
+        {
+            body.GlobalTaxCalculation = input.GlobalTaxCalculation;
+        }
+
         if (!String.IsNullOrEmpty(input.Currency))
         {
             body.CurrencyRef = new CurrencyRef { Value = input.Currency };

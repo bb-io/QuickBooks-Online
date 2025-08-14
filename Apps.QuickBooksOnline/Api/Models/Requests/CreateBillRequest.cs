@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Apps.QuickBooksOnline.DataSourceHandlers;
+using Apps.QuickBooksOnline.DataSourceHandlers.Static;
 using Blackbird.Applications.Sdk.Common;
+using Blackbird.Applications.Sdk.Common.Dictionaries;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.QuickBooksOnline.Api.Models.Requests
@@ -42,6 +44,7 @@ namespace Apps.QuickBooksOnline.Api.Models.Requests
         public string? SalesTerms { get; set; }
 
         [Display("Currency code", Description = "A three letter string representing the ISO 4217 code for the currency. For example, USD, AUD, EUR, and so on.")]
+        [StaticDataSource(typeof(CurrencyRefDataSource))]
         public string? Currency { get; set; }
 
         [Display("Include exchange rate")]
@@ -49,5 +52,8 @@ namespace Apps.QuickBooksOnline.Api.Models.Requests
 
         [Display("Tax code"), DataSource(typeof(TaxCodeDataHandler))]
         public IEnumerable<string>? TaxCode { get; set; }
+
+        [Display("Global tax calculation", Description = "Method in which tax is applied. Not applicable to US companies; required for non-US companies."), StaticDataSource(typeof(GlobalTaxDataSource))]
+        public string? GlobalTaxCalculation { get; set; }
     }
 }
