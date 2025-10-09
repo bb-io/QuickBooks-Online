@@ -14,7 +14,7 @@ using UpdateCustomerRequest = Apps.QuickBooksOnline.Models.Requests.Customers.Up
 
 namespace Apps.QuickBooksOnline.Actions;
 
-[ActionList]
+[ActionList("Customers")]
 public class CustomerActions(InvocationContext invocationContext) : AppInvocable(invocationContext)
 {
     [Action("Get all customers", Description = "Get all customers")]

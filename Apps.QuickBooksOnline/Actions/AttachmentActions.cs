@@ -15,8 +15,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace Apps.QuickBooksOnline.Actions;
 
-
-[ActionList]
+[ActionList("Attachments")]
 public class AttachmentActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient)
     : AppInvocable(invocationContext)
 {

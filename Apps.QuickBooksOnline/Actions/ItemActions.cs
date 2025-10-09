@@ -8,7 +8,7 @@ using RestSharp;
 
 namespace Apps.QuickBooksOnline.Actions;
 
-[ActionList]
+[ActionList("Items")]
 public class ItemActions(InvocationContext invocationContext) : AppInvocable(invocationContext)
 {
     [Action("Get all items", Description = "Get all items")]

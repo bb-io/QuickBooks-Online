@@ -1,6 +1,5 @@
 ﻿using Apps.QuickBooksOnline.Api.Models.Requests;
 using Apps.QuickBooksOnline.Api.Models.Responses;
-using Apps.QuickBooksOnline.Models.Dtos.Payments;
 using Apps.QuickBooksOnline.Models.Dtos.Vendors;
 using Apps.QuickBooksOnline.Models.Requests.Vendors;
 using Apps.QuickBooksOnline.Models.Responses.Vendors;
@@ -12,7 +11,7 @@ using RestSharp;
 
 namespace Apps.QuickBooksOnline.Actions;
 
-[ActionList]
+[ActionList("Vendors")]
 public class VendorActions(InvocationContext invocationContext) : AppInvocable(invocationContext)
 {
     [Action("Get all vendors", Description = "Get all vendors")]
@@ -58,7 +57,6 @@ public class VendorActions(InvocationContext invocationContext) : AppInvocable(i
 
         return new GetVendorResponse(vendorsWrapper.QueryResponse.Vendor.First());
     }
-
 
     [Action("Get vendor", Description = "Get vendor by ID")]
     public async Task<VendorResponse> GetVendorById([ActionParameter] VendorRequest request)
