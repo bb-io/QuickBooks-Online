@@ -8,7 +8,7 @@ using Blackbird.Applications.Sdk.Common.Invocation;
 
 namespace Apps.QuickBooksOnline.Actions;
 
-[ActionList]
+[ActionList("Payments")]
 public class PaymentActions(InvocationContext invocationContext) : AppInvocable(invocationContext)
 {
     [Action("Get all payments", Description = "Get all payments")]

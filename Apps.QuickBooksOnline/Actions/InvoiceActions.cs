@@ -16,13 +16,11 @@ using Newtonsoft.Json;
 using CustomerRef = Apps.QuickBooksOnline.Models.Dtos.CustomerRef;
 using ItemRef = Apps.QuickBooksOnline.Models.Dtos.ItemRef;
 using Blackbird.Applications.Sdk.Common.Exceptions;
-using Apps.QuickBooksOnline.Models.Dtos.Items;
-using Apps.QuickBooksOnline.Models.Responses.Items;
 using Apps.QuickBooksOnline.Models.Dtos.Accounts;
 
 namespace Apps.QuickBooksOnline.Actions;
 
-[ActionList]
+[ActionList("Invoices")]
 public class InvoiceActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient)
     : AppInvocable(invocationContext)
 {
@@ -153,7 +151,6 @@ public class InvoiceActions(InvocationContext invocationContext, IFileManagement
         }
         
     }
-
 
     [Action("Create bill", Description = "Create a bill with a vendor and line items")]
     public async Task<GetBillResponse> CreateBill([ActionParameter] CreateBillRequest input)
