@@ -29,5 +29,11 @@ public class PaymentResponse(PaymentDto dto)
     [Display("Currency name")]
     public string CurrencyName { get; set; } = dto.CurrencyRef.Name;
 
+    [Display("Reference number")]
+    public string? ReferenceNum { get; set; } = dto.ReferenceNum;
+
+    [Display("Private note")]
+    public string? PrivateNote { get; set; } = dto.PrivateNote;
+
     public List<LineResponse> Lines { get; set; } = dto.Line.Select(x => new LineResponse(x)).ToList();
 }
