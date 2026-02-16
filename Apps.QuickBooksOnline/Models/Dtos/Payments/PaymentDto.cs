@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Globalization;
 
 namespace Apps.QuickBooksOnline.Models.Dtos.Payments;
 
@@ -21,7 +22,13 @@ public class PaymentDto
     
     [JsonProperty("domain")]
     public string Domain { get; set; }
-    
+
+    [JsonProperty("PaymentRefNum")]
+    public string? ReferenceNum { get; set; }
+
+    [JsonProperty("PrivateNote")]
+    public string? PrivateNote { get; set; }
+
     [JsonProperty("sparse")]
     public bool Sparse { get; set; }
     
