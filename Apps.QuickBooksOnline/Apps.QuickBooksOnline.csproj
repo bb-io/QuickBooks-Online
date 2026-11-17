@@ -6,7 +6,7 @@
 		<Nullable>enable</Nullable>
 		<Product>QuickBooks Online</Product>
 		<Description>QuickBooks Online accounting software helps you manage your cash flow, track expenses, send invoices and more all in one place.</Description>
-		<Version>1.2.1</Version>
+		<Version>1.2.2</Version>
 		<AssemblyName>Apps.QuickBooksOnline</AssemblyName>
 	</PropertyGroup>
 
@@ -16,5 +16,9 @@
 	</ItemGroup>
 	<ItemGroup>
 		<EmbeddedResource CopyToOutputDirectory="Always" Include="image\icon.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="..\README.md" Link="README.md" CopyToOutputDirectory="Always" />
 	</ItemGroup>
 </Project>
